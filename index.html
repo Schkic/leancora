@@ -118,16 +118,6 @@
   }
 
   .nav-dropdown:hover .dropdown-menu { display: block; }
-  .nav-dropdown.open .dropdown-menu { display: block; }
-  /* Bridge gap so mouse doesn't lose hover */
-  .dropdown-menu::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 0;
-    right: 0;
-    height: 10px;
-  }
 
   .dropdown-menu a {
     display: block;
@@ -958,6 +948,7 @@
       <div class="nav-dropdown">
         <a href="#alati">Alati</a>
         <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
@@ -1067,9 +1058,9 @@
     <p class="section-desc">Ne nudimo samo upute nego i konkretna rješenja. Alati koji vam pomažu svaki dan.</p>
   </div>
   <div class="tools-grid">
-    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+    <a href="oee-kalkulator.html" class="tool-card">
       <span class="tool-emoji">🧮</span>
-      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Unesi dostupnost, performansu i kvalitetu — odmah vidiš OEE postotak i gdje su gubici.</div>
     </a>
     <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
@@ -1088,11 +1079,11 @@
       <div class="tool-desc">"Idi na mjesto događaja". Zapiši zapažanja, uoči gubitke i planiraj akcije.</div>
     </a>
     <a href="5-zasto.html" class="tool-card">
-    <span class="tool-emoji">🔍</span>
-      <div class="tool-name">5 Zašto obrazac</div>
+      <span class="tool-emoji">🔍</span>
+      <div class="tool-name">5x Zašto obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Pronađi korijenski uzrok problema pitajući "Zašto?" pet puta.</div>
     </a>
-    <a href="#" style="opacity:0.5;pointer-events:none;" class="tool-card">
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
       <span class="tool-emoji">📅</span>
       <div class="tool-name">Kaizen event planer <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Priprema agende i koraci za Kaizen radionicu — odmah spreman za ispis.</div>
@@ -1144,7 +1135,7 @@
   <div class="who-inner">
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Tko?</div>
-      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza LeanCore stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
+      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza Leanopedije stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
     </div>
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Što nas <span>izdvaja</span>?</div>
@@ -1226,14 +1217,14 @@
     <div class="footer-links">
       <a href="#">Uvjeti korištenja</a>
       <a href="#">Politika privatnosti</a>
-      <a href="o-nama.html">O Leanopediji</a>
+      <a href="o-nama.html">O LeanCori</a>
       <a href="o-nama.html">Kontakt</a>
     </div>
     <div style="color:var(--text-faint); font-size:12px;">
       NAPOMENA: Sadržaj je informativnog karaktera napisan u najboljoj namjeri.
     </div>
     <div class="footer-badge">
-      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora
+      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora d.o.o.
     </div>
   </div>
 </footer>
@@ -1302,25 +1293,5 @@ async function trackClick(method) {
 // Stats display removed — tracking still active via trackClick()
 </script>
 
-
-<script>
-// Dropdown toggle for mobile
-document.querySelectorAll('.nav-dropdown > a').forEach(link => {
-  link.addEventListener('click', function(e) {
-    const dropdown = this.closest('.nav-dropdown');
-    const isOpen = dropdown.classList.contains('open');
-    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-    if (!isOpen) {
-      e.preventDefault();
-      dropdown.classList.add('open');
-    }
-  });
-});
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-dropdown')) {
-    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-  }
-});
-</script>
 </body>
 </html>
