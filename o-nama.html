@@ -10,7 +10,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --green: #1a7a5e; --green-light: #e8f5f0; --green-mid: #2d9e7a;
+    --green: #1a7a5e; --green-light: #e8f5f0;
     --text: #1a1a1a; --text-muted: #5a5a5a; --text-faint: #9a9a9a;
     --border: #e2e2e2; --bg: #fafaf8; --white: #ffffff;
   }
@@ -25,11 +25,10 @@
   .back-link:hover { color: var(--green); border-color: var(--green); }
   .header-cta { margin-left: auto; background: var(--green); color: white; padding: 7px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; }
 
-  .page-wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 64px; }
+  .page-wrap { max-width: 680px; margin: 0 auto; padding: 48px 24px 64px; }
 
   h1 { font-family: 'DM Serif Display', serif; font-size: 38px; line-height: 1.2; margin-bottom: 8px; }
   h1 em { font-style: italic; color: var(--green); }
-
   .intro-line { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; }
 
   hr.section-divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
@@ -60,94 +59,44 @@
     margin: 32px 0;
   }
   .author-avatar {
-    width: 64px;
-    height: 64px;
-    background: var(--green);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: 600;
-    color: white;
-    font-family: 'DM Serif Display', serif;
-    flex-shrink: 0;
+    width: 64px; height: 64px; background: var(--green); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 600; color: white;
+    font-family: 'DM Serif Display', serif; flex-shrink: 0;
   }
   .author-name { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
   .author-title { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
   .author-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: var(--green-light); color: var(--green); }
 
-  .timeline { margin: 24px 0; position: relative; padding-left: 28px; }
-  .timeline::before { content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
-  .timeline-item { position: relative; margin-bottom: 20px; }
-  .timeline-item:last-child { margin-bottom: 0; }
-  .timeline-dot { position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--green); border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--green); }
-  .timeline-year { font-size: 11px; font-weight: 600; color: var(--green); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
-  .timeline-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-  .timeline-text strong { color: var(--text); font-weight: 500; }
-
-  .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
-  .value-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .value-icon { font-size: 20px; margin-bottom: 8px; display: block; }
-  .value-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .value-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-
   .legal-block {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 16px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-top: 16px;
   }
   .legal-block p { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.6; }
   .legal-block p:last-child { margin-bottom: 0; }
   .legal-block strong { color: var(--text); }
 
-  .site-footer { background: var(--white); border-top: 1px solid var(--border); padding: 20px 24px; margin-top: 0; }
+  .site-footer { background: var(--white); border-top: 1px solid var(--border); padding: 20px 24px; }
   .footer-inner { max-width: 1100px; margin: 0 auto; font-size: 12px; color: var(--text-faint); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   .footer-links { display: flex; gap: 16px; }
   .footer-links a:hover { color: var(--green); }
 
   @media (max-width: 600px) {
     h1 { font-size: 28px; }
-    .values-grid { grid-template-columns: 1fr; }
     .author-card { flex-direction: column; }
   }
 </style>
-  <!-- SEO -->
   <meta name="keywords" content="Lean konzultant Hrvatska, OptiCora, Marko Škiljan, Lean savjetovanje, PRO-KLIMA">
   <meta name="author" content="Marko Škiljan — OptiCora">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://leanopedija.opticora.hr/o-nama.html">
-
-  <!-- Open Graph (dijeljenje na društvenim mrežama) -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="O Leanopediji — Marko Škiljan, OptiCora">
-  <meta property="og:description" content="Tko stoji iza Leanopedije? Marko Škiljan, Lean konzultant s iskustvom iz stvarnih hrvatskih proizvodnih pogona od 2019. Osnivač obrta OptiCora.">
+  <meta property="og:description" content="Tko stoji iza Leanopedije? Marko Škiljan, Lean konzultant s iskustvom iz stvarnih hrvatskih proizvodnih pogona od 2019.">
   <meta property="og:url" content="https://leanopedija.opticora.hr/o-nama.html">
   <meta property="og:locale" content="hr_HR">
   <meta property="og:site_name" content="Leanopedija">
-
-  <!-- Schema.org strukturirani podaci -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Leanopedija",
-    "url": "https://leanopedija.opticora.hr",
-    "description": "Praktični vodiči i alati za Lean metodologiju u hrvatskoj proizvodnji",
-    "author": {
-      "@type": "Person",
-      "name": "Marko Škiljan",
-      "jobTitle": "Lean konzultant",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "OptiCora"
-      }
-    }
-  }
-  </script>
 </head>
 <body>
 
@@ -172,7 +121,7 @@
     Ima <strong>jaku praktičnu komponentu</strong> — stvarno besplatne upute, alate i obrasce koje možete koristiti odmah, bez registracije i bez skrivenih uvjeta.
   </p>
   <p>
-    Želja mi je da Leanopedija postane <strong>centralno mjesto</strong> za sve koji uvode ili žele uvesti Lean u svoje pogone — mjesto gdje ćete naći konkretne odgovore, a ne generičke savjete prepisane iz udžbenika.
+    Imam želju da Leanopedija postane <strong>otvoreno okupljalište</strong> za sve koji uvode ili žele uvesti Lean u svoje pogone — bez manipulativnih algoritama i zatvorenih sustava. Mjesto gdje ćete naći konkretne odgovore, a ne generičke savjete prepisane iz udžbenika.
   </p>
 
   <div class="highlight-box">
@@ -191,8 +140,7 @@
       <div class="author-tags">
         <span class="tag">Lean Production</span>
         <span class="tag">5S · Kaizen · OEE</span>
-        <span class="tag">VSM</span>
-        <span class="tag">Proizvodnja</span>
+        <span class="tag">VSM · TPM</span>
         <span class="tag">6+ godina iskustva</span>
       </div>
     </div>
@@ -200,71 +148,17 @@
 
   <p>
     Ja sam Marko Škiljan, idejni začetnik i autor ove stranice.
-    Sve je počelo 2019. godine kada sam u tvrtki <strong>PRO-KLIMA</strong> počeo implementirati Lean metodologiju u stvarnom proizvodnom okruženju.
+    Sve je počelo 2019. godine kada sam u tvrtki <strong>PRO-KLIMA</strong> počeo implementirati Lean metodologiju u stvarnom proizvodnom okruženju — uvođenje 5S-a, mjerenje OEE-a, prve Kaizen radionice.
   </p>
   <p>
-    Kroz godine rada na terenu — u pogonima, uz linije, s radnicima i menadžmentom — shvatio sam da ne postoji <strong>jedno centralno mjesto na hrvatskom jeziku</strong> gdje je objedinjeno praktično znanje o Leanu za proizvodni sektor. Sve što sam pronalazio bilo je ili prevedeno iz stranih udžbenika ili previše apstraktno za svakodnevnu primjenu.
+    Kroz godine rada na terenu, sudjelovanja na Lean konferencijama i suradnje s tvrtkom <strong>Culmena</strong> na projektima, shvatio sam da ne postoji <strong>jedno centralno mjesto na hrvatskom jeziku</strong> gdje je objedinjeno praktično znanje o Leanu za proizvodni sektor. Sve što sam pronalazio bilo je ili prevedeno iz stranih udžbenika ili previše apstraktno za svakodnevnu primjenu.
   </p>
   <p>
-    Tako je nastala Leanopedija. Napokon u Hrvatskoj imamo mjesto na kojemu je objedinjeno praktično znanje o <strong>5S-u, OEE-u, Kaizenu, VSM-u, standardiziranom radu, TPM-u</strong> i ostalim Lean alatima — pisano od nekoga tko ih je osobno primijenio.
+    Tako je nastala Leanopedija. Jedino mjesto u Hrvatskoj gdje razgovarate s konzultantom koji je osobno vodio Gemba Walkove, provodio 5S audite i postavljao OEE mjerenja — a ne s agencijskim zaposlenicima ili generičkim AI tekstovima.
   </p>
   <p>
-    Jedino mjesto na internetu gdje razgovarate s konzultantom koji je osobno vodio Gemba Walkove, provodio 5S audite i postavljao OEE mjerenja — a ne s agencijskim zaposlenicima ili generičkim AI tekstovima.
+    2023. godine osnovao sam obrt <strong>OptiCora</strong> kako bih formalizirao savjetodavnu djelatnost i neovisno pomagao hrvatskim proizvodnim firmama u uvođenju Lean-a.
   </p>
-
-  <hr class="section-divider">
-
-  <h2>Put do Leanopedije ...</h2>
-
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2019.</div>
-      <div class="timeline-text"><strong>Početak u PRO-KLIMA</strong> — prva implementacija Lean metodologije u hrvatskom proizvodnom pogonu. Uvođenje 5S-a, mjerenje OEE-a, prve Kaizen radionice.</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2020. – 2022.</div>
-      <div class="timeline-text"><strong>Usavršavanje i konferencije</strong> — sudjelovanje na Lean konferencijama, suradnja s tvrtkom <strong>Culmena</strong> na Lean projektima. Stjecanje iskustva na različitim industrijama i procesima.</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2023. – 2024.</div>
-      <div class="timeline-text"><strong>Osnivanje obrta OptiCora</strong> — formalizacija savjetodavne djelatnosti. Neovisno konzultantsko djelovanje za hrvatske proizvodne firme.</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-year">2025.</div>
-      <div class="timeline-text"><strong>Pokretanje Leanopedije</strong> — objedinjavanje svega naučenog u jednom mjestu. Besplatni vodiči, alati i zajednica za sve koji rade na uvođenju Lean-a u Hrvatskoj.</div>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <h2>Čemu Leanopedija teži ...</h2>
-
-  <div class="values-grid">
-    <div class="value-card">
-      <span class="value-icon">📖</span>
-      <div class="value-title">Stvarno besplatno</div>
-      <div class="value-desc">Vodiči i alati su besplatni bez registracije. Nitko vas ne tjera da se prijavite da biste pročitali članak.</div>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🏭</span>
-      <div class="value-title">Iz prakse, za praksu</div>
-      <div class="value-desc">Svaki vodič je napisan na temelju stvarnog iskustva u hrvatskim pogonima — ne prevedenih udžbenika.</div>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🤝</span>
-      <div class="value-title">Bez skrivene prodaje</div>
-      <div class="value-desc">Nema manipulativnih prodajnih funnela. Ako trebate plaćenu pomoć, jasno je istaknuto i potpuno je vaša odluka.</div>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🇭🇷</span>
-      <div class="value-title">Za Hrvatsku</div>
-      <div class="value-desc">Sadržaj je prilagođen hrvatskom kontekstu — zakonodavstvu, industrijskoj strukturi i načinu rada.</div>
-    </div>
-  </div>
 
   <hr class="section-divider">
 
@@ -274,6 +168,7 @@
     <p><strong>OptiCora</strong>, obrt za savjetovanje</p>
     <p>Vlasnik: Marko Škiljan</p>
     <p>Web: <a href="https://leanopedija.opticora.hr" style="color:var(--green);">leanopedija.opticora.hr</a></p>
+    <p>Kontakt: <a href="mailto:info@opticora.hr" style="color:var(--green);">info@opticora.hr</a></p>
     <p style="margin-top:12px; font-size:12px; color:var(--text-faint);">
       Sadržaj na ovoj stranici je informativnog karaktera napisan u najboljoj namjeri i na temelju osobnog iskustva autora. Nije zamjena za stručno savjetovanje prilagođeno vašoj specifičnoj situaciji.
     </p>
@@ -288,7 +183,7 @@
       <a href="o-nama.html">O nama</a>
       <a href="index.html#napojnica">Napojnica</a>
     </div>
-    <span>© Leanopedija · OptiCora · lean.opticora.hr</span>
+    <span>© Leanopedija · OptiCora · leanopedija.opticora.hr</span>
   </div>
 </footer>
 
