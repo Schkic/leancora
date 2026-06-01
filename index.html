@@ -3,149 +3,1294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leanopedija — Uskoro</title>
-
+<title>Leanopedija — Praktični vodiči i alati za Lean u hrvatskoj proizvodnji</title>
+<meta name="description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i stručna podrška od OptiCora tima.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root{
-  --bg:#0f1111;
-  --card:#171919;
-  --text:#f5f5f5;
-  --muted:#a0a0a0;
-  --green:#1a7a5e;
-  --border:#2a2d2d;
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-.card{
-  width:100%;
-  max-width:720px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:56px;
-  text-align:center;
-}
-
-.logo{
-  width:72px;
-  height:72px;
-  margin:0 auto 24px;
-  background:var(--green);
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:28px;
-}
-
-h1{
-  font-family:'DM Serif Display',serif;
-  font-size:52px;
-  margin-bottom:16px;
-}
-
-p{
-  color:var(--muted);
-  line-height:1.8;
-  font-size:18px;
-}
-
-.badge{
-  display:inline-block;
-  margin-top:28px;
-  padding:8px 16px;
-  border:1px solid rgba(26,122,94,0.4);
-  color:#7fd6b7;
-  border-radius:999px;
-  font-size:14px;
-}
-
-.contact{
-  margin-top:40px;
-  font-size:15px;
-}
-
-.contact a{
-  color:#7fd6b7;
-  text-decoration:none;
-}
-
-.footer{
-  margin-top:48px;
-  font-size:13px;
-  color:#707070;
-}
-
-@media(max-width:768px){
-
-  .card{
-    padding:40px 28px;
+  :root {
+    --green: #1a7a5e;
+    --green-light: #e8f5f0;
+    --green-mid: #2d9e7a;
+    --text: #1a1a1a;
+    --text-muted: #5a5a5a;
+    --text-faint: #9a9a9a;
+    --border: #e2e2e2;
+    --bg: #fafaf8;
+    --white: #ffffff;
+    --orange: #e8612a;
+    --yellow: #f5c842;
   }
 
-  h1{
-    font-size:38px;
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
   }
 
-  p{
-    font-size:16px;
+  a { color: inherit; text-decoration: none; }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
-}
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 58px;
+  }
 
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    background: var(--green);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .main-nav a {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .main-nav a:hover { background: var(--green-light); color: var(--green); }
+  .main-nav a.active { color: var(--green); font-weight: 500; }
+
+  .nav-dropdown { position: relative; }
+
+  .nav-dropdown > a { display: flex; align-items: center; gap: 4px; }
+  .nav-dropdown > a::after { content: '▾'; font-size: 10px; }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    min-width: 260px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    z-index: 200;
+  }
+
+  .nav-dropdown:hover .dropdown-menu { display: block; }
+
+  .dropdown-menu a {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text);
+    border-radius: 6px;
+    line-height: 1.4;
+  }
+
+  .dropdown-menu a:hover { background: var(--green-light); color: var(--green); }
+  .dropdown-menu a span { display: block; font-size: 11px; color: var(--text-faint); margin-top: 1px; }
+
+  .header-cta {
+    margin-left: auto;
+    background: var(--green);
+    color: white;
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+
+  .header-cta:hover { background: #155f49; }
+
+  /* ── SUPPORT BAR ── */
+  .support-bar {
+    background: #1a1a1a;
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+    padding: 7px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .support-bar strong { color: white; }
+
+  .support-bar a {
+    color: var(--yellow);
+    font-weight: 500;
+    padding: 2px 8px;
+    border: 1px solid rgba(245,200,66,0.3);
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .support-bar a:hover { background: rgba(245,200,66,0.1); }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 24px 48px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-width: 800px;
+    align-items: start;
+  }
+
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 28px;
+  }
+
+  .hero-desc strong { color: var(--text); font-weight: 500; }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .hero-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: var(--green-light);
+    color: var(--green);
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .hero-note {
+    font-size: 13px;
+    color: var(--text-faint);
+    font-style: italic;
+    border-left: 3px solid var(--border);
+    padding-left: 12px;
+    margin-top: 4px;
+  }
+
+  /* ── AD BLOCK (right side) ── */
+  .ad-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .ad-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 8px 14px 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ad-content {
+    padding: 16px;
+    background: linear-gradient(135deg, #f0f9f5 0%, #e8f5f0 100%);
+  }
+
+  .ad-content p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .ad-content strong { color: var(--text); display: block; margin-bottom: 6px; font-size: 14px; }
+
+  .ad-cta {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 5px 12px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+
+  .ad-cta:hover { background: var(--green); color: white; }
+
+  .ad-inquiry {
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--text-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  .ad-inquiry a { color: var(--green); text-decoration: underline; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .section-header {
+    margin-bottom: 24px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* ── SEARCH ── */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    gap: 10px;
+    margin-bottom: 28px;
+    max-width: 440px;
+  }
+
+  .search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .search-bar input::placeholder { color: var(--text-faint); }
+
+  .search-icon { color: var(--text-faint); font-size: 14px; }
+
+  /* ── GUIDE CATEGORIES ── */
+  .guide-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .guide-category { margin-bottom: 36px; }
+
+  .cat-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--green-light);
+  }
+
+  .cat-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .cat-desc {
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .guide-list { list-style: none; }
+
+  .guide-list li {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .guide-list li:last-child { border-bottom: none; }
+
+  .guide-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    font-size: 14px;
+    color: var(--text);
+    transition: color 0.12s;
+    gap: 8px;
+  }
+
+  .guide-list a:hover { color: var(--green); }
+
+  .guide-list a .guide-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .comment-badge {
+    font-size: 11px;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .hot-badge {
+    font-size: 10px;
+    background: #fff0eb;
+    color: var(--orange);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .show-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+    margin-top: 10px;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .show-more:hover { border-color: var(--green); }
+
+  /* ── SIDEBAR ── */
+  .sidebar { }
+
+  .sidebar-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-block-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-block-body { padding: 14px 16px; }
+
+  .contact-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contact-option:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .contact-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--green-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .contact-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .contact-sub { font-size: 11px; color: var(--text-faint); margin-top: 1px; }
+
+  .contact-link {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ── TOOLS SECTION ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .tool-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+
+  .tool-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 2px 12px rgba(26,122,94,0.08);
+  }
+
+  .tool-emoji { font-size: 20px; margin-bottom: 8px; display: block; }
+  .tool-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── RECENT GUIDES ── */
+  .recent-list { }
+
+  .recent-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .recent-item:last-child { border-bottom: none; }
+
+  .recent-meta {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .recent-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+    transition: color 0.12s;
+  }
+
+  .recent-item:hover .recent-title { color: var(--green); }
+
+  .recent-excerpt {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .useful-badge {
+    font-size: 11px;
+    color: var(--green);
+    background: var(--green-light);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-top: 6px;
+    display: inline-block;
+  }
+
+  /* ── AD WIDE ── */
+  .ad-wide {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    margin: 8px 0 32px;
+  }
+
+  .ad-wide-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+  }
+
+  .ad-wide-inner {
+    background: linear-gradient(135deg, #f0f9f5, #e8f5f0);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px dashed #b0dcc8;
+  }
+
+  .ad-wide-inner p { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+  .ad-wide-cta {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 5px 14px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+
+  .ad-wide-cta:hover { background: var(--green); color: white; }
+
+  /* ── WHO WE ARE ── */
+  .who-section {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .who-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+  }
+
+  .who-block { }
+
+  .who-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .who-title span { color: var(--green); }
+
+  .who-block p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── TIP / NAPOJNICA ── */
+  .tip-section {
+    background: #fffdf5;
+    border-top: 1px solid #f0e8c0;
+    border-bottom: 1px solid #f0e8c0;
+  }
+
+  .tip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .tip-inner h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .tip-inner > p {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .tip-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 680px;
+  }
+
+  .tip-method {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .tip-method h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+
+  .tip-qr {
+    width: 110px;
+    height: auto;
+    border-radius: 6px;
+    margin: 0 auto 8px;
+    display: block;
+  }
+  .tip-qr-wide {
+    width: 160px;
+    height: auto;
+    border-radius: 4px;
+    margin: 0 auto 8px;
+    display: block;
+  }
+
+  .tip-method p { font-size: 11px; color: var(--text-faint); }
+
+  /* ── REVIEWS ── */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .review-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .stars { color: var(--yellow); font-size: 12px; margin-bottom: 8px; }
+  .review-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; font-style: italic; }
+  .reviewer { font-size: 11px; color: var(--text-faint); margin-top: 10px; }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: var(--text-faint); transition: color 0.12s; }
+  .footer-links a:hover { color: var(--green); }
+
+  .footer-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  /* ── FLOATING SUPPORT ── */
+  .support-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+  }
+
+  .support-bubble {
+    background: var(--green);
+    color: white;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(26,122,94,0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .support-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(26,122,94,0.45);
+  }
+
+  .support-dot {
+    width: 8px;
+    height: 8px;
+    background: #4eff9e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+  }
+
+
+  /* ACCORDION */
+  .accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .acc-item { border-bottom: 1px solid var(--border); }
+  .acc-item:last-child { border-bottom: none; }
+  .acc-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
+    text-align: left; gap: 12px; transition: background 0.15s;
+  }
+  .acc-btn:hover { background: var(--green-light); }
+  .acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+  .acc-btn.open .acc-arrow { transform: rotate(180deg); }
+  .acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
+  .acc-body.open { display: block; }
+
+  /* ── AD SLOTS ── */
+  .ad-slot {
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-lg, 10px);
+    overflow: hidden;
+    background: var(--white);
+  }
+  .ad-slot-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 6px 12px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ad-slot-inner {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .ad-slot-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 20px 16px;
+    background: linear-gradient(135deg, #f0f9f5 0%, #fafaf8 100%);
+    text-align: center;
+    min-height: 120px;
+    transition: background 0.15s;
+  }
+  .ad-slot-inner:hover .ad-slot-placeholder {
+    background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%);
+  }
+  .ad-slot-icon { font-size: 20px; }
+  .ad-slot-placeholder strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+  }
+  .ad-slot-placeholder span {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .ad-slot-cta {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: var(--green) !important;
+    margin-top: 6px !important;
+  }
+  /* Real ad - when you have actual advertiser */
+  .ad-slot-real img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 30px; }
+    .guide-layout { grid-template-columns: 1fr; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    .who-inner { grid-template-columns: 1fr; gap: 24px; }
+    .tip-methods { grid-template-columns: 1fr; }
+    .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+    .main-nav { display: none; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
 </style>
+  <!-- SEO -->
+  <meta name="keywords" content="Lean metodologija, 5S, Kaizen, OEE, Gemba Walk, Lean proizvodnja Hrvatska, VSM, kontinuirano poboljšanje">
+  <meta name="author" content="Marko Škiljan — OptiCora">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://leanopedija.opticora.hr/">
+
+  <!-- Open Graph (dijeljenje na društvenim mrežama) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Leanopedija — Praktični vodiči i alati za Lean u hrvatskoj proizvodnji">
+  <meta property="og:description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i stručna podrška od OptiCora tima.">
+  <meta property="og:url" content="https://leanopedija.opticora.hr/">
+  <meta property="og:locale" content="hr_HR">
+  <meta property="og:site_name" content="Leanopedija">
+
+  <!-- Schema.org strukturirani podaci -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Leanopedija",
+    "url": "https://leanopedija.opticora.hr",
+    "description": "Praktični vodiči i alati za Lean metodologiju u hrvatskoj proizvodnji",
+    "author": {
+      "@type": "Person",
+      "name": "Marko Škiljan",
+      "jobTitle": "Lean konzultant",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "OptiCora"
+      }
+    }
+  }
+  </script>
 </head>
 <body>
 
-<div class="card">
+<!-- Support bar -->
+<div class="support-bar">
+  <strong>Trebate stručnu pomoć?</strong>
+  <a href="mailto:info@opticora.hr">✉️ Pišite nam</a>
+  <a href="tel:+38512345678">📞 Pozovite</a>
+</div>
 
-  <div class="logo">L</div>
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark">L°</div>
+      Leanopedija
+    </a>
 
-  <h1>Leanopedija</h1>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+        </div>
+      </div>
+      <a href="#vodici">Vodiči</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
 
-  <p>
-    Praktični vodiči, alati i znanje za Lean proizvodnju.<br>
-    Projekt je trenutno u izradi i uskoro postaje dostupan.
-  </p>
-
-  <div class="badge">
-    Uskoro dostupno
+    <a href="o-nama.html" class="header-cta">Kontaktiraj stručnjaka →</a>
   </div>
+</header>
 
-  <div class="contact">
-    Kontakt:
-    <a href="mailto:info@opticora.hr">
-      info@opticora.hr
+<!-- Hero -->
+<section style="background: var(--white); border-bottom: 1px solid var(--border);">
+  <div class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Za hrvatske proizvodne firme</p>
+      <h1>Sve o <em>Lean metodologiji</em> na jednom mjestu</h1>
+      <p class="hero-desc">
+        Enciklopedija za proizvodnog managera!<br>
+        <strong>Vodiči + Alati + Stručna podrška + Zajednica</strong><br>
+        Trebate pomoć pri uvođenju Lean-a, 5S-a, Kaizena, mjerenju OEE-a ili pripremi VSM radionice? Sve na jednom mjestu — pisano od <strong>osobe</strong> koja godinama implementira Lean u stvarnim hrvatskim pogonima.<br>
+        Bez teorije iz udžbenika. Samo ono što stvarno radi.
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tag">Lean Production</span>
+        <span class="hero-tag">5S metodologija</span>
+        <span class="hero-tag">Kaizen</span>
+        <span class="hero-tag">OEE mjerenje</span>
+        <span class="hero-tag">VSM</span>
+        <span class="hero-tag">TPM</span>
+      </div>
+      <p class="hero-note">Od OptiCora tima — iz prve ruke. Bez skrivene prodaje, bez sponzorstva.</p>
+    </div>
+
+    <!-- Ad banners - horizontal -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px;">
+
+      <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  OGLAS 1 — Kako zamijeniti s pravim oglasom:        ║
+        ║                                                      ║
+        ║  OPCIJA A - Slika + link:                           ║
+        ║  Zamijeni cijeli <div class="ad-slot-inner">        ║
+        ║  s ovim:                                            ║
+        ║  <a href="URL_OGLASIVACA" target="_blank"           ║
+        ║     class="ad-slot-inner">                          ║
+        ║    <div class="ad-slot-real">                       ║
+        ║      <img src="banner.jpg" alt="Naziv firme">       ║
+        ║    </div>                                           ║
+        ║  </a>                                               ║
+        ╚══════════════════════════════════════════════════════╝
+      -->
+      <!-- Oglas 1 -->
+      <div class="ad-slot" id="oglas-1">
+        <div class="ad-slot-label">oglas</div>
+        <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
+          <div class="ad-slot-placeholder">
+            <span class="ad-slot-icon">📢</span>
+            <strong>Vaš oglas ovdje</strong>
+            <span>Dosegnite voditelje proizvodnje i Lean stručnjake</span>
+            <span class="ad-slot-cta">Pošaljite upit →</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Oglas 2 - ZAMIJENI s pravim oglasom -->
+      <div class="ad-slot" id="oglas-2">
+        <div class="ad-slot-label">oglas</div>
+        <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
+          <div class="ad-slot-placeholder">
+            <span class="ad-slot-icon">📢</span>
+            <strong>Vaš oglas ovdje</strong>
+            <span>Idealno za dobavljače opreme i software za proizvodnju</span>
+            <span class="ad-slot-cta">Pošaljite upit →</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Guides + Sidebar -->
+<div class="section">
+  <div class="guide-layout">
+    <div>
+      <!-- Vodiči - coming soon -->
+      <div id="vodici" style="padding: 24px 0 8px;">
+        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 32px; text-align: center; max-width: 560px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">📚</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Vodiči i upute — uskoro</h3>
+          <p style="font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
+            Radimo na bazi znanja o Lean metodologiji za hrvatske proizvodne firme.<br>
+            Prve upute stižu uskoro — 5S, OEE, Kaizen, VSM i još mnogo toga.
+          </p>
+          <p style="font-size: 12px; color: var(--text-faint);">U međuvremenu, koristite besplatne alate ispod ↓</p>
+        </div>
+      </div>
+
+      <!-- Tools grid -->
+<div class="section" id="alati">
+  <div class="section-header" style="text-align:center;">
+    <div class="section-label">Besplatni alati</div>
+    <h2 class="section-title">Alati i obrasci</h2>
+    <p class="section-desc">Ne nudimo samo upute nego i konkretna rješenja. Alati koji vam pomažu svaki dan.</p>
+  </div>
+  <div class="tools-grid">
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+      <span class="tool-emoji">🧮</span>
+      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-desc">Unesi dostupnost, performansu i kvalitetu — odmah vidiš OEE postotak i gdje su gubici.</div>
+    </a>
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+      <span class="tool-emoji">⏱️</span>
+      <div class="tool-name">Takt time kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-desc">Izračun takta na temelju dostupnog radnog vremena i potražnje kupca.</div>
+    </a>
+    <a href="leanopedija-5s-audit.html" class="tool-card">
+      <span class="tool-emoji">📋</span>
+      <div class="tool-name">5S audit obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
+      <div class="tool-desc">Digitalni checklist za 5S audit. Ispuni i preuzmi kao PDF za dokumentaciju.</div>
+    </a>
+    <a href="leanopedija-gemba-walk.html" class="tool-card">
+      <span class="tool-emoji">👣</span>
+      <div class="tool-name">Gemba Walk obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
+      <div class="tool-desc">"Idi na mjesto događaja". Zapiši zapažanja, uoči gubitke i planiraj akcije.</div>
+    </a>
+    <a href="5-zasto.html" class="tool-card">
+    <span class="tool-emoji">🔍</span>
+      <div class="tool-name">5 Zašto obrazac</div>
+      <div class="tool-desc">Pronađi korijenski uzrok problema pitajući "Zašto?" pet puta.</div>
+    </a>
+    <a href="kaizen-planer.html" class="tool-card">
+      <span class="tool-emoji">📅</span>
+      <div class="tool-name">Kaizen event planer <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-desc">Priprema agende i koraci za Kaizen radionicu — odmah spreman za ispis.</div>
+    </a>
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+      <span class="tool-emoji">🗺️</span>
+      <div class="tool-name">VSM predložak <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-desc">Predložak za mapiranje toka vrijednosti — standardni simboli, preuzmi i ispuni.</div>
+    </a>
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+      <span class="tool-emoji">📊</span>
+      <div class="tool-name">Cycle time vs Takt <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-desc">Vizualizacija ciklus vremena po operacijama u odnosu na takt — odmah vidi uska grla.</div>
     </a>
   </div>
-
-  <div class="footer">
-    Leanopedija by OptiCora
-  </div>
-
 </div>
+
+<hr class="divider">
+
+<!-- Oglas 3 - široki banner -->
+<div class="section" style="padding-top:16px;padding-bottom:16px;">
+  <div class="ad-slot" id="oglas-3">
+    <div class="ad-slot-label">oglas — široki banner</div>
+    <!--
+      Kako zamijeniti s pravim oglasom:
+      <a href="URL_OGLASIVACA" target="_blank" class="ad-slot-inner">
+        <div class="ad-slot-real">
+          <img src="banner-728x90.jpg" alt="Naziv firme — opis">
+        </div>
+      </a>
+    -->
+    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
+      <div class="ad-slot-placeholder" style="min-height:80px;flex-direction:row;gap:20px;justify-content:center;">
+        <span class="ad-slot-icon">📢</span>
+        <div style="text-align:left;">
+          <strong>OGLASNI PROSTOR — široki banner (728×90)</strong>
+          <span style="display:block;margin-top:3px;">Dosegnite voditelje proizvodnje, Lean koordinatore i direktore iz cijele Hrvatske. Od 20 €/mj.</span>
+        </div>
+        <span class="ad-slot-cta" style="white-space:nowrap;flex-shrink:0;font-size:12px;">Pošaljite upit →</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- Who are we -->
+<section class="who-section">
+  <div class="who-inner">
+    <div class="who-block">
+      <div class="who-title">—&nbsp;&nbsp;Tko?</div>
+      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza LeanCore stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
+    </div>
+    <div class="who-block">
+      <div class="who-title">—&nbsp;&nbsp;Što nas <span>izdvaja</span>?</div>
+      <p>Jedino mjesto u Hrvatskoj gdje razgovarate s Lean stručnjakom koji je osobno proveo stotine 5S audita, OEE implementacija i Kaizen radionica — a ne zaposlenicima korisničke podrške ili konzultantima iz udžbenika. Sav sadržaj je ručno napisan i temelji se na godinama praktičnog rada.</p>
+    </div>
+    <div class="who-block">
+      <div class="who-title">—&nbsp;&nbsp;Kako vam možemo <span>pomoći</span>?</div>
+      <p>Ova stranica sadrži vodiče i upute za uvođenje Lean-a, 5S-a, mjerenje OEE-a, organizaciju Kaizen radionica, mapiranje toka vrijednosti i još mnogo toga. I besplatne alate koji stvarno pomažu. Uz sadržaj nudimo i stručno savjetovanje — od OptiCora tima.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Tip / Napojnica -->
+<section class="tip-section" id="napojnica" style="text-align:center;">
+  <div class="tip-inner" style="max-width:680px;margin:0 auto;text-align:center;">
+    <h2>Ostavi napojnicu! ☕</h2>
+    <p>
+      Je li vam Leanopedija pomogla, uštedjela vrijeme, živce i energiju?<br>
+      Smatrate da sadržaj i alati imaju vrijednost?<br>
+      Ako želite podržati naš rad, znanje, vrijeme i trud, možete to učiniti napojnicom. Hvala! 😊
+    </p>
+
+    <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
+
+      <!-- Zaba -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
+          <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Otvorite mobilno bankarstvo (npr. Zaba), odaberite skeniranje barkoda, skenirajte niže prikazani 2D barkod, upišite željeni iznos (npr. 3,00 €) i potvrdite plaćanje.</p>
+          <img src="zaba-2d.jpg" alt="Zaba 2D barkod za uplatu">
+        </div>
+      </div>
+
+      <!-- KeksPay QR -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
+          <span>🟢 KeksPay uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">KeksPay aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="keks-qr.jpg" alt="KeksPay QR kod">
+        </div>
+      </div>
+
+      <!-- Revolut -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
+          <span>🔵 Revolut uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Revolut aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="revolut-qr.jpg" alt="Revolut QR kod">
+          <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:8px;">Ili klikom na <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
+        </div>
+      </div>
+
+    <!-- Tracking stats -->
+    
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;color:var(--text-faint);margin-bottom:8px;">Klikovi po načinu plaćanja</div>
+        <div id="stat-bars" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="#">Uvjeti korištenja</a>
+      <a href="#">Politika privatnosti</a>
+      <a href="o-nama.html">O LeanCori</a>
+      <a href="o-nama.html">Kontakt</a>
+    </div>
+    <div style="color:var(--text-faint); font-size:12px;">
+      NAPOMENA: Sadržaj je informativnog karaktera napisan u najboljoj namjeri.
+    </div>
+    <div class="footer-badge">
+      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora d.o.o.
+    </div>
+  </div>
+</footer>
+
+<!-- Floating support -->
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+
+<script>
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+</script>
+
+<style>
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.zahvali-bubble {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.zahvali-bubble:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
+}
+</style>
+
+<script>
+// ── Scroll to napojnica ──
+function scrollToNapojnica() {
+  const el = document.getElementById('napojnica');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Click tracking (Cloudflare Workers KV) ──
+const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+
+async function trackClick(method) {
+  try {
+    await fetch(`${API}/track?method=${method}`, { method: 'POST' });
+  } catch(e) { console.log('Track error:', e); }
+  updateStats();
+}
+
+// Stats display removed — tracking still active via trackClick()
+</script>
 
 </body>
 </html>
