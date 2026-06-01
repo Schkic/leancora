@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5S Audit Obrazac — Besplatni digitalni checklist | Leanopedija</title>
+<meta name="description" content="Besplatni digitalni 5S audit obrazac s automatskim izračunom rezultata. Ispunite online i preuzmite kao PDF. 25 kriterija, ocjene A-F, akcijski plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #1a7a5e; --green-light: #e8f5f0; --green-mid: #2d9e7a;
+    --text: #1a1a1a; --text-muted: #5a5a5a; --text-faint: #9a9a9a;
+    --border: #e2e2e2; --bg: #fafaf8; --white: #ffffff;
+    --red: #dc3545; --orange: #e8612a; --yellow: #f5c842;
+    --score-poor: #fee2e2; --score-avg: #fef9c3; --score-good: #dcfce7;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+
+  /* HEADER */
+  .site-header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 16px; height: 54px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-family: 'DM Serif Display', serif; font-size: 18px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--green); border-radius: 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif; }
+  .back-link { font-size: 13px; color: var(--text-muted); margin-left: 8px; padding: 4px 0; border-bottom: 1px solid transparent; transition: color 0.12s, border-color 0.12s; }
+  .back-link:hover { color: var(--green); border-color: var(--green); }
+  .header-cta { margin-left: auto; background: var(--green); color: white; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; }
+
+  /* PAGE HEADER */
+  .page-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 32px 24px; }
+  .page-header-inner { max-width: 900px; margin: 0 auto; }
+  .tool-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); background: var(--green-light); padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
+  .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 8px; }
+  .page-header p { font-size: 15px; color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+  /* TOOLBAR */
+  .toolbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .toolbar-inner { max-width: 900px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: inherit; transition: background 0.15s, transform 0.1s; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--green); color: white; }
+  .btn-primary:hover { background: #155f49; }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .btn-danger { background: transparent; color: var(--red); border: 1px solid #fecaca; }
+  .btn-danger:hover { background: #fee2e2; }
+  .score-display { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .score-pill { font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; }
+  .score-label { font-size: 12px; color: var(--text-faint); }
+
+  /* FORM */
+  .form-wrap { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  /* META SECTION */
+  .meta-section { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .meta-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--text); padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .field { }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); }
+  .field textarea { resize: vertical; min-height: 60px; }
+
+  /* AUDIT SECTION */
+  .audit-section { background: var(--white); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+  .audit-section-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .s-number { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .s1 { background: #3b82f6; }
+  .s2 { background: #8b5cf6; }
+  .s3 { background: #f59e0b; }
+  .s4 { background: #10b981; }
+  .s5 { background: #ef4444; }
+  .section-title-block { flex: 1; }
+  .section-title-block h3 { font-size: 15px; font-weight: 600; color: var(--text); }
+  .section-title-block p { font-size: 12px; color: var(--text-faint); margin-top: 1px; }
+  .section-score-badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+
+  /* CRITERIA ROW */
+  .criteria-table { width: 100%; border-collapse: collapse; }
+  .criteria-table th { font-size: 11px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; background: #fafaf8; }
+  .criteria-table th:last-child { text-align: center; }
+  .criteria-row td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .criteria-row:last-child td { border-bottom: none; }
+  .criteria-row:hover { background: #fafaf8; }
+  .criteria-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .criteria-note { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+
+  /* RATING BUTTONS */
+  .rating-group { display: flex; gap: 4px; justify-content: center; }
+  .rating-btn {
+    width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--bg); font-size: 12px; font-weight: 600; cursor: pointer;
+    font-family: inherit; color: var(--text-muted); transition: all 0.12s;
+  }
+  .rating-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+  .rating-btn.selected-0 { background: #fee2e2; border-color: #ef4444; color: #dc2626; }
+  .rating-btn.selected-1 { background: #ffedd5; border-color: #f97316; color: #ea580c; }
+  .rating-btn.selected-2 { background: #fef9c3; border-color: #eab308; color: #ca8a04; }
+  .rating-btn.selected-3 { background: #dcfce7; border-color: #22c55e; color: #16a34a; }
+  .rating-btn.selected-4 { background: #bbf7d0; border-color: #16a34a; color: #15803d; }
+
+  /* COMMENT */
+  .comment-btn { font-size: 11px; color: var(--text-faint); background: none; border: none; cursor: pointer; padding: 2px 0; transition: color 0.12s; }
+  .comment-btn:hover { color: var(--green); }
+  .inline-comment { display: none; margin-top: 6px; }
+  .inline-comment.show { display: block; }
+  .inline-comment input { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; font-family: inherit; }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 24px 16px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* SUMMARY */
+  .summary-section { background: var(--white); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; padding: 20px; }
+  .summary-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .summary-bars { display: flex; flex-direction: column; gap: 10px; }
+  .summary-bar-row { display: flex; align-items: center; gap: 10px; }
+  .summary-bar-label { font-size: 12px; font-weight: 500; width: 80px; flex-shrink: 0; }
+  .summary-bar-track { flex: 1; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .summary-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; background: var(--green); }
+  .summary-bar-val { font-size: 12px; font-weight: 600; width: 36px; text-align: right; flex-shrink: 0; }
+  .total-score-display { margin-top: 16px; padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .total-score-display .big-score { font-size: 36px; font-weight: 700; }
+  .total-score-display .score-info { text-align: right; }
+  .total-score-display .score-grade { font-size: 18px; font-weight: 600; }
+  .total-score-display .score-tip { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* OBSERVATIONS */
+  .obs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .obs-field label { font-size: 12px; font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 5px; }
+  .obs-field textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px; min-height: 80px; resize: vertical; background: var(--bg); }
+  .obs-field textarea:focus { outline: none; border-color: var(--green); }
+
+  /* FOOTER */
+  .page-footer { background: var(--white); border-top: 1px solid var(--border); padding: 20px 24px; margin-top: 16px; }
+  .page-footer-inner { max-width: 900px; margin: 0 auto; font-size: 12px; color: var(--text-faint); display: flex; align-items: center; justify-content: space-between; }
+  .page-footer a { color: var(--green); }
+
+  @media (max-width: 680px) {
+    .meta-grid { grid-template-columns: 1fr; }
+    .obs-grid { grid-template-columns: 1fr; }
+    .toolbar-inner { gap: 8px; }
+    .score-display { margin-left: 0; }
+    .criteria-table th:nth-child(2), .criteria-row td:nth-child(2) { display: none; }
+  }
+
+  @media print {
+    .site-header, .toolbar, .page-footer, .comment-btn { display: none !important; }
+    .form-wrap { padding: 0; }
+    .audit-section { break-inside: avoid; }
+  }
+</style>
+  <meta name="keywords" content="5S audit, 5S obrazac, 5S checklist, 5S metodologija, Seiri Seiton Seiso Seiketsu Shitsuke, Lean audit">
+  <meta name="author" content="Marko Škiljan — OptiCora">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://leanopedija.opticora.hr/5s-audit.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="5S Audit Obrazac — Besplatni digitalni checklist | Leanopedija">
+  <meta property="og:description" content="Besplatni digitalni 5S audit obrazac s automatskim izračunom rezultata. Ispunite online i preuzmite kao PDF. 25 kriterija, ocjene A-F, akcijski plan.">
+  <meta property="og:url" content="https://leanopedija.opticora.hr/5s-audit.html">
+  <meta property="og:locale" content="hr_HR">
+  <meta property="og:site_name" content="Leanopedija">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">L°</div>
+      Leanopedija
+    </a>
+    <a href="index.html" class="back-link">← Natrag na početnu</a>
+    <a href="index.html#kontakt" class="header-cta">Kontaktiraj stručnjaka →</a>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="tool-badge">📋 Besplatni alat</div>
+    <h1>5S Audit Obrazac</h1>
+    <p>Digitalni checklist za 5S audit. Ispunite obrazac, automatski se računa ukupni rezultat, a zatim preuzmite kao PDF za dokumentaciju ili arhiviranje.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <button class="btn btn-outline" onclick="resetForm()">🔄 Resetiraj</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
+    <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
+    <div class="score-display">
+      <span class="score-label">Ukupni rezultat:</span>
+      <span class="score-pill" id="total-score-pill" style="background:var(--green-light);color:var(--green);">— / 100</span>
+    </div>
+  </div>
+</div>
+
+<div class="form-wrap" id="audit-form">
+
+  <!-- META INFO -->
+  <div class="meta-section">
+    <h3>Podaci o auditu</h3>
+    <div class="meta-grid">
+      <div class="field">
+        <label>Naziv firme / pogona</label>
+        <input type="text" id="meta-firma" placeholder="npr. OptiCora d.o.o. — Pogon 1">
+      </div>
+      <div class="field">
+        <label>Odgovorna osoba</label>
+        <input type="text" id="meta-osoba" placeholder="Ime i prezime auditora">
+      </div>
+      <div class="field">
+        <label>Datum audita</label>
+        <input type="date" id="meta-datum">
+      </div>
+      <div class="field">
+        <label>Lokacija / radno mjesto</label>
+        <input type="text" id="meta-lokacija" placeholder="npr. Montažna linija A">
+      </div>
+      <div class="field">
+        <label>Smjena</label>
+        <select id="meta-smjena">
+          <option value="">— odaberi —</option>
+          <option>Prva smjena (06-14h)</option>
+          <option>Druga smjena (14-22h)</option>
+          <option>Treća smjena (22-06h)</option>
+          <option>Jednokratni audit</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Broj audita</label>
+        <input type="text" id="meta-broj" placeholder="npr. 2024-001">
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-right:4px;">Ocjena:</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> 0 — Ne postoji / kritično</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#f97316;"></span> 1 — Loše</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#eab308;"></span> 2 — Zadovoljavajuće</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#22c55e;"></span> 3 — Dobro</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span> 4 — Izvrsno</span>
+  </div>
+
+  <!-- S1: SORTIRANJE -->
+  <div class="audit-section" id="section-s1">
+    <div class="audit-section-header">
+      <div class="s-number s1">S1</div>
+      <div class="section-title-block">
+        <h3>Sortiranje (Seiri) — Ukloni nepotrebno</h3>
+        <p>Identificirati i ukloniti sve nepotrebne predmete s radnog mjesta</p>
+      </div>
+      <span class="section-score-badge" id="badge-s1" style="background:var(--border);color:var(--text-muted);">0 / 20</span>
+    </div>
+    <table class="criteria-table">
+      <thead>
+        <tr>
+          <th style="width:40%">Kriterij</th>
+          <th style="width:30%">Napomena / opis</th>
+          <th style="width:30%">Ocjena (0–4)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Nepotrebni materijali i alati su uklonjeni</div><div class="criteria-note">Nema nepotrebnih predmeta na radnoj površini ili u blizini</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s1" data-max="4">
+            <button class="rating-btn" data-val="0" onclick="rate(this)">0</button>
+            <button class="rating-btn" data-val="1" onclick="rate(this)">1</button>
+            <button class="rating-btn" data-val="2" onclick="rate(this)">2</button>
+            <button class="rating-btn" data-val="3" onclick="rate(this)">3</button>
+            <button class="rating-btn" data-val="4" onclick="rate(this)">4</button>
+          </div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Nepotrebna oprema i strojevi su označeni ili premješteni</div><div class="criteria-note">Crvene kartice (red tags) koriste se za označavanje</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s1" data-max="4">
+            <button class="rating-btn" data-val="0" onclick="rate(this)">0</button>
+            <button class="rating-btn" data-val="1" onclick="rate(this)">1</button>
+            <button class="rating-btn" data-val="2" onclick="rate(this)">2</button>
+            <button class="rating-btn" data-val="3" onclick="rate(this)">3</button>
+            <button class="rating-btn" data-val="4" onclick="rate(this)">4</button>
+          </div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Nema viška zaliha ili materijala koji blokiraju prolaz</div><div class="criteria-note">Prolazi su slobodni i označeni</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s1" data-max="4">
+            <button class="rating-btn" data-val="0" onclick="rate(this)">0</button>
+            <button class="rating-btn" data-val="1" onclick="rate(this)">1</button>
+            <button class="rating-btn" data-val="2" onclick="rate(this)">2</button>
+            <button class="rating-btn" data-val="3" onclick="rate(this)">3</button>
+            <button class="rating-btn" data-val="4" onclick="rate(this)">4</button>
+          </div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Dokumenti i obrasci — samo aktualni su na radnom mjestu</div><div class="criteria-note">Zastarjeli dokumenti su arhivirani ili uništeni</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s1" data-max="4">
+            <button class="rating-btn" data-val="0" onclick="rate(this)">0</button>
+            <button class="rating-btn" data-val="1" onclick="rate(this)">1</button>
+            <button class="rating-btn" data-val="2" onclick="rate(this)">2</button>
+            <button class="rating-btn" data-val="3" onclick="rate(this)">3</button>
+            <button class="rating-btn" data-val="4" onclick="rate(this)">4</button>
+          </div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Osobni predmeti radnika ne ometaju radni proces</div><div class="criteria-note">Postoje označena mjesta za osobne stvari</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s1" data-max="4">
+            <button class="rating-btn" data-val="0" onclick="rate(this)">0</button>
+            <button class="rating-btn" data-val="1" onclick="rate(this)">1</button>
+            <button class="rating-btn" data-val="2" onclick="rate(this)">2</button>
+            <button class="rating-btn" data-val="3" onclick="rate(this)">3</button>
+            <button class="rating-btn" data-val="4" onclick="rate(this)">4</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- S2: SREĐIVANJE -->
+  <div class="audit-section" id="section-s2">
+    <div class="audit-section-header">
+      <div class="s-number s2">S2</div>
+      <div class="section-title-block">
+        <h3>Sređivanje (Seiton) — Mjesto za sve, sve na svom mjestu</h3>
+        <p>Organizirati i označiti sve predmete tako da ih je lako pronaći i vratiti</p>
+      </div>
+      <span class="section-score-badge" id="badge-s2" style="background:var(--border);color:var(--text-muted);">0 / 20</span>
+    </div>
+    <table class="criteria-table">
+      <thead><tr><th style="width:40%">Kriterij</th><th style="width:30%">Napomena</th><th style="width:30%">Ocjena (0–4)</th></tr></thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Svaki alat i predmet ima točno određeno i označeno mjesto</div><div class="criteria-note">Vizualne oznake, konture, oznake boja</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s2" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Oznake na podu razgraničavaju radna područja, prolaze i zone skladištenja</div><div class="criteria-note">Linije su vidljive i neoštećene</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s2" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Alati i materijali su dostupni na točci upotrebe (point of use)</div><div class="criteria-note">Minimalno pomicanje radnika za dohvat alata</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s2" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Vizualni management je implementiran (što, gdje, koliko)</div><div class="criteria-note">Oznake razina min/max, naljepi, kanban kartice</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s2" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Sve police i ormarići su označeni i uredno složeni</div><div class="criteria-note">Sadržaj je vidljiv ili jasno označen izvana</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s2" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- S3: ČIŠĆENJE -->
+  <div class="audit-section" id="section-s3">
+    <div class="audit-section-header">
+      <div class="s-number s3">S3</div>
+      <div class="section-title-block">
+        <h3>Čišćenje (Seiso) — Održavaj čistoću</h3>
+        <p>Redovito čišćenje i inspekcija radnog mjesta i opreme</p>
+      </div>
+      <span class="section-score-badge" id="badge-s3" style="background:var(--border);color:var(--text-muted);">0 / 20</span>
+    </div>
+    <table class="criteria-table">
+      <thead><tr><th style="width:40%">Kriterij</th><th style="width:30%">Napomena</th><th style="width:30%">Ocjena (0–4)</th></tr></thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Pod, radne površine i oprema su čisti i bez prljavštine</div><div class="criteria-note">Nema ulja, prašine, otpadaka na vidljivim mjestima</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s3" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Plan čišćenja postoji i provodi se redovito</div><div class="criteria-note">Raspored čišćenja je vidljiv i potpisan</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s3" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Strojevi i oprema se čiste kao dio rutinskog održavanja</div><div class="criteria-note">Čišćenje = inspekcija (TPM princip)</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s3" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Izvori prljavštine su identificirani i sanirani ili označeni</div><div class="criteria-note">Curi ulje, prašina od brušenja i sl. su pod kontrolom</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s3" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Alati za čišćenje su dostupni, označeni i na svom mjestu</div><div class="criteria-note">Metla, lopatica, krpe i sl. imaju određeno mjesto</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s3" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- S4: STANDARDIZACIJA -->
+  <div class="audit-section" id="section-s4">
+    <div class="audit-section-header">
+      <div class="s-number s4">S4</div>
+      <div class="section-title-block">
+        <h3>Standardizacija (Seiketsu) — Standardiziraj i vizualiziraj</h3>
+        <p>Uspostaviti standarde koji osiguravaju trajno provođenje S1, S2 i S3</p>
+      </div>
+      <span class="section-score-badge" id="badge-s4" style="background:var(--border);color:var(--text-muted);">0 / 20</span>
+    </div>
+    <table class="criteria-table">
+      <thead><tr><th style="width:40%">Kriterij</th><th style="width:30%">Napomena</th><th style="width:30%">Ocjena (0–4)</th></tr></thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">5S standardi su dokumentirani i vidljivi na radnom mjestu</div><div class="criteria-note">Fotografije "idealnog stanja" su istaknute</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s4" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Odgovornosti za 5S aktivnosti su jasno dodijeljene</div><div class="criteria-note">Svaki radnik zna što je njegova odgovornost</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s4" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Vizualni standardi (boje, oznake) su konzistentni u cijelom pogonu</div><div class="criteria-note">Isti sustav boja i oznaka u svim zonama</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s4" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Rezultati prethodnih audita su vidljivi i prate se trendovi</div><div class="criteria-note">Graf rezultata audita je istaknut</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s4" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Novi radnici dobivaju 5S obuku kao dio uvođenja</div><div class="criteria-note">Postoji standardizirani onboarding za 5S</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s4" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- S5: SAMODISCIPLINA -->
+  <div class="audit-section" id="section-s5">
+    <div class="audit-section-header">
+      <div class="s-number s5">S5</div>
+      <div class="section-title-block">
+        <h3>Samodisciplina (Shitsuke) — Održavaj i poboljšavaj</h3>
+        <p>Kultura kontinuiranog poboljšanja i poštivanja standarda</p>
+      </div>
+      <span class="section-score-badge" id="badge-s5" style="background:var(--border);color:var(--text-muted);">0 / 20</span>
+    </div>
+    <table class="criteria-table">
+      <thead><tr><th style="width:40%">Kriterij</th><th style="width:30%">Napomena</th><th style="width:30%">Ocjena (0–4)</th></tr></thead>
+      <tbody>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Radnici poštuju 5S standarde bez podsjetnika</div><div class="criteria-note">5S je dio svakodnevne rutine, ne posebne aktivnosti</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s5" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">5S audit se provodi redovito prema rasporedu</div><div class="criteria-note">Minimalno jednom mjesečno, rezultati se bilježe</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s5" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Prijedlozi poboljšanja od radnika se aktivno prikupljaju</div><div class="criteria-note">Postoji sustav za Kaizen prijedloge</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s5" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Menadžment aktivno sudjeluje i podržava 5S aktivnosti</div><div class="criteria-note">Voditelji su vidljivi i daju primjer</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s5" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+        <tr class="criteria-row">
+          <td><div class="criteria-text">Postignuća i napredak se slave i komuniciraju timu</div><div class="criteria-note">Vizualni prikaz napretka, zahvale, nagrade</div></td>
+          <td><button class="comment-btn" onclick="toggleComment(this)">+ dodaj komentar</button><div class="inline-comment"><input type="text" placeholder="Komentar..."></div></td>
+          <td><div class="rating-group" data-section="s5" data-max="4"><button class="rating-btn" data-val="0" onclick="rate(this)">0</button><button class="rating-btn" data-val="1" onclick="rate(this)">1</button><button class="rating-btn" data-val="2" onclick="rate(this)">2</button><button class="rating-btn" data-val="3" onclick="rate(this)">3</button><button class="rating-btn" data-val="4" onclick="rate(this)">4</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-section">
+    <h3>📊 Rezultati audita</h3>
+    <div class="summary-bars">
+      <div class="summary-bar-row">
+        <span class="summary-bar-label" style="color:#3b82f6;">S1 Sortiranje</span>
+        <div class="summary-bar-track"><div class="summary-bar-fill" id="bar-s1" style="width:0%;background:#3b82f6;"></div></div>
+        <span class="summary-bar-val" id="val-s1">0/20</span>
+      </div>
+      <div class="summary-bar-row">
+        <span class="summary-bar-label" style="color:#8b5cf6;">S2 Sređivanje</span>
+        <div class="summary-bar-track"><div class="summary-bar-fill" id="bar-s2" style="width:0%;background:#8b5cf6;"></div></div>
+        <span class="summary-bar-val" id="val-s2">0/20</span>
+      </div>
+      <div class="summary-bar-row">
+        <span class="summary-bar-label" style="color:#f59e0b;">S3 Čišćenje</span>
+        <div class="summary-bar-track"><div class="summary-bar-fill" id="bar-s3" style="width:0%;background:#f59e0b;"></div></div>
+        <span class="summary-bar-val" id="val-s3">0/20</span>
+      </div>
+      <div class="summary-bar-row">
+        <span class="summary-bar-label" style="color:#10b981;">S4 Standard.</span>
+        <div class="summary-bar-track"><div class="summary-bar-fill" id="bar-s4" style="width:0%;background:#10b981;"></div></div>
+        <span class="summary-bar-val" id="val-s4">0/20</span>
+      </div>
+      <div class="summary-bar-row">
+        <span class="summary-bar-label" style="color:#ef4444;">S5 Disciplina</span>
+        <div class="summary-bar-track"><div class="summary-bar-fill" id="bar-s5" style="width:0%;background:#ef4444;"></div></div>
+        <span class="summary-bar-val" id="val-s5">0/20</span>
+      </div>
+    </div>
+    <div class="total-score-display" id="total-display" style="background:var(--green-light);">
+      <div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Ukupni rezultat</div>
+        <div class="big-score" id="big-score-num" style="color:var(--green);">0 / 100</div>
+      </div>
+      <div class="score-info">
+        <div class="score-grade" id="score-grade">—</div>
+        <div class="score-tip" id="score-tip">Ispunite audit obrazac</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBSERVATIONS -->
+  <div class="audit-section" style="padding:20px;">
+    <h3 style="font-size:14px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">📝 Zapažanja i akcijski plan</h3>
+    <div class="obs-grid">
+      <div class="obs-field">
+        <label>Pozitivna zapažanja (što je dobro)</label>
+        <textarea id="obs-pozitivno" placeholder="Npr. Svi prolazi su jasno označeni i slobodni..."></textarea>
+      </div>
+      <div class="obs-field">
+        <label>Područja za poboljšanje</label>
+        <textarea id="obs-poboljsanje" placeholder="Npr. Alati se ne vraćaju na označeno mjesto..."></textarea>
+      </div>
+      <div class="obs-field">
+        <label>Prioritetne akcije (što napraviti odmah)</label>
+        <textarea id="obs-akcije" placeholder="Npr. 1. Označiti alate bojom do petka..."></textarea>
+      </div>
+      <div class="obs-field">
+        <label>Datum sljedećeg audita</label>
+        <input type="date" id="obs-sljedeci" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;">
+        <label style="margin-top:10px;">Potpis auditora</label>
+        <input type="text" id="obs-potpis" placeholder="Ime i prezime" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;margin-top:5px;">
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:24px 0 8px;">
+    <button class="btn btn-primary" style="padding:12px 32px;font-size:14px;" onclick="exportPDF()">⬇️ Preuzmi kao PDF</button>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span>© Leanopedija — <a href="index.html">lean.opticora.hr</a></span>
+    <span>Obrazac je besplatan za korištenje. Sadržaj je informativnog karaktera.</span>
+  </div>
+</footer>
+
+<script>
+// Set today's date
+document.getElementById('meta-datum').valueAsDate = new Date();
+
+// Rating logic
+function rate(btn) {
+  const group = btn.closest('.rating-group');
+  group.querySelectorAll('.rating-btn').forEach(b => {
+    b.className = 'rating-btn';
+  });
+  const val = parseInt(btn.dataset.val);
+  btn.classList.add('selected-' + val);
+  btn.dataset.selected = 'true';
+  updateScores();
+}
+
+function getSectionScore(section) {
+  let total = 0, count = 0;
+  document.querySelectorAll(`[data-section="${section}"] .rating-btn.selected-0,
+    [data-section="${section}"] .rating-btn.selected-1,
+    [data-section="${section}"] .rating-btn.selected-2,
+    [data-section="${section}"] .rating-btn.selected-3,
+    [data-section="${section}"] .rating-btn.selected-4`).forEach(btn => {
+    total += parseInt(btn.dataset.val);
+    count++;
+  });
+  // count answered questions
+  const groups = document.querySelectorAll(`[data-section="${section}"]`);
+  return { score: total, answered: count, max: groups.length * 4 };
+}
+
+function getScoreColor(pct) {
+  if (pct >= 80) return { bg: '#dcfce7', color: '#16a34a' };
+  if (pct >= 60) return { bg: '#fef9c3', color: '#ca8a04' };
+  if (pct >= 40) return { bg: '#ffedd5', color: '#ea580c' };
+  return { bg: '#fee2e2', color: '#dc2626' };
+}
+
+function getGrade(pct) {
+  if (pct >= 90) return { grade: 'A — Izvrsno ⭐', tip: 'Odličan rezultat! Održavajte razinu i tražite daljnja poboljšanja.' };
+  if (pct >= 80) return { grade: 'B — Dobro 👍', tip: 'Dobar rezultat. Fokusirajte se na slabije kategorije.' };
+  if (pct >= 60) return { grade: 'C — Zadovoljavajuće ⚠️', tip: 'Ima prostora za poboljšanje. Napravite akcijski plan.' };
+  if (pct >= 40) return { grade: 'D — Loše 🔴', tip: 'Potrebno hitno poboljšanje. Pokrenite Kaizen akciju.' };
+  return { grade: 'F — Kritično 🚨', tip: 'Kritično stanje! Odmah pokrenite 5S implementaciju.' };
+}
+
+function updateScores() {
+  const sections = ['s1','s2','s3','s4','s5'];
+  let totalScore = 0, totalMax = 0;
+
+  sections.forEach(s => {
+    const { score, max } = getSectionScore(s);
+    totalScore += score;
+    totalMax += max;
+    const pct = max > 0 ? (score / max) * 100 : 0;
+    const colors = getScoreColor(pct);
+    document.getElementById('bar-' + s).style.width = pct + '%';
+    document.getElementById('val-' + s).textContent = score + '/20';
+    const badge = document.getElementById('badge-' + s);
+    badge.textContent = score + ' / 20';
+    badge.style.background = colors.bg;
+    badge.style.color = colors.color;
+  });
+
+  const totalPct = totalMax > 0 ? (totalScore / 100) * 100 : 0;
+  const colors = getScoreColor(totalPct);
+  const gradeInfo = getGrade(totalPct);
+
+  document.getElementById('big-score-num').textContent = totalScore + ' / 100';
+  document.getElementById('big-score-num').style.color = colors.color;
+  document.getElementById('total-display').style.background = colors.bg;
+  document.getElementById('score-grade').textContent = gradeInfo.grade;
+  document.getElementById('score-grade').style.color = colors.color;
+  document.getElementById('score-tip').textContent = gradeInfo.tip;
+
+  const pill = document.getElementById('total-score-pill');
+  pill.textContent = totalScore + ' / 100';
+  pill.style.background = colors.bg;
+  pill.style.color = colors.color;
+}
+
+function toggleComment(btn) {
+  const comment = btn.nextElementSibling;
+  comment.classList.toggle('show');
+  btn.textContent = comment.classList.contains('show') ? '− sakrij komentar' : '+ dodaj komentar';
+}
+
+function resetForm() {
+  if (!confirm('Resetirati cijeli obrazac? Svi uneseni podaci bit će izgubljeni.')) return;
+  document.querySelectorAll('.rating-btn').forEach(b => { b.className = 'rating-btn'; });
+  document.querySelectorAll('input[type="text"], input[type="date"], textarea, select').forEach(el => { el.value = ''; });
+  document.getElementById('meta-datum').valueAsDate = new Date();
+  document.querySelectorAll('.inline-comment').forEach(c => c.classList.remove('show'));
+  document.querySelectorAll('.comment-btn').forEach(b => b.textContent = '+ dodaj komentar');
+  updateScores();
+}
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const firma = document.getElementById('meta-firma').value || '—';
+  const osoba = document.getElementById('meta-osoba').value || '—';
+  const datum = document.getElementById('meta-datum').value || '—';
+  const lokacija = document.getElementById('meta-lokacija').value || '—';
+  const smjena = document.getElementById('meta-smjena').value || '—';
+  const broj = document.getElementById('meta-broj').value || '—';
+
+  const sections = ['s1','s2','s3','s4','s5'];
+  const sNames = ['S1 — Sortiranje','S2 — Sređivanje','S3 — Čišćenje','S4 — Standardizacija','S5 — Samodisciplina'];
+  let scores = {};
+  sections.forEach(s => { scores[s] = getSectionScore(s).score; });
+  const total = sections.reduce((a,s) => a + scores[s], 0);
+
+  // Header
+  doc.setFillColor(26, 122, 94);
+  doc.rect(0, 0, 210, 28, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Leanopedija', 14, 12);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text('5S Audit Obrazac', 14, 20);
+  doc.setFontSize(9);
+  doc.text('lean.opticora.hr', 150, 12);
+
+  // Score box
+  const pct = total;
+  doc.setFillColor(pct >= 80 ? 220 : pct >= 60 ? 254 : pct >= 40 ? 255 : 254,
+                   pct >= 80 ? 252 : pct >= 60 ? 249 : pct >= 40 ? 237 : 226,
+                   pct >= 80 ? 231 : pct >= 60 ? 195 : pct >= 40 ? 213 : 226);
+  doc.rect(150, 14, 46, 12, 'F');
+  doc.setTextColor(pct >= 80 ? 22 : pct >= 60 ? 202 : 220, pct >= 80 ? 163 : pct >= 60 ? 138 : 50, pct >= 80 ? 74 : pct >= 60 ? 10 : 50);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text(total + ' / 100', 160, 22);
+
+  // Meta info
+  doc.setTextColor(0,0,0);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  let y = 36;
+  const meta = [['Firma / Pogon:', firma], ['Auditor:', osoba], ['Datum:', datum],
+                 ['Lokacija:', lokacija], ['Smjena:', smjena], ['Broj audita:', broj]];
+  meta.forEach(([label, val], i) => {
+    const col = i % 2 === 0 ? 14 : 110;
+    if (i % 2 === 0 && i > 0) y += 6;
+    doc.setFont('helvetica', 'bold'); doc.text(label, col, y);
+    doc.setFont('helvetica', 'normal'); doc.text(val, col + 30, y);
+  });
+  y += 10;
+
+  // Section scores
+  doc.setFillColor(248,248,248);
+  doc.rect(14, y, 182, 7, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(80,80,80);
+  doc.text('REZULTATI PO KATEGORIJAMA', 16, y + 5);
+  y += 12;
+
+  sections.forEach((s, i) => {
+    const sc = scores[s];
+    const pctS = (sc / 20) * 100;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0,0,0);
+    doc.setFontSize(9);
+    doc.text(sNames[i], 14, y);
+    doc.text(sc + ' / 20', 170, y);
+    doc.setFillColor(230,230,230);
+    doc.rect(80, y - 4, 80, 5, 'F');
+    const barColor = pctS >= 80 ? [22,163,74] : pctS >= 60 ? [202,138,10] : [220,50,50];
+    doc.setFillColor(...barColor);
+    doc.rect(80, y - 4, (pctS / 100) * 80, 5, 'F');
+    y += 8;
+  });
+
+  y += 4;
+  doc.setFillColor(26, 122, 94);
+  doc.setTextColor(255,255,255);
+  doc.rect(14, y, 182, 8, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.text('UKUPNO: ' + total + ' / 100', 16, y + 5.5);
+
+  // Observations
+  const posit = document.getElementById('obs-pozitivno').value;
+  const pobolj = document.getElementById('obs-poboljsanje').value;
+  const akcije = document.getElementById('obs-akcije').value;
+  const sljedeci = document.getElementById('obs-sljedeci').value;
+  const potpis = document.getElementById('obs-potpis').value;
+
+  y += 14;
+  doc.setTextColor(0,0,0);
+  doc.setFontSize(9);
+
+  if (posit) {
+    doc.setFont('helvetica', 'bold'); doc.text('Pozitivna zapažanja:', 14, y); y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(doc.splitTextToSize(posit, 180), 14, y); y += doc.splitTextToSize(posit, 180).length * 4 + 4;
+  }
+  if (pobolj) {
+    doc.setFont('helvetica', 'bold'); doc.text('Područja za poboljšanje:', 14, y); y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(doc.splitTextToSize(pobolj, 180), 14, y); y += doc.splitTextToSize(pobolj, 180).length * 4 + 4;
+  }
+  if (akcije) {
+    doc.setFont('helvetica', 'bold'); doc.text('Prioritetne akcije:', 14, y); y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text(doc.splitTextToSize(akcije, 180), 14, y); y += doc.splitTextToSize(akcije, 180).length * 4 + 4;
+  }
+
+  y += 4;
+  if (sljedeci) { doc.setFont('helvetica', 'bold'); doc.text('Datum sljedećeg audita: ', 14, y); doc.setFont('helvetica', 'normal'); doc.text(sljedeci, 70, y); y += 7; }
+  if (potpis) { doc.setFont('helvetica', 'bold'); doc.text('Potpis auditora: ', 14, y); doc.setFont('helvetica', 'normal'); doc.text(potpis, 55, y); }
+
+  // Footer
+  doc.setFontSize(7);
+  doc.setTextColor(150,150,150);
+  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr | Obrazac je besplatan za korištenje', 14, 290);
+
+  const dateStr = new Date().toISOString().slice(0,10);
+  doc.save(`5S-audit-${dateStr}.pdf`);
+}
+
+updateScores();
+</script>
+</body>
+</html>
