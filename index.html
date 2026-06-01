@@ -118,6 +118,16 @@
   }
 
   .nav-dropdown:hover .dropdown-menu { display: block; }
+  .nav-dropdown.open .dropdown-menu { display: block; }
+  /* Bridge gap so mouse doesn't lose hover */
+  .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+  }
 
   .dropdown-menu a {
     display: block;
@@ -1067,12 +1077,12 @@
       <div class="tool-name">Takt time kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Izračun takta na temelju dostupnog radnog vremena i potražnje kupca.</div>
     </a>
-    <a href="leanopedija-5s-audit.html" class="tool-card">
+    <a href="5s-audit.html" class="tool-card">
       <span class="tool-emoji">📋</span>
       <div class="tool-name">5S audit obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Digitalni checklist za 5S audit. Ispuni i preuzmi kao PDF za dokumentaciju.</div>
     </a>
-    <a href="leanopedija-gemba-walk.html" class="tool-card">
+    <a href="gemba-walk.html" class="tool-card">
       <span class="tool-emoji">👣</span>
       <div class="tool-name">Gemba Walk obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">"Idi na mjesto događaja". Zapiši zapažanja, uoči gubitke i planiraj akcije.</div>
@@ -1082,7 +1092,7 @@
       <div class="tool-name">5 Zašto obrazac</div>
       <div class="tool-desc">Pronađi korijenski uzrok problema pitajući "Zašto?" pet puta.</div>
     </a>
-    <a href="kaizen-planer.html" class="tool-card">
+    <a href="#" style="opacity:0.5;pointer-events:none;" class="tool-card">
       <span class="tool-emoji">📅</span>
       <div class="tool-name">Kaizen event planer <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Priprema agende i koraci za Kaizen radionicu — odmah spreman za ispis.</div>
@@ -1216,14 +1226,14 @@
     <div class="footer-links">
       <a href="#">Uvjeti korištenja</a>
       <a href="#">Politika privatnosti</a>
-      <a href="o-nama.html">O LeanCori</a>
+      <a href="o-nama.html">O Leanopediji</a>
       <a href="o-nama.html">Kontakt</a>
     </div>
     <div style="color:var(--text-faint); font-size:12px;">
       NAPOMENA: Sadržaj je informativnog karaktera napisan u najboljoj namjeri.
     </div>
     <div class="footer-badge">
-      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora d.o.o.
+      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora
     </div>
   </div>
 </footer>
@@ -1292,5 +1302,25 @@ async function trackClick(method) {
 // Stats display removed — tracking still active via trackClick()
 </script>
 
+
+<script>
+// Dropdown toggle for mobile
+document.querySelectorAll('.nav-dropdown > a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const dropdown = this.closest('.nav-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    if (!isOpen) {
+      e.preventDefault();
+      dropdown.classList.add('open');
+    }
+  });
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+</script>
 </body>
 </html>
