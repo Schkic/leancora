@@ -117,7 +117,7 @@
     z-index: 200;
   }
 
-  .nav-dropdown:hover .dropdown-menu { display: block; }
+  
 
   .dropdown-menu a {
     display: block;
@@ -949,6 +949,7 @@
       <div class="nav-dropdown">
         <a href="#alati">Alati</a>
         <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
@@ -1096,9 +1097,9 @@
     <p class="section-desc">Ne nudimo samo upute nego i konkretna rješenja. Alati koji vam pomažu svaki dan.</p>
   </div>
   <div class="tools-grid">
-    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+    <a href="oee-kalkulator.html" class="tool-card">
       <span class="tool-emoji">🧮</span>
-      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
+      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Unesi dostupnost, performansu i kvalitetu — odmah vidiš OEE postotak i gdje su gubici.</div>
     </a>
     <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
@@ -1118,10 +1119,10 @@
     </a>
     <a href="5-zasto.html" class="tool-card">
     <span class="tool-emoji">🔍</span>
-      <div class="tool-name">5 Zašto obrazac</div>
+      <div class="tool-name">5x Zašto obrazac</div>
       <div class="tool-desc">Pronađi korijenski uzrok problema pitajući "Zašto?" pet puta.</div>
     </a>
-    <a href="kaizen-planer.html" class="tool-card">
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
       <span class="tool-emoji">📅</span>
       <div class="tool-name">Kaizen event planer <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Priprema agende i koraci za Kaizen radionicu — odmah spreman za ispis.</div>
@@ -1331,5 +1332,54 @@ async function trackClick(method) {
 // Stats display removed — tracking still active via trackClick()
 </script>
 
+<script>
+// Dropdown - hover on desktop, click on mobile
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  let timer;
+  
+  // Mouse enter - open
+  dropdown.addEventListener('mouseenter', function() {
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    this.classList.add('open');
+  });
+  
+  // Mouse leave - delay close so user can move to dropdown-menu
+  dropdown.addEventListener('mouseleave', function() {
+    const self = this;
+    timer = setTimeout(function() {
+      self.classList.remove('open');
+    }, 200);
+  });
+  
+  // Keep open when hovering dropdown menu
+  const menu = dropdown.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.addEventListener('mouseenter', function() {
+      clearTimeout(timer);
+    });
+    menu.addEventListener('mouseleave', function() {
+      timer = setTimeout(function() {
+        dropdown.classList.remove('open');
+      }, 100);
+    });
+  }
+  
+  // Click for mobile
+  dropdown.querySelector('a').addEventListener('click', function(e) {
+    if (window.innerWidth < 768) {
+      e.preventDefault();
+      dropdown.classList.toggle('open');
+    }
+  });
+});
+
+// Close on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+</script>
 </body>
 </html>
