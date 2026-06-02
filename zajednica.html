@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zajednica — Pitanja i odgovori | Leanopedija</title>
-<meta name="description" content="Lean zajednica u Hrvatskoj — postavljajte pitanja, dijelite iskustva i pomažite kolegama. Otvoreno okupljalište Lean praktičara.">
+<meta name="description" content="Lean zajednica u Hrvatskoj — postavljajte pitanja, dijelite iskustva i pomažite kolegama.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc2626}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
 a{color:inherit;text-decoration:none}
-
 .site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
 .logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
@@ -30,17 +30,14 @@ a{color:inherit;text-decoration:none}
 .dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
 .dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
 
-/* PAGE HEADER */
 .page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
 .page-header-inner{max-width:900px;margin:0 auto}
 .page-header h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:8px}
-.page-header p{font-size:14px;color:var(--text-muted);max-width:620px;line-height:1.7;margin-bottom:0}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:620px;line-height:1.7}
 .page-header-meta{font-size:13px;color:var(--text-faint);margin-top:10px;display:flex;gap:20px;flex-wrap:wrap}
 
-/* MAIN LAYOUT */
 .main-wrap{max-width:900px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start}
 
-/* POST FORM */
 .post-form{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden}
 .post-form-header{padding:14px 18px;border-bottom:1px solid var(--border);background:#fafaf8;font-size:14px;font-weight:600}
 .post-form-body{padding:16px 18px}
@@ -52,38 +49,44 @@ a{color:inherit;text-decoration:none}
 .field-hint{font-size:11px;color:var(--text-faint);margin-top:4px}
 .post-btn{background:var(--green);color:white;border:none;padding:9px 20px;border-radius:7px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
 .post-btn:hover{background:#155f49}
+.post-btn:disabled{opacity:0.6;cursor:not-allowed}
 .post-form-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
 .post-form-footer span{font-size:12px;color:var(--text-faint)}
 
-/* POSTS */
+/* Image upload */
+.image-upload-area{border:2px dashed var(--border);border-radius:7px;padding:14px;text-align:center;cursor:pointer;transition:border-color .15s;background:var(--bg);margin-bottom:12px}
+.image-upload-area:hover{border-color:var(--green)}
+.image-upload-area input{display:none}
+.image-upload-area label{cursor:pointer;font-size:13px;color:var(--text-muted)}
+.image-preview{margin-top:8px}
+.image-preview img{max-width:100%;max-height:200px;border-radius:6px;object-fit:cover}
+.remove-image{font-size:11px;color:#dc2626;cursor:pointer;display:block;margin-top:4px}
+
 .posts-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.posts-title{font-size:14px;font-weight:600;color:var(--text)}
+.posts-title{font-size:14px;font-weight:600}
 .posts-count{font-size:12px;color:var(--text-faint)}
 
 .post-card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;transition:border-color .15s}
 .post-card:hover{border-color:#bbb}
 .post-header{padding:14px 16px 0}
-.post-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.post-avatar{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
-.post-author{font-size:13px;font-weight:500;color:var(--text)}
+.post-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.post-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
+.post-author{font-size:13px;font-weight:500}
 .post-time{font-size:11px;color:var(--text-faint)}
 .post-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--green-light);color:var(--green)}
 .post-body{padding:0 16px 14px}
-.post-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4;cursor:pointer}
-.post-title:hover{color:var(--green)}
-.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:10px}
-.post-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.post-tag{font-size:11px;padding:2px 8px;border-radius:10px;background:#f0f0f0;color:var(--text-muted)}
-.post-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;background:#fafaf8}
-.post-action{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:3px 6px;border-radius:5px;transition:background .12s,color .12s}
+.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;white-space:pre-wrap}
+.post-image{margin-bottom:10px}
+.post-image img{max-width:100%;max-height:300px;border-radius:8px;object-fit:cover;cursor:pointer}
+.post-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;background:#fafaf8}
+.post-action{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:3px 8px;border-radius:5px;transition:background .12s,color .12s}
 .post-action:hover{background:var(--green-light);color:var(--green)}
-.post-views{font-size:11px;color:var(--text-faint);margin-left:auto}
+.post-action.liked{color:var(--green);font-weight:600}
 
-/* COMMENTS */
 .comments-section{padding:14px 16px;border-top:1px solid var(--border);background:#fafaf8;display:none}
 .comments-section.open{display:block}
 .comment{display:flex;gap:10px;margin-bottom:12px}
-.comment-avatar{width:26px;height:26px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#666;flex-shrink:0;margin-top:2px}
+.comment-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;margin-top:2px}
 .comment-bubble{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 12px;flex:1}
 .comment-meta{font-size:11px;color:var(--text-faint);margin-bottom:4px}
 .comment-meta strong{color:var(--text-muted)}
@@ -93,32 +96,33 @@ a{color:inherit;text-decoration:none}
 .comment-form input:focus{outline:none;border-color:var(--green)}
 .comment-form button{background:var(--green);color:white;border:none;padding:7px 14px;border-radius:7px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer}
 
-/* SIDEBAR */
 .sidebar-block{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
 .sidebar-block-title{font-size:13px;font-weight:600;padding:12px 16px;border-bottom:1px solid var(--border);background:#fafaf8}
 .sidebar-block-body{padding:14px 16px}
-.sidebar-block-body p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:10px}
+.sidebar-block-body p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:8px}
 .sidebar-block-body p:last-child{margin-bottom:0}
-.active-user{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
-.active-user:last-child{border-bottom:none}
-.active-avatar{width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0}
-.active-name{font-size:13px;font-weight:500}
-.active-count{font-size:11px;color:var(--text-faint)}
 .topic-tag{display:inline-block;font-size:12px;padding:4px 10px;border-radius:5px;background:#f0f0f0;color:var(--text-muted);margin:3px;cursor:pointer;transition:background .12s}
-.topic-tag:hover{background:var(--green-light);color:var(--green)}
+.topic-tag:hover,.topic-tag.active{background:var(--green-light);color:var(--green)}
 
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-faint)}
 .empty-state .emoji{font-size:32px;margin-bottom:12px}
-.empty-state p{font-size:14px;line-height:1.6}
+.loading-state{text-align:center;padding:40px;color:var(--text-faint);font-size:14px}
 
-/* FOOTER */
+/* Toast notification */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a1a1a;color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Image modal */
+.img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;cursor:pointer}
+.img-modal.open{display:flex}
+.img-modal img{max-width:90vw;max-height:90vh;border-radius:8px;object-fit:contain}
+
 .page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
 .page-footer-inner{max-width:1100px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between}
 
 @media(max-width:700px){.main-wrap{grid-template-columns:1fr}.main-nav{display:none}}
 </style>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
 </head>
 <body>
 
@@ -154,42 +158,34 @@ a{color:inherit;text-decoration:none}
 <div class="page-header">
   <div class="page-header-inner">
     <h1>Pitanja i odgovori</h1>
-    <p>Postavite pitanje, podijelite iskustvo, pomozite kolegama.<br>
-    Javno okupljalište Lean praktičara — bez zatvorenih interesnih grupa i bez algoritama koji skrivaju sadržaj.<br>
-    Sve ostaje dostupno svima, trajno.</p>
+    <p>Postavite pitanje, podijelite iskustvo, pomozite kolegama. Javno okupljalište Lean praktičara — objave vide svi posjetitelji.</p>
     <div class="page-header-meta">
       <span>Jasna pitanja.</span>
       <span>Trajni odgovori.</span>
       <span>Stvarna iskustva.</span>
-      <span>Znanje koje ostaje dostupno i sutra.</span>
     </div>
   </div>
 </div>
 
 <div class="main-wrap">
-
-  <!-- LEFT: POSTS -->
   <div>
-
     <!-- Post form -->
     <div class="post-form">
       <div class="post-form-header">💬 Postavite pitanje ili podijelite iskustvo</div>
       <div class="post-form-body">
         <div class="field">
-          <label>Vaše pitanje ili tema (obavezno)</label>
-          <textarea id="new-post-text" placeholder="Napišite što konkretnije: što pokušavate riješiti, gdje ste zapeli, što ste već probali. Možete i podijeliti iskustvo ili primjer iz prakse koji bi pomogao drugima."></textarea>
-          <div class="field-hint">Konkretna pitanja dobivaju konkretne odgovore. Ako imate specifično pitanje, javite se na <a href="mailto:info@opticora.hr" style="color:var(--green)">info@opticora.hr</a>.</div>
+          <label>Vaše pitanje ili iskustvo (obavezno)</label>
+          <textarea id="new-post-text" placeholder="Napišite što konkretnije — što pokušavate riješiti, gdje ste zapeli, što ste već probali..."></textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div class="field">
             <label>Vaš nadimak (opcionalno)</label>
-            <input type="text" id="new-post-author" placeholder="npr. Lean koordinator iz Zagreba">
-            <div class="field-hint">Ako ostavite prazno, koristit ćemo automatski nadimak.</div>
+            <input type="text" id="new-post-author" placeholder="npr. Lean koordinator Zagreb">
           </div>
           <div class="field">
-            <label>Tema / kategorija</label>
+            <label>Kategorija</label>
             <select id="new-post-category">
-              <option value="">— odaberite temu —</option>
+              <option value="">— odaberite —</option>
               <option>5S metodologija</option>
               <option>OEE i mjerenje učinkovitosti</option>
               <option>Kaizen i kontinuirano poboljšanje</option>
@@ -205,59 +201,49 @@ a{color:inherit;text-decoration:none}
             </select>
           </div>
         </div>
+
+        <!-- Image upload -->
+        <div class="field">
+          <label>Priloži sliku (opcionalno)</label>
+          <div class="image-upload-area" onclick="document.getElementById('img-input').click()">
+            <input type="file" id="img-input" accept="image/*" onchange="previewImage(this)">
+            <label>📷 Klikni za odabir slike (JPG, PNG, max 5MB)</label>
+            <div class="image-preview" id="img-preview"></div>
+          </div>
+        </div>
+
         <div class="post-form-footer">
-          <span>Email ne tražimo. Objava je javna i trajna.</span>
-          <button class="post-btn" onclick="submitPost()">Objavi</button>
+          <span>Objava je javna — vide je svi posjetitelji.</span>
+          <button class="post-btn" id="submit-btn" onclick="submitPost()">Objavi</button>
         </div>
       </div>
     </div>
 
-    <!-- Posts list -->
+    <!-- Filter -->
     <div class="posts-header">
       <span class="posts-title">Zadnje objave</span>
-      <span class="posts-count" id="posts-count">0 objava</span>
+      <span class="posts-count" id="posts-count">Učitavam...</span>
     </div>
 
     <div id="posts-container">
-      <div class="empty-state">
-        <div class="emoji">💬</div>
-        <p>Budite prvi koji postavljaju pitanje ili dijele iskustvo.<br>Zajednica počinje s prvim korakom.</p>
-      </div>
+      <div class="loading-state">⏳ Učitavam objave...</div>
     </div>
-
   </div>
 
-  <!-- RIGHT: SIDEBAR -->
+  <!-- Sidebar -->
   <div>
-
     <div class="sidebar-block">
-      <div class="sidebar-block-title">👥 Najaktivniji sudionici</div>
-      <div class="sidebar-block-body" id="active-users">
-        <div class="active-user">
-          <div class="active-avatar">L°</div>
-          <div>
-            <div class="active-name">Leanopedija</div>
-            <div class="active-count">Moderator</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-block">
-      <div class="sidebar-block-title">🏷️ Popularne teme</div>
+      <div class="sidebar-block-title">🏷️ Filtriraj po temi</div>
       <div class="sidebar-block-body">
-        <div>
-          <span class="topic-tag" onclick="filterByTag('5S metodologija')">5S</span>
-          <span class="topic-tag" onclick="filterByTag('OEE i mjerenje učinkovitosti')">OEE</span>
-          <span class="topic-tag" onclick="filterByTag('Kaizen i kontinuirano poboljšanje')">Kaizen</span>
-          <span class="topic-tag" onclick="filterByTag('Gemba Walk')">Gemba Walk</span>
-          <span class="topic-tag" onclick="filterByTag('VSM — mapiranje toka vrijednosti')">VSM</span>
-          <span class="topic-tag" onclick="filterByTag('TPM — totalno održavanje')">TPM</span>
-          <span class="topic-tag" onclick="filterByTag('SMED — izmjena alata')">SMED</span>
-          <span class="topic-tag" onclick="filterByTag('WCM (World Class Manufacturing)')">WCM</span>
-          <span class="topic-tag" onclick="filterByTag('Lean Six Sigma')">Lean Six Sigma</span>
-          <span class="topic-tag" onclick="filterByTag('')">Sve teme</span>
-        </div>
+        <span class="topic-tag active" onclick="filterByTag('')">Sve teme</span>
+        <span class="topic-tag" onclick="filterByTag('5S metodologija')">5S</span>
+        <span class="topic-tag" onclick="filterByTag('OEE i mjerenje učinkovitosti')">OEE</span>
+        <span class="topic-tag" onclick="filterByTag('Kaizen i kontinuirano poboljšanje')">Kaizen</span>
+        <span class="topic-tag" onclick="filterByTag('Gemba Walk')">Gemba Walk</span>
+        <span class="topic-tag" onclick="filterByTag('VSM — mapiranje toka vrijednosti')">VSM</span>
+        <span class="topic-tag" onclick="filterByTag('TPM — totalno održavanje')">TPM</span>
+        <span class="topic-tag" onclick="filterByTag('WCM (World Class Manufacturing)')">WCM</span>
+        <span class="topic-tag" onclick="filterByTag('Lean Six Sigma')">Six Sigma</span>
       </div>
     </div>
 
@@ -275,36 +261,51 @@ a{color:inherit;text-decoration:none}
     <div class="sidebar-block">
       <div class="sidebar-block-title">📞 Trebate brzu pomoć?</div>
       <div class="sidebar-block-body">
-        <p>Ako imate hitno pitanje ili trebate konkretnu pomoć, javite se direktno:</p>
+        <p>Ako imate hitno pitanje ili trebate konkretnu pomoć:</p>
         <a href="mailto:info@opticora.hr" style="display:block;background:var(--green);color:white;text-align:center;padding:8px;border-radius:7px;font-size:13px;font-weight:500;margin-top:8px">✉️ info@opticora.hr</a>
       </div>
     </div>
-
   </div>
 </div>
+
+<!-- Image modal -->
+<div class="img-modal" id="img-modal" onclick="closeImgModal()">
+  <img id="img-modal-src" src="" alt="Slika">
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <footer class="page-footer">
   <div class="page-footer-inner">
     <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.opticora.hr</a></span>
-    <span>Sadržaj zajednice je informativnog karaktera.</span>
+    <span>Objave su javne i trajne.</span>
   </div>
 </footer>
 
 <script>
-// ── Storage key ──
-const STORAGE_KEY = 'leanopedija_zajednica_posts';
+// ── Supabase init ──
+const { createClient } = supabase;
+const sb = createClient(
+  'https://cufosorbcjqwmnbojvfz.supabase.co',
+  'sb_publishable_vT0CMKJVK3zcTl_THDq3sw_uovbCGcg'
+);
 
-function getPosts() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch(e) { return []; }
+let currentFilter = '';
+let selectedImageFile = null;
+let likedPosts = JSON.parse(localStorage.getItem('leanopedija_liked') || '[]');
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function savePosts(posts) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); } catch(e) {}
-}
-
+// ── Time ago ──
 function timeAgo(ts) {
-  const diff = (Date.now() - ts) / 1000;
+  const diff = (Date.now() - new Date(ts)) / 1000;
   if (diff < 60) return 'upravo sada';
   if (diff < 3600) return `prije ${Math.floor(diff/60)} min`;
   if (diff < 86400) return `prije ${Math.floor(diff/3600)} h`;
@@ -312,177 +313,232 @@ function timeAgo(ts) {
   return new Date(ts).toLocaleDateString('hr-HR');
 }
 
-function avatarInitials(name) {
-  if (!name) return '?';
-  const parts = name.trim().split(' ');
-  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name[0].toUpperCase();
-}
-
+// ── Avatar ──
 function avatarColor(name) {
-  const colors = ['#1a7a5e','#2563eb','#7c3aed','#dc2626','#ea580c','#ca8a04','#0891b2'];
+  const colors = ['#1a7a5e','#2563eb','#7c3aed','#dc2626','#ea580c','#0891b2','#ca8a04'];
   let h = 0;
   for (let i = 0; i < (name||'').length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
   return colors[Math.abs(h) % colors.length];
 }
+function avatarInitials(name) {
+  if (!name) return '?';
+  const p = name.trim().split(' ');
+  return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : name[0].toUpperCase();
+}
 
-let currentFilter = '';
-let postViews = JSON.parse(localStorage.getItem('leanopedija_views') || '{}');
+// ── Image preview ──
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('Slika je prevelika (max 5MB)'); return; }
+  selectedImageFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('img-preview').innerHTML = `
+      <img src="${e.target.result}" style="max-width:100%;max-height:160px;border-radius:6px;margin-top:8px">
+      <span class="remove-image" onclick="removeImage()">✕ Ukloni sliku</span>`;
+  };
+  reader.readAsDataURL(file);
+}
 
-function renderPosts(filter) {
-  const posts = getPosts().filter(p => !filter || p.category === filter);
+function removeImage() {
+  selectedImageFile = null;
+  document.getElementById('img-input').value = '';
+  document.getElementById('img-preview').innerHTML = '';
+}
+
+// ── Upload image to Supabase Storage ──
+async function uploadImage(file) {
+  const ext = file.name.split('.').pop();
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const { data, error } = await sb.storage
+    .from('community-images')
+    .upload(filename, file, { contentType: file.type, upsert: false });
+  if (error) throw error;
+  const { data: { publicUrl } } = sb.storage.from('community-images').getPublicUrl(filename);
+  return publicUrl;
+}
+
+// ── Submit post ──
+async function submitPost() {
+  const text = document.getElementById('new-post-text').value.trim();
+  if (!text || text.length < 10) { showToast('Molimo napišite malo detaljnije (min 10 znakova)'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Objavljujem...';
+
+  let author = document.getElementById('new-post-author').value.trim();
+  if (!author) author = 'Čitatelj-' + Math.floor(1000 + Math.random() * 9000);
+  const category = document.getElementById('new-post-category').value;
+
+  try {
+    let image_url = null;
+    if (selectedImageFile) {
+      try { image_url = await uploadImage(selectedImageFile); }
+      catch(e) { showToast('Greška pri uploadu slike — objava bez slike'); }
+    }
+
+    const { error } = await sb.from('community_posts').insert({ author, text, category, image_url });
+    if (error) throw error;
+
+    document.getElementById('new-post-text').value = '';
+    document.getElementById('new-post-author').value = '';
+    document.getElementById('new-post-category').value = '';
+    removeImage();
+    showToast('✅ Objava uspješno objavljena!');
+    await loadPosts();
+  } catch(e) {
+    showToast('Greška: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Objavi';
+  }
+}
+
+// ── Load posts ──
+async function loadPosts() {
   const container = document.getElementById('posts-container');
-  document.getElementById('posts-count').textContent = getPosts().length + ' objava';
 
-  if (posts.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="emoji">💬</div><p>${filter ? 'Nema objava u ovoj kategoriji.' : 'Budite prvi koji postavljaju pitanje ili dijele iskustvo.<br>Zajednica počinje s prvim korakom.'}</p></div>`;
+  let query = sb.from('community_posts')
+    .select('*, community_comments(count)')
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (currentFilter) query = query.eq('category', currentFilter);
+
+  const { data: posts, error } = await query;
+
+  if (error) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">⚠️</div><p>Greška pri učitavanju. Pokušajte osvježiti stranicu.</p></div>';
     return;
   }
 
-  container.innerHTML = posts.slice().reverse().map((post, idx) => {
-    const realIdx = getPosts().length - 1 - idx;
-    const initials = avatarInitials(post.author);
-    const color = avatarColor(post.author);
-    const views = postViews[post.id] || 0;
-    const comments = post.comments || [];
+  document.getElementById('posts-count').textContent = (posts?.length || 0) + ' objava';
 
-    const commentsHtml = comments.map(c => `
-      <div class="comment">
-        <div class="comment-avatar" style="background:${avatarColor(c.author)}">${avatarInitials(c.author)}</div>
-        <div class="comment-bubble">
-          <div class="comment-meta"><strong>${c.author || 'Anonimni čitatelj'}</strong> · ${timeAgo(c.ts)}</div>
-          <div class="comment-text">${escHtml(c.text)}</div>
-        </div>
-      </div>`).join('');
+  if (!posts || posts.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">💬</div><p>Budite prvi koji postavljaju pitanje ili dijele iskustvo.<br>Zajednica počinje s prvim korakom.</p></div>';
+    return;
+  }
 
+  container.innerHTML = posts.map(post => {
+    const commentCount = post.community_comments?.[0]?.count || 0;
+    const isLiked = likedPosts.includes(post.id);
     return `
     <div class="post-card" id="post-${post.id}">
       <div class="post-header">
         <div class="post-meta">
-          <div class="post-avatar" style="background:${color}">${initials}</div>
-          <span class="post-author">${escHtml(post.author || 'Anonimni čitatelj')}</span>
-          <span class="post-time">${timeAgo(post.ts)}</span>
+          <div class="post-avatar" style="background:${avatarColor(post.author)}">${avatarInitials(post.author)}</div>
+          <span class="post-author">${escHtml(post.author)}</span>
+          <span class="post-time">${timeAgo(post.created_at)}</span>
           ${post.category ? `<span class="post-badge">${escHtml(post.category)}</span>` : ''}
         </div>
       </div>
       <div class="post-body">
         <div class="post-text">${escHtml(post.text)}</div>
+        ${post.image_url ? `<div class="post-image"><img src="${post.image_url}" alt="Slika uz objavu" onclick="openImgModal('${post.image_url}')"></div>` : ''}
       </div>
       <div class="post-footer">
-        <button class="post-action" onclick="toggleComments(${post.id})">
-          💬 ${comments.length > 0 ? comments.length + ' komentara' : 'Komentiraj'}
-        </button>
-        <button class="post-action" onclick="likePost(${post.id}, this)">
+        <button class="post-action ${isLiked ? 'liked' : ''}" onclick="likePost('${post.id}', this)">
           👍 ${post.likes || 0}
         </button>
-        <span class="post-views">👁 ${views} pregleda</span>
+        <button class="post-action" onclick="toggleComments('${post.id}')">
+          💬 ${commentCount > 0 ? commentCount + ' komentara' : 'Komentiraj'}
+        </button>
       </div>
       <div class="comments-section" id="comments-${post.id}">
-        ${commentsHtml}
+        <div id="comments-list-${post.id}"><div style="text-align:center;padding:12px;color:var(--text-faint);font-size:13px">Učitavam komentare...</div></div>
         <div class="comment-form">
           <input type="text" id="comment-author-${post.id}" placeholder="Vaš nadimak (opcionalno)">
-          <input type="text" id="comment-text-${post.id}" placeholder="Vaš komentar..." onkeydown="if(event.key==='Enter')submitComment(${post.id})">
-          <button onclick="submitComment(${post.id})">Objavi</button>
+          <input type="text" id="comment-text-${post.id}" placeholder="Vaš komentar..." onkeydown="if(event.key==='Enter')submitComment('${post.id}')">
+          <button onclick="submitComment('${post.id}')">Objavi</button>
         </div>
       </div>
     </div>`;
   }).join('');
-
-  updateActiveUsers();
 }
 
-function escHtml(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
-}
-
-function toggleComments(postId) {
+// ── Toggle comments ──
+async function toggleComments(postId) {
   const section = document.getElementById('comments-' + postId);
+  const isOpen = section.classList.contains('open');
   section.classList.toggle('open');
-  // Track view
-  postViews[postId] = (postViews[postId] || 0) + 1;
-  localStorage.setItem('leanopedija_views', JSON.stringify(postViews));
-  renderPosts(currentFilter);
-  document.getElementById('comments-' + postId).classList.add('open');
+  if (!isOpen) await loadComments(postId);
 }
 
-function likePost(postId, btn) {
-  const posts = getPosts();
-  const post = posts.find(p => p.id === postId);
-  if (post) {
-    post.likes = (post.likes || 0) + 1;
-    savePosts(posts);
-    renderPosts(currentFilter);
-  }
-}
+// ── Load comments ──
+async function loadComments(postId) {
+  const { data: comments, error } = await sb.from('community_comments')
+    .select('*').eq('post_id', postId).order('created_at', { ascending: true });
 
-function submitComment(postId) {
-  const authorEl = document.getElementById('comment-author-' + postId);
-  const textEl = document.getElementById('comment-text-' + postId);
-  const text = textEl.value.trim();
-  if (!text) return;
-  const author = authorEl.value.trim() || ('Čitatelj-' + Math.floor(1000 + Math.random() * 9000));
-  const posts = getPosts();
-  const post = posts.find(p => p.id === postId);
-  if (post) {
-    if (!post.comments) post.comments = [];
-    post.comments.push({ author, text, ts: Date.now() });
-    savePosts(posts);
-    renderPosts(currentFilter);
-    document.getElementById('comments-' + postId).classList.add('open');
-  }
-}
-
-function submitPost() {
-  const text = document.getElementById('new-post-text').value.trim();
-  if (!text || text.length < 10) {
-    alert('Molimo napišite malo detaljnije pitanje (minimalno 10 znakova).');
+  const list = document.getElementById('comments-list-' + postId);
+  if (error || !comments || comments.length === 0) {
+    list.innerHTML = '<p style="font-size:12px;color:var(--text-faint);padding:4px 0">Još nema komentara. Budite prvi!</p>';
     return;
   }
-  let author = document.getElementById('new-post-author').value.trim();
-  if (!author) author = 'Čitatelj-' + Math.floor(1000 + Math.random() * 9000);
-  const category = document.getElementById('new-post-category').value;
-
-  const posts = getPosts();
-  const newPost = {
-    id: Date.now(),
-    author, text, category,
-    ts: Date.now(),
-    likes: 0,
-    comments: []
-  };
-  posts.push(newPost);
-  savePosts(posts);
-
-  document.getElementById('new-post-text').value = '';
-  document.getElementById('new-post-author').value = '';
-  document.getElementById('new-post-category').value = '';
-
-  renderPosts(currentFilter);
-  window.scrollTo({ top: document.getElementById('posts-container').offsetTop - 80, behavior: 'smooth' });
-}
-
-function filterByTag(tag) {
-  currentFilter = tag;
-  renderPosts(tag);
-}
-
-function updateActiveUsers() {
-  const posts = getPosts();
-  const authorMap = {};
-  posts.forEach(p => {
-    const a = p.author || 'Anonimni čitatelj';
-    authorMap[a] = (authorMap[a] || 0) + 1 + (p.comments || []).length;
-  });
-  const sorted = Object.entries(authorMap).sort((a,b) => b[1]-a[1]).slice(0,5);
-  const container = document.getElementById('active-users');
-  const existing = `<div class="active-user"><div class="active-avatar">L°</div><div><div class="active-name">Leanopedija</div><div class="active-count">Moderator</div></div></div>`;
-  container.innerHTML = existing + sorted.map(([name, count]) => `
-    <div class="active-user">
-      <div class="active-avatar" style="background:${avatarColor(name)}">${avatarInitials(name)}</div>
-      <div><div class="active-name">${escHtml(name)}</div><div class="active-count">${count} ${count===1?'doprinos':'doprinosa'}</div></div>
+  list.innerHTML = comments.map(c => `
+    <div class="comment">
+      <div class="comment-avatar" style="background:${avatarColor(c.author)}">${avatarInitials(c.author)}</div>
+      <div class="comment-bubble">
+        <div class="comment-meta"><strong>${escHtml(c.author)}</strong> · ${timeAgo(c.created_at)}</div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+      </div>
     </div>`).join('');
 }
 
-// Dropdown nav
+// ── Submit comment ──
+async function submitComment(postId) {
+  const textEl = document.getElementById('comment-text-' + postId);
+  const authorEl = document.getElementById('comment-author-' + postId);
+  const text = textEl.value.trim();
+  if (!text) return;
+  let author = authorEl.value.trim() || 'Čitatelj-' + Math.floor(1000 + Math.random() * 9000);
+
+  const { error } = await sb.from('community_comments').insert({ post_id: postId, author, text });
+  if (error) { showToast('Greška pri objavi komentara'); return; }
+
+  textEl.value = '';
+  authorEl.value = '';
+  await loadComments(postId);
+  await loadPosts();
+  document.getElementById('comments-' + postId).classList.add('open');
+  showToast('✅ Komentar objavljen!');
+}
+
+// ── Like post ──
+async function likePost(postId, btn) {
+  if (likedPosts.includes(postId)) return;
+  likedPosts.push(postId);
+  localStorage.setItem('leanopedija_liked', JSON.stringify(likedPosts));
+
+  const { error } = await sb.rpc('increment_likes', { post_id: postId });
+  if (!error) {
+    await loadPosts();
+    document.getElementById('comments-' + postId) && null;
+  }
+}
+
+// ── Filter ──
+function filterByTag(tag) {
+  currentFilter = tag;
+  document.querySelectorAll('.topic-tag').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  loadPosts();
+}
+
+// ── Image modal ──
+function openImgModal(url) {
+  document.getElementById('img-modal-src').src = url;
+  document.getElementById('img-modal').classList.add('open');
+}
+function closeImgModal() { document.getElementById('img-modal').classList.remove('open'); }
+
+// ── Escape HTML ──
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Dropdown nav ──
 document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
   let timer;
   dropdown.addEventListener('mouseenter', function() {
@@ -492,24 +548,20 @@ document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
   });
   dropdown.addEventListener('mouseleave', function() {
     const self = this;
-    timer = setTimeout(function() { self.classList.remove('open'); }, 200);
+    timer = setTimeout(() => self.classList.remove('open'), 200);
   });
   const menu = dropdown.querySelector('.dropdown-menu');
   if (menu) {
-    menu.addEventListener('mouseenter', function() { clearTimeout(timer); });
-    menu.addEventListener('mouseleave', function() {
-      timer = setTimeout(function() { dropdown.classList.remove('open'); }, 100);
-    });
+    menu.addEventListener('mouseenter', () => clearTimeout(timer));
+    menu.addEventListener('mouseleave', () => { timer = setTimeout(() => dropdown.classList.remove('open'), 100); });
   }
 });
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-dropdown')) {
-    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-  }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-dropdown')) document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
 });
 
-// Init
-renderPosts('');
+// ── Init ──
+loadPosts();
 </script>
 </body>
 </html>
