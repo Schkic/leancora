@@ -926,6 +926,7 @@
     }
   }
   </script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 
@@ -948,13 +949,20 @@
       <div class="nav-dropdown">
         <a href="#alati">Alati</a>
         <div class="dropdown-menu">
-          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
         </div>
       </div>
-      <a href="#vodici">Vodiči</a>
+      <div class="nav-dropdown">
+        <a href="#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+        </div>
+      </div>
       <a href="o-nama.html">O nama</a>
     </nav>
 
@@ -1037,16 +1045,46 @@
 <div class="section">
   <div class="guide-layout">
     <div>
-      <!-- Vodiči - coming soon -->
+      <!-- Vodiči -->
       <div id="vodici" style="padding: 24px 0 8px;">
-        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 32px; text-align: center; max-width: 560px;">
-          <div style="font-size: 32px; margin-bottom: 12px;">📚</div>
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Vodiči i upute — uskoro</h3>
-          <p style="font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
-            Radimo na bazi znanja o Lean metodologiji za hrvatske proizvodne firme.<br>
-            Prve upute stižu uskoro — 5S, OEE, Kaizen, VSM i još mnogo toga.
-          </p>
-          <p style="font-size: 12px; color: var(--text-faint);">U međuvremenu, koristite besplatne alate ispod ↓</p>
+        <div class="section-header" style="margin-bottom:16px;">
+          <div class="section-label">Vodiči i upute</div>
+          <h2 class="section-title">Lean baza znanja</h2>
+          <p class="section-desc">Praktični vodiči pisani na temelju stvarnog iskustva u hrvatskim pogonima.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <a href="vodic-oee.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
+            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">📊</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je OEE i kako ga mjeriti u vašoj tvornici</div>
+              <div style="font-size:12px;color:var(--text-faint);">Mjerenje i analiza · 8 min čitanja</div>
+            </div>
+            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
+          </a>
+          <a href="vodic-5s.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
+            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">5️⃣</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je 5S metodologija i kako je uvesti</div>
+              <div style="font-size:12px;color:var(--text-faint);">Temelji · 7 min čitanja</div>
+            </div>
+            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
+          </a>
+          <a href="vodic-gemba-walk.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
+            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">🚶</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je Gemba Walk i kako ga organizirati</div>
+              <div style="font-size:12px;color:var(--text-faint);">Kontinuirano poboljšanje · 6 min čitanja</div>
+            </div>
+            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
+          </a>
+          <a href="vodic-5-zasto.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
+            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">🔍</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je 5x Zašto i kako ga koristiti</div>
+              <div style="font-size:12px;color:var(--text-faint);">Rješavanje problema · 5 min čitanja</div>
+            </div>
+            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
+          </a>
         </div>
       </div>
 
@@ -1058,9 +1096,9 @@
     <p class="section-desc">Ne nudimo samo upute nego i konkretna rješenja. Alati koji vam pomažu svaki dan.</p>
   </div>
   <div class="tools-grid">
-    <a href="oee-kalkulator.html" class="tool-card">
+    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
       <span class="tool-emoji">🧮</span>
-      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
+      <div class="tool-name">OEE kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Unesi dostupnost, performansu i kvalitetu — odmah vidiš OEE postotak i gdje su gubici.</div>
     </a>
     <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
@@ -1068,22 +1106,22 @@
       <div class="tool-name">Takt time kalkulator <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Izračun takta na temelju dostupnog radnog vremena i potražnje kupca.</div>
     </a>
-    <a href="5s-audit.html" class="tool-card">
+    <a href="leanopedija-5s-audit.html" class="tool-card">
       <span class="tool-emoji">📋</span>
       <div class="tool-name">5S audit obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Digitalni checklist za 5S audit. Ispuni i preuzmi kao PDF za dokumentaciju.</div>
     </a>
-    <a href="gemba-walk.html" class="tool-card">
+    <a href="leanopedija-gemba-walk.html" class="tool-card">
       <span class="tool-emoji">👣</span>
       <div class="tool-name">Gemba Walk obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">"Idi na mjesto događaja". Zapiši zapažanja, uoči gubitke i planiraj akcije.</div>
     </a>
     <a href="5-zasto.html" class="tool-card">
-      <span class="tool-emoji">🔍</span>
-      <div class="tool-name">5x Zašto obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
+    <span class="tool-emoji">🔍</span>
+      <div class="tool-name">5 Zašto obrazac</div>
       <div class="tool-desc">Pronađi korijenski uzrok problema pitajući "Zašto?" pet puta.</div>
     </a>
-    <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
+    <a href="kaizen-planer.html" class="tool-card">
       <span class="tool-emoji">📅</span>
       <div class="tool-name">Kaizen event planer <span style="font-size:10px;background:#fef9c3;color:#ca8a04;padding:1px 6px;border-radius:3px;margin-left:4px;">Uskoro</span></div>
       <div class="tool-desc">Priprema agende i koraci za Kaizen radionicu — odmah spreman za ispis.</div>
@@ -1135,7 +1173,7 @@
   <div class="who-inner">
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Tko?</div>
-      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza Leanopedije stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
+      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza LeanCore stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
     </div>
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Što nas <span>izdvaja</span>?</div>
