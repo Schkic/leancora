@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Što je 5S metodologija i kako je uvesti — Leanopedija</title>
+<meta name="description" content="Kompletan vodič o 5S metodologiji — Sortiranje, Sređivanje, Čišćenje, Standardizacija i Samodisciplina. Kako uvesti 5S u proizvodni pogon korak po korak.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--orange:#ea580c;--yellow:#ca8a04;--blue:#2563eb}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
+.back-link{font-size:13px;color:var(--text-muted);transition:color .12s}
+.back-link:hover{color:var(--green)}
+.header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
+.main-nav{display:flex;align-items:center;gap:4px;flex:1}
+.main-nav a{font-size:14px;color:var(--text-muted);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s}
+.main-nav a:hover{background:var(--green-light);color:var(--green)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px}
+.nav-dropdown>a::after{content:"▾";font-size:10px}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:200}
+.dropdown-menu::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+.nav-dropdown:hover .dropdown-menu,.nav-dropdown.open .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:8px 12px;font-size:13px;color:var(--text);border-radius:6px;line-height:1.4}
+.dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
+.dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
+
+/* ARTICLE LAYOUT */
+.article-wrap{max-width:780px;margin:0 auto;padding:0 24px}
+.article-header{padding:40px 0 32px}
+.article-breadcrumb{font-size:12px;color:var(--text-faint);margin-bottom:14px}
+.article-breadcrumb a{color:var(--green)}
+.article-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:20px;margin-bottom:14px}
+.article-header h1{font-family:'DM Serif Display',serif;font-size:36px;line-height:1.2;margin-bottom:12px}
+.article-meta{font-size:13px;color:var(--text-faint);display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.article-intro{font-size:16px;color:var(--text-muted);line-height:1.8;padding:20px;background:var(--green-light);border-radius:10px;margin-bottom:32px;border-left:3px solid var(--green)}
+
+/* ARTICLE BODY */
+.article-body h2{font-family:'DM Serif Display',serif;font-size:26px;margin:40px 0 14px;padding-top:8px;border-top:1px solid var(--border)}
+.article-body h3{font-size:17px;font-weight:600;margin:28px 0 10px;color:var(--text)}
+.article-body p{font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px}
+.article-body p strong{color:var(--text);font-weight:500}
+.article-body ul,.article-body ol{margin:12px 0 20px 20px}
+.article-body li{font-size:15px;color:var(--text-muted);line-height:1.7;margin-bottom:6px}
+.article-body li strong{color:var(--text);font-weight:500}
+
+/* CALLOUT BOXES */
+.callout{border-radius:8px;padding:16px 20px;margin:24px 0;border-left:3px solid}
+.callout-tip{background:#f0fdf4;border-color:#16a34a}
+.callout-warning{background:#fffbeb;border-color:#ca8a04}
+.callout-info{background:#eff6ff;border-color:#2563eb}
+.callout-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.callout-tip .callout-title{color:#16a34a}
+.callout-warning .callout-title{color:#ca8a04}
+.callout-info .callout-title{color:#2563eb}
+.callout p{font-size:14px;margin:0;line-height:1.6}
+
+/* FORMULA BOX */
+.formula-box{background:#1a1a1a;color:#fff;border-radius:10px;padding:20px 24px;margin:24px 0;text-align:center}
+.formula-box .formula{font-size:22px;font-weight:700;color:#4ade80;margin-bottom:8px;font-family:'DM Serif Display',serif}
+.formula-box .formula-desc{font-size:13px;color:#aaa;line-height:1.6}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.data-table th{background:#fafaf8;padding:10px 12px;border-bottom:2px solid var(--border);text-align:left;font-weight:600;font-size:13px;color:var(--text)}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-muted)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#fafaf8}
+
+/* OEE LEVELS TABLE */
+.level-row-critical td{background:#fee2e2}
+.level-row-bad td{background:#ffedd5}
+.level-row-avg td{background:#fef9c3}
+.level-row-good td{background:#dcfce7}
+.level-row-wc td{background:#e8f5f0}
+
+/* CTA BLOCK */
+.tool-cta{background:var(--green);border-radius:12px;padding:28px 32px;margin:40px 0;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.tool-cta-text h3{font-size:18px;font-weight:600;color:white;margin-bottom:6px}
+.tool-cta-text p{font-size:14px;color:rgba(255,255,255,.8);margin:0}
+.tool-cta-btn{background:white;color:var(--green);padding:10px 22px;border-radius:8px;font-size:14px;font-weight:600;white-space:nowrap;flex-shrink:0;transition:transform .15s}
+.tool-cta-btn:hover{transform:translateY(-1px)}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 40px}
+.related-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .15s}
+.related-card:hover{border-color:var(--green)}
+.related-card-icon{font-size:18px;margin-bottom:6px}
+.related-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.related-card-desc{font-size:11px;color:var(--text-faint)}
+
+/* FOOTER */
+.page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:0}
+.page-footer-inner{max-width:1100px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between}
+
+@media(max-width:600px){.article-header h1{font-size:26px}.related-grid{grid-template-columns:1fr}.tool-cta{flex-direction:column}.main-nav{display:none}}
+.tip-section {
+    background: #fffdf5;
+    border-top: 1px solid #f0e8c0;
+    border-bottom: 1px solid #f0e8c0;
+  }
+.tip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+.accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
+    text-align: left; gap: 12px; transition: background 0.15s;
+  }
+.acc-btn:hover { background: var(--green-light); }
+.acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+.acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
+.acc-body.open { display: block; }
+.support-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+  }
+.support-bubble {
+    background: var(--green);
+    color: white;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(26,122,94,0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+.support-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(26,122,94,0.45);
+  }
+.support-dot {
+    width: 8px;
+    height: 8px;
+    background: #4eff9e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+.zahvali-bubble {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.zahvali-bubble:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
+}
+</style>
+<meta name="keywords" content="5S metodologija, Seiri, Seiton, Seiso, Seiketsu, Shitsuke, organizacija radnog mjesta, Lean">
+<meta name="author" content="Marko Škiljan — OptiCora">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://leanopedija.opticora.hr/vodic-5s.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Što je 5S metodologija i kako je uvesti — Leanopedija">
+<meta property="og:description" content="Kompletan vodič o 5S metodologiji — Sortiranje, Sređivanje, Čišćenje, Standardizacija i Samodisciplina. Kako uvesti 5S u proizvodni pogon korak po korak.">
+<meta property="og:site_name" content="Leanopedija">
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-mark">L°</div>Leanopedija</a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="index.html#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+        </div>
+      </div>
+      <a href="index.html#vodici">Vodiči</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
+    <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <div class="article-header">
+    <div class="article-breadcrumb"><a href="index.html">Početna</a> › <a href="index.html#vodici">Vodiči</a> › 🏠 Temelji</div>
+    <div class="article-badge">🏠 Temelji</div>
+    <h1>Što je 5S metodologija i kako je uvesti</h1>
+    <div class="article-meta">
+      <span>✍️ Marko Škiljan — OptiCora</span>
+      <span>📋 Za voditelje pogona · ⏱️ 7 min čitanja</span>
+    </div>
+    <div class="article-intro">5S je temeljna Lean metodologija za organizaciju radnog mjesta. Bez 5S-a, sve ostalo u Lean programu pada. Ovo je najčešće first step svake Lean implementacije — i s pravom. Vodič objašnjava što je svaki S, kako ga implementirati i kako održati 5S dugoročno.</div>
+  </div>
+
+  <div class="article-body">
+
+    <h2>Što je 5S?</h2>
+    <p>5S je metodologija organizacije radnog mjesta koja potječe iz Japana i Toyota Production Systema. Naziv dolazi od pet japanskih riječi koje opisuju korake implementacije — a svaka počinje slovom S.</p>
+    <p>Cilj 5S-a nije samo urednost — cilj je <strong>stvoriti radno okruženje u kojem su problemi vidljivi, gubici eliminirani i standardi poštovani</strong>. 5S je temelj vizualnog managementa i preduvjet za sve ostale Lean alate.</p>
+
+    <div class="callout callout-info">
+      <div class="callout-title">💡 Zašto početi s 5S?</div>
+      <p>Svaki Lean stručnjak će vam reći: počnite s 5S. Razlog je jednostavan — neuređeno radno mjesto krije probleme, usporava rad i demotivira radnike. 5S čini sve ostale gubitke <strong>vidljivima</strong> pa ih možete rješavati.</p>
+    </div>
+
+    <h2>Pet S koraka</h2>
+
+    <h3>S1 — Sortiranje (Seiri) — Ukloni nepotrebno</h3>
+    <p>Prvim korakom prolazite kroz sve predmete na radnom mjestu i odlučujete: treba li nam ovo ili ne? Sve što nije potrebno za obavljanje posla — uklanjate, arhivirate ili bacate.</p>
+    <p><strong>Praktično:</strong> Koristite "crvene kartice" (red tags) — zalijepite crvenu karticu na sve što je upitno i odložite u posebnu zonu. Tim zatim odlučuje što s tim predmetima.</p>
+
+    <h3>S2 — Sređivanje (Seiton) — Mjesto za sve, sve na svom mjestu</h3>
+    <p>Nakon sortiranja, svaki preostali predmet dobiva <strong>točno određeno i označeno mjesto</strong>. Alati moraju biti dostupni na točci upotrebe, a njihov položaj jasno vizualno označen.</p>
+    <p><strong>Praktično:</strong> Koristite konture alata (shadow boards), oznake boja, etikete. Ako alat nije na svom mjestu — odmah je vidljivo da nešto nedostaje.</p>
+
+    <h3>S3 — Čišćenje (Seiso) — Čisti i inspiciraš</h3>
+    <p>Čišćenje nije samo estetika — <strong>čišćenje je inspekcija</strong>. Dok čistite stroj, otkrivate curenja ulja, labave vijke, oštećenja koja bi inače ostala skrivena do kvara.</p>
+    <p><strong>Praktično:</strong> Napravite raspored čišćenja s jasnim odgovornostima. Operateri su odgovorni za čišćenje svog radnog mjesta — to je početak autonomnog održavanja (TPM).</p>
+
+    <h3>S4 — Standardizacija (Seiketsu) — Standardiziraj i vizualiziraj</h3>
+    <p>Bez standarda, 5S se raspadne za tjedan dana. Standardizacija znači <strong>dokumentiranje "idealnog stanja"</strong> — fotografije, upute, rasporedi — i osiguravanje da svi znaju što se od njih očekuje.</p>
+    <p><strong>Praktično:</strong> Fotografirajte idealno stanje radnog mjesta i istaknite fotku na vidljivo mjesto. To je vaš standard — svako odstupanje je odmah vidljivo.</p>
+
+    <h3>S5 — Samodisciplina (Shitsuke) — Održavaj i poboljšavaj</h3>
+    <p>Peti S je najteži — <strong>kultura</strong>. Cilj je da 5S postane navika, a ne posebna aktivnost. Radnici sami održavaju standarde bez podsjetnika, a redoviti auditi potvrđuju razinu.</p>
+    <p><strong>Praktično:</strong> Provodite redovite 5S audite (minimalno jednom mjesečno), rezultate javno objavite i slavite napredak.</p>
+
+    <h2>Česte greške pri uvođenju 5S</h2>
+    <ul>
+      <li><strong>5S kao prolazni projekt</strong> — 5S nije jednokratna akcija čišćenja. To je trajna promjena načina rada. Ako vodstvo ne podrži kontinuirano, sve se vraća na staro.</li>
+      <li><strong>Preskakanje S4 i S5</strong> — Većina pogona napravi S1-S3 (očisti), ali ne standardizira ni ne gradi kulturu. Bez S4 i S5, 5S ne traje.</li>
+      <li><strong>Top-down bez uključivanja radnika</strong> — 5S mora biti inicijativa operatera, ne samo menadžmenta. Radnici koji su uključeni u dizajn rješenja ih i poštuju.</li>
+      <li><strong>Fokus na izgled, ne na funkciju</strong> — 5S nije o tome da izgleda lijepo za posjete — nego o tome da se radi učinkovitije i sigurnije.</li>
+    </ul>
+
+    <div class="callout callout-tip">
+      <div class="callout-title">✅ Savjet iz prakse</div>
+      <p>Nemojte pokušavati uvesti 5S u cijelom pogonu odjednom. Odaberite <strong>jedan pilot odjel ili jednu liniju</strong>, napravite to dobro, dokumentirajte rezultate i onda širite. Uspjeh na malom pilot projektu puno je vrjedniji od neuspješne implementacije u cijelem pogonu.</p>
+    </div>
+
+    <h2>Kako mjeriti uspješnost 5S?</h2>
+    <p>Koristite strukturirani 5S audit obrazac koji ocjenjuje svaki od pet S-ova na skali 0–4. Ukupni rezultat na 100 bodova daje vam objektivnu sliku stanja:</p>
+    <ul>
+      <li><strong>0–40:</strong> Kritično — hitna intervencija</li>
+      <li><strong>41–60:</strong> Osnovno — ima prostora za poboljšanje</li>
+      <li><strong>61–80:</strong> Dobro — nastavite graditi kulturu</li>
+      <li><strong>81–100:</strong> Izvrsno — World Class razina</li>
+    </ul>
+
+
+    <!-- CTA -->
+    <div class="tool-cta">
+      <div class="tool-cta-text">
+        <h3>📋 Provesite 5S audit u vašem pogonu</h3>
+        <p>Besplatni digitalni 5S audit obrazac s automatskim ocjenama i PDF izvozom</p>
+      </div>
+      <a href="5s-audit.html" class="tool-cta-btn">Otvori 5S audit obrazac →</a>
+    </div>
+
+    <h2>Povezani vodiči i alati</h2>
+    <div class="related-grid">
+      <a href="vodic-oee.html" class="related-card"><div class="related-card-icon">📊</div><div class="related-card-title">OEE mjerenje</div><div class="related-card-desc">Pratite učinak 5S kroz OEE</div></a><a href="vodic-gemba-walk.html" class="related-card"><div class="related-card-icon">🚶</div><div class="related-card-title">Gemba Walk</div><div class="related-card-desc">Obilazak i provjera 5S stanja</div></a><a href="vodic-5-zasto.html" class="related-card"><div class="related-card-icon">🔍</div><div class="related-card-title">5x Zašto</div><div class="related-card-desc">Zašto 5S ne funkcionira?</div></a>
+    </div>
+
+  </div>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto">
+<!-- Tip / Napojnica -->
+<section class="tip-section" id="napojnica" style="text-align:center;">
+  <div class="tip-inner" style="max-width:680px;margin:0 auto;text-align:center;">
+    <h2>Ostavi napojnicu! ☕</h2>
+    <p>
+      Je li vam Leanopedija pomogla, uštedjela vrijeme, živce i energiju?<br>
+      Smatrate da sadržaj i alati imaju vrijednost?<br>
+      Ako želite podržati naš rad, znanje, vrijeme i trud, možete to učiniti napojnicom. Hvala! 😊
+    </p>
+
+    <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
+
+      <!-- Zaba -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
+          <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Otvorite mobilno bankarstvo (npr. Zaba), odaberite skeniranje barkoda, skenirajte niže prikazani 2D barkod, upišite željeni iznos (npr. 3,00 €) i potvrdite plaćanje.</p>
+          <img src="zaba-2d.jpg" style="max-width:320px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="Zaba 2D barkod za uplatu">
+        </div>
+      </div>
+
+      <!-- KeksPay QR -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
+          <span>🟢 KeksPay uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">KeksPay aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="keks-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="KeksPay QR kod">
+        </div>
+      </div>
+
+      <!-- Revolut -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
+          <span>🔵 Revolut uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Revolut aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="revolut-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;background:#1a1a1a;padding:8px;" alt="Revolut QR kod">
+          <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:8px;">Ili klikom na <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
+        </div>
+      </div>
+
+    <!-- Tracking stats -->
+    
+      <div style="margin-top:16px;">
+        
+        
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.opticora.hr</a></span>
+    <span>Sadržaj je informativnog karaktera.</span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.nav-dropdown > a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const dropdown = this.closest('.nav-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    if (!isOpen) { e.preventDefault(); dropdown.classList.add('open'); }
+  });
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+</script>
+<!-- Floating support -->
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+
+<script>
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+</script>
+
+<style>
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.zahvali-bubble {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.zahvali-bubble:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
+}
+</style>
+<script>
+function scrollToNapojnica() {
+  const el = document.getElementById('napojnica');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+async function trackClick(method) {
+  try { await fetch(`${API}/track?method=${method}`, { method: 'POST' }); } catch(e) {}
+}
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
+}
+</script>
+</body>
+</html>
