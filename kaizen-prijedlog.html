@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Prijedlog Poboljšanja — Besplatni obrazac | Leanopedija</title>
+<meta name="description" content="Besplatni Kaizen obrazac za prijedloge poboljšanja — svaki radnik može predložiti poboljšanje. Digitalni obrazac s PDF izvozom.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc2626;--orange:#ea580c;--yellow:#ca8a04}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
+.header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
+.main-nav{display:flex;align-items:center;gap:4px;flex:1}
+.main-nav a{font-size:14px;color:var(--text-muted);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s}
+.main-nav a:hover{background:var(--green-light);color:var(--green)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px}
+.nav-dropdown>a::after{content:"▾";font-size:10px}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:200}
+.dropdown-menu::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+.nav-dropdown.open .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:8px 12px;font-size:13px;color:var(--text);border-radius:6px;line-height:1.4}
+.dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
+.dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
+
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
+.page-header-inner{max-width:720px;margin:0 auto}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:620px;line-height:1.7}
+
+.toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
+.toolbar-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#155f49}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+
+.main-wrap{max-width:720px;margin:0 auto;padding:24px}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);background:#fafaf8;display:flex;align-items:center;gap:10px}
+.card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.card-header h3{font-size:14px;font-weight:600}
+.card-header p{font-size:12px;color:var(--text-faint);margin-top:1px}
+.card-body{padding:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field textarea{resize:vertical;min-height:80px}
+
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.ba-card{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ba-header{padding:8px 12px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border)}
+.ba-before .ba-header{background:#fee2e2;color:#dc2626}
+.ba-after .ba-header{background:#dcfce7;color:#16a34a}
+.ba-body textarea{width:100%;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text-muted);resize:vertical;min-height:90px;padding:10px;outline:none}
+
+.priority-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.priority-card{border:2px solid var(--border);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.priority-card:hover{border-color:var(--green)}
+.priority-card.selected{border-color:var(--green);background:var(--green-light)}
+.priority-card .priority-icon{font-size:20px;margin-bottom:4px}
+.priority-card .priority-label{font-size:12px;font-weight:600;color:var(--text)}
+.priority-card .priority-desc{font-size:10px;color:var(--text-faint);margin-top:2px}
+
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.impact-card{border:2px solid var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .15s}
+.impact-card:hover{border-color:var(--green)}
+.impact-card.selected{border-color:var(--green);background:var(--green-light)}
+.impact-label{font-size:12px;font-weight:600}
+.impact-desc{font-size:10px;color:var(--text-faint);margin-top:2px}
+
+.status-section{background:var(--green-light);border:1px solid var(--green);border-radius:8px;padding:14px;margin-bottom:14px}
+.status-section .status-title{font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px}
+
+.page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
+.page-footer-inner{max-width:1100px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer-links{display:flex;gap:16px}
+.footer-links a:hover{color:var(--green)}
+
+@media(max-width:600px){.grid-2,.before-after,.priority-grid,.impact-grid{grid-template-columns:1fr}.main-nav{display:none}}
+.tip-section {
+    background: #fffdf5;
+    border-top: 1px solid #f0e8c0;
+    border-bottom: 1px solid #f0e8c0;
+  }
+.tip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+.accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
+    text-align: left; gap: 12px; transition: background 0.15s;
+  }
+.acc-btn:hover { background: var(--green-light); }
+.acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+.acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
+.acc-body.open { display: block; }
+.support-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+  }
+.support-bubble {
+    background: var(--green);
+    color: white;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(26,122,94,0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+.support-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(26,122,94,0.45);
+  }
+.support-dot {
+    width: 8px;
+    height: 8px;
+    background: #4eff9e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+</style>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://leanopedija.opticora.hr/kaizen-prijedlog.html">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-mark">L°</div>Leanopedija</a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="index.html#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="index.html#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+        </div>
+      </div>
+      <a href="zajednica.html">Zajednica</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
+    <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="tool-badge">💡 Besplatni alat</div>
+    <h1>Kaizen Prijedlog Poboljšanja</h1>
+    <p>Svaki radnik može predložiti poboljšanje. Ispunite obrazac, definirajte problem, predložite rješenje i procijenite utjecaj. PDF za dokumentaciju i praćenje.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <button class="btn btn-outline" onclick="resetForm()">🔄 Novi prijedlog</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
+    <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- 1. Podnositelj -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#eff6ff">👤</div>
+      <div><h3>Podnositelj prijedloga</h3><p>Tko predlaže poboljšanje</p></div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="field"><label>Ime i prezime</label><input type="text" id="p-ime" placeholder="Ime Prezime (opcionalno — može ostati anonimno)"></div>
+        <div class="field"><label>Datum prijedloga</label><input type="date" id="p-datum"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Odjel / pogon</label><input type="text" id="p-odjel" placeholder="npr. Montaža, Skladište, Kvaliteta..."></div>
+        <div class="field"><label>Radno mjesto</label><input type="text" id="p-radno" placeholder="npr. Operater, Voditelj smjene, Inženjer..."></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Opis problema -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fee2e2">⚠️</div>
+      <div><h3>Opis problema ili prilike za poboljšanje</h3><p>Što ne funkcionira ili što bi moglo biti bolje</p></div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label>Gdje se problem pojavljuje? (proces, radno mjesto, stroj)</label>
+        <input type="text" id="prob-gdje" placeholder="npr. Linija 3 — operacija zavarivanja, Skladište sirovina — zona B">
+      </div>
+      <div class="field">
+        <label>Opis problema / prilike</label>
+        <textarea id="prob-opis" placeholder="Opišite konkretno što se događa, koliko često, koji su simptomi...&#10;&#10;Primjer: Operateri troše prosječno 8 minuta po smjeni tražeći alat za podešavanje jer nema fiksnog mjesta za alate. Dolazi do kašnjenja i frustracije."></textarea>
+      </div>
+      <div class="before-after">
+        <div class="ba-card ba-before">
+          <div class="ba-header">📸 Trenutno stanje (PRIJE)</div>
+          <div class="ba-body"><textarea id="ba-prije" placeholder="Opišite ili nacrtajte trenutno stanje...&#10;Koliko dugo traje, koliko košta, koliko je ljudi pogođeno..."></textarea></div>
+        </div>
+        <div class="ba-card ba-after">
+          <div class="ba-header">✨ Željeno stanje (POSLIJE)</div>
+          <div class="ba-body"><textarea id="ba-poslije" placeholder="Kako bi izgledalo idealno stanje...&#10;Što bi se promijenilo, kako bi proces tekao..."></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Prijedlog rješenja -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf4">💡</div>
+      <div><h3>Prijedlog rješenja</h3><p>Konkretna ideja za poboljšanje</p></div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label>Predloženo rješenje</label>
+        <textarea id="rjes-opis" placeholder="Opišite konkretno što predlažete...&#10;&#10;Primjer: Napraviti shadow board za alate na radnom stolu — svaki alat ima svoje označeno mjesto. Operateri odmah vide koji alat nedostaje bez traženja."></textarea>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Što je potrebno za implementaciju?</label><textarea id="rjes-potrebno" placeholder="Materijali, oprema, pomoć, odobrenje..."></textarea></div>
+        <div class="field"><label>Procijenjeni trošak implementacije</label><textarea id="rjes-trosak" placeholder="npr. Bez troška (samo rad)&#10;100-500 €&#10;Treba procjena..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Utjecaj i prioritet -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fef9c3">📊</div>
+      <div><h3>Utjecaj i prioritet</h3><p>Koliko je poboljšanje važno i hitno</p></div>
+    </div>
+    <div class="card-body">
+      <div class="field"><label>Kategorija poboljšanja</label></div>
+      <div class="impact-grid">
+        <div class="impact-card" onclick="selectImpact(this,'Sigurnost')" style="border-color:#dc2626">
+          <div style="font-size:20px;margin-bottom:4px">🛡️</div>
+          <div class="impact-label" style="color:#dc2626">Sigurnost</div>
+          <div class="impact-desc">Smanjuje rizik ozljeda</div>
+        </div>
+        <div class="impact-card" onclick="selectImpact(this,'Kvaliteta')">
+          <div style="font-size:20px;margin-bottom:4px">✅</div>
+          <div class="impact-label">Kvaliteta</div>
+          <div class="impact-desc">Smanjuje greške i škart</div>
+        </div>
+        <div class="impact-card" onclick="selectImpact(this,'Produktivnost')">
+          <div style="font-size:20px;margin-bottom:4px">⚡</div>
+          <div class="impact-label">Produktivnost</div>
+          <div class="impact-desc">Ubrzava proces</div>
+        </div>
+        <div class="impact-card" onclick="selectImpact(this,'Troškovi')">
+          <div style="font-size:20px;margin-bottom:4px">💰</div>
+          <div class="impact-label">Troškovi</div>
+          <div class="impact-desc">Smanjuje troškove</div>
+        </div>
+        <div class="impact-card" onclick="selectImpact(this,'Ergonomija')">
+          <div style="font-size:20px;margin-bottom:4px">🏋️</div>
+          <div class="impact-label">Ergonomija</div>
+          <div class="impact-desc">Lakši i ugodniji rad</div>
+        </div>
+        <div class="impact-card" onclick="selectImpact(this,'Okoliš')">
+          <div style="font-size:20px;margin-bottom:4px">🌱</div>
+          <div class="impact-label">Okoliš</div>
+          <div class="impact-desc">Manje otpada i emisija</div>
+        </div>
+      </div>
+      <input type="hidden" id="selected-impact" value="">
+
+      <div class="field"><label>Prioritet</label></div>
+      <div class="priority-grid">
+        <div class="priority-card" onclick="selectPriority(this,'Kritično')">
+          <div class="priority-icon">🚨</div>
+          <div class="priority-label">Kritično</div>
+          <div class="priority-desc">Hitno, odmah</div>
+        </div>
+        <div class="priority-card" onclick="selectPriority(this,'Visoki')">
+          <div class="priority-icon">🔴</div>
+          <div class="priority-label">Visoki</div>
+          <div class="priority-desc">Ovaj tjedan</div>
+        </div>
+        <div class="priority-card" onclick="selectPriority(this,'Srednji')">
+          <div class="priority-icon">🟡</div>
+          <div class="priority-label">Srednji</div>
+          <div class="priority-desc">Ovaj mjesec</div>
+        </div>
+        <div class="priority-card" onclick="selectPriority(this,'Nizak')">
+          <div class="priority-icon">🟢</div>
+          <div class="priority-label">Nizak</div>
+          <div class="priority-desc">Kad bude vremena</div>
+        </div>
+      </div>
+      <input type="hidden" id="selected-priority" value="">
+    </div>
+  </div>
+
+  <!-- 5. Odluka voditelja -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#e8f5f0">✍️</div>
+      <div><h3>Odluka voditelja / Lean koordinatora</h3><p>Popunjava voditelj — odobrenje i praćenje</p></div>
+    </div>
+    <div class="card-body">
+      <div class="status-section">
+        <div class="status-title">Status prijedloga</div>
+        <div class="priority-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="priority-card" onclick="selectStatus(this,'Zaprimljeno')">
+            <div class="priority-icon">📥</div>
+            <div class="priority-label" style="font-size:11px">Zaprimljeno</div>
+          </div>
+          <div class="priority-card" onclick="selectStatus(this,'Odobreno')">
+            <div class="priority-icon">✅</div>
+            <div class="priority-label" style="font-size:11px">Odobreno</div>
+          </div>
+          <div class="priority-card" onclick="selectStatus(this,'U tijeku')">
+            <div class="priority-icon">🔄</div>
+            <div class="priority-label" style="font-size:11px">U tijeku</div>
+          </div>
+          <div class="priority-card" onclick="selectStatus(this,'Implementirano')">
+            <div class="priority-icon">🎉</div>
+            <div class="priority-label" style="font-size:11px">Implementirano</div>
+          </div>
+        </div>
+        <input type="hidden" id="selected-status" value="">
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Odgovorna osoba za implementaciju</label><input type="text" id="vod-odgovorni" placeholder="Ime Prezime"></div>
+        <div class="field"><label>Rok implementacije</label><input type="date" id="vod-rok"></div>
+      </div>
+      <div class="field"><label>Komentar voditelja</label><textarea id="vod-komentar" placeholder="Obrazloženje odluke, napomene, uvjeti odobrenja..."></textarea></div>
+    </div>
+  </div>
+
+</div>

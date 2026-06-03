@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaizen Event Planer — Besplatni alat | Leanopedija</title>
+<meta name="description" content="Besplatni Kaizen event planer — planirajte Kaizen radionicu, definirajte tim, ciljeve i akcijski plan. PDF izvoz za dokumentaciju.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--green-mid:#2d9e7a;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc2626;--orange:#ea580c;--yellow:#ca8a04}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
+.header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
+.main-nav{display:flex;align-items:center;gap:4px;flex:1}
+.main-nav a{font-size:14px;color:var(--text-muted);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s}
+.main-nav a:hover{background:var(--green-light);color:var(--green)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px}
+.nav-dropdown>a::after{content:"▾";font-size:10px}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:200}
+.dropdown-menu::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+.nav-dropdown.open .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:8px 12px;font-size:13px;color:var(--text);border-radius:6px;line-height:1.4}
+.dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
+.dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
+
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
+.page-header-inner{max-width:900px;margin:0 auto}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:620px;line-height:1.7}
+
+.toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
+.toolbar-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#155f49}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.btn-add{background:transparent;color:var(--green);border:1px dashed var(--green);font-size:12px;padding:5px 12px}
+.btn-add:hover{background:var(--green-light)}
+
+.main-wrap{max-width:900px;margin:0 auto;padding:24px}
+
+.section-card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden}
+.section-card-header{padding:14px 18px;border-bottom:1px solid var(--border);background:#fafaf8;display:flex;align-items:center;gap:10px}
+.section-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.section-card-header h3{font-size:14px;font-weight:600;color:var(--text)}
+.section-card-header p{font-size:12px;color:var(--text-faint);margin-top:1px}
+.section-card-body{padding:18px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field textarea{resize:vertical;min-height:72px}
+
+/* Team table */
+.team-table{width:100%;border-collapse:collapse}
+.team-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
+.team-row td{padding:6px 5px;border-bottom:1px solid var(--border);vertical-align:middle}
+.team-row:last-child td{border-bottom:none}
+.team-row td input,.team-row td select{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg)}
+.team-row td input:focus,.team-row td select:focus{outline:none;border-color:var(--green)}
+.del-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:3px 5px;border-radius:3px}
+.del-btn:hover{color:var(--red);background:#fee2e2}
+
+/* Agenda */
+.agenda-day{border:1px solid var(--border);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.agenda-day-header{padding:10px 14px;background:var(--green-light);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.agenda-day-title{font-size:13px;font-weight:600;color:var(--green)}
+.agenda-items{padding:8px}
+.agenda-item{display:grid;grid-template-columns:80px 1fr 80px auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px dashed var(--border)}
+.agenda-item:last-child{border-bottom:none}
+.agenda-item input{padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg);width:100%}
+.agenda-item input:focus{outline:none;border-color:var(--green)}
+
+/* Action plan */
+.action-table{width:100%;border-collapse:collapse}
+.action-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
+.action-row td{padding:6px 5px;border-bottom:1px solid var(--border);vertical-align:middle}
+.action-row:last-child td{border-bottom:none}
+.action-row td input,.action-row td select{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg)}
+.action-row td input:focus,.action-row td select:focus{outline:none;border-color:var(--green)}
+.status-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.status-open{background:#fee2e2;color:#dc2626}
+.status-progress{background:#fef9c3;color:#ca8a04}
+.status-done{background:#dcfce7;color:#16a34a}
+
+/* Before/After */
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ba-card{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ba-header{padding:8px 12px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border)}
+.ba-before .ba-header{background:#fee2e2;color:#dc2626}
+.ba-after .ba-header{background:#dcfce7;color:#16a34a}
+.ba-body{padding:10px 12px}
+.ba-body textarea{width:100%;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text-muted);resize:vertical;min-height:80px;outline:none}
+
+/* KPI target */
+.kpi-row{display:grid;grid-template-columns:1fr 120px 120px 120px;gap:10px;align-items:center;margin-bottom:8px;padding:8px;border:1px solid var(--border);border-radius:7px}
+.kpi-row input{padding:6px 8px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:13px;background:var(--bg);width:100%}
+.kpi-row input:focus{outline:none;border-color:var(--green)}
+.kpi-label{font-size:11px;font-weight:500;color:var(--text-faint);margin-bottom:3px}
+
+.page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
+.page-footer-inner{max-width:1100px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer-links{display:flex;gap:16px}
+.footer-links a:hover{color:var(--green)}
+
+@media(max-width:700px){.grid-2,.grid-3,.before-after{grid-template-columns:1fr}.kpi-row{grid-template-columns:1fr 1fr}.agenda-item{grid-template-columns:70px 1fr}.main-nav{display:none}}
+.tip-section {
+    background: #fffdf5;
+    border-top: 1px solid #f0e8c0;
+    border-bottom: 1px solid #f0e8c0;
+  }
+.tip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+.accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
+    text-align: left; gap: 12px; transition: background 0.15s;
+  }
+.acc-btn:hover { background: var(--green-light); }
+.acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+.acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
+.acc-body.open { display: block; }
+.support-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+  }
+.support-bubble {
+    background: var(--green);
+    color: white;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(26,122,94,0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+.support-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(26,122,94,0.45);
+  }
+.support-dot {
+    width: 8px;
+    height: 8px;
+    background: #4eff9e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+</style>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
+<meta name="keywords" content="Kaizen event planer, Kaizen radionica, Kaizen agenda, kontinuirano poboljšanje, Lean alati">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://leanopedija.opticora.hr/kaizen-planer.html">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-mark">L°</div>Leanopedija</a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="index.html#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="index.html#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+        </div>
+      </div>
+      <a href="zajednica.html">Zajednica</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
+    <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="tool-badge">♾️ Besplatni alat</div>
+    <h1>Kaizen Event Planer</h1>
+    <p>Planirajte Kaizen radionicu — definirajte tim, agendu, ciljeve i akcijski plan. Dokumentirajte stanje prije i poslije te pratite implementaciju akcija.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <button class="btn btn-outline" onclick="resetAll()">🔄 Resetiraj</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
+    <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- 1. Opći podaci -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#eff6ff">📋</div>
+      <div><h3>Opći podaci o Kaizen eventu</h3><p>Osnovne informacije o radionici</p></div>
+    </div>
+    <div class="section-card-body">
+      <div class="grid-2">
+        <div class="field"><label>Naziv Kaizen eventa</label><input type="text" id="kz-naziv" placeholder="npr. Kaizen 5S skladišta — Pogon B"></div>
+        <div class="field"><label>Proces / područje poboljšanja</label><input type="text" id="kz-proces" placeholder="npr. Skladište sirovine, Montažna linija 3"></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Datum početka</label><input type="date" id="kz-datum-od"></div>
+        <div class="field"><label>Datum završetka</label><input type="date" id="kz-datum-do"></div>
+        <div class="field"><label>Trajanje (dana)</label><input type="number" id="kz-trajanje" min="1" max="10" value="3"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Voditelj Kaizen eventa</label><input type="text" id="kz-voditelj" placeholder="Ime i prezime"></div>
+        <div class="field"><label>Sponzor / odobrenje menadžmenta</label><input type="text" id="kz-sponzor" placeholder="Ime direktora / voditelja pogona"></div>
+      </div>
+      <div class="field"><label>Opis problema / razlog pokretanja Kaizena</label><textarea id="kz-opis" placeholder="Opišite koji problem rješavate, zašto je sada pravi trenutak i koji su simptomi problema..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- 2. Tim -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#fdf4ff">👥</div>
+      <div><h3>Kaizen tim</h3><p>Sudionici radionice i njihove uloge</p></div>
+    </div>
+    <div class="section-card-body">
+      <table class="team-table">
+        <thead><tr>
+          <th style="width:180px">Ime i prezime</th>
+          <th style="width:160px">Odjel / funkcija</th>
+          <th>Uloga u Kaizenu</th>
+          <th style="width:100px">Dostupnost</th>
+          <th style="width:30px"></th>
+        </tr></thead>
+        <tbody id="team-body"></tbody>
+      </table>
+      <button class="btn btn-add" onclick="addTeamRow()" style="margin-top:10px">+ Dodaj člana tima</button>
+    </div>
+  </div>
+
+  <!-- 3. Ciljevi i KPI -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#f0fdf4">🎯</div>
+      <div><h3>Ciljevi i KPI mjere</h3><p>Što želite postići — mjerljivo i vremenski određeno</p></div>
+    </div>
+    <div class="section-card-body">
+      <div style="display:grid;grid-template-columns:1fr 120px 120px 120px 30px;gap:8px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em">KPI / Mjera</div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em">Trenutno</div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em">Cilj</div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em">Postignuto</div>
+        <div></div>
+      </div>
+      <div id="kpi-body"></div>
+      <button class="btn btn-add" onclick="addKPIRow()" style="margin-top:8px">+ Dodaj KPI</button>
+    </div>
+  </div>
+
+  <!-- 4. Stanje prije/poslije -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#fef9c3">📸</div>
+      <div><h3>Stanje prije i poslije</h3><p>Dokumentirajte što se promijenilo</p></div>
+    </div>
+    <div class="section-card-body">
+      <div class="before-after">
+        <div class="ba-card ba-before">
+          <div class="ba-header">❌ Stanje PRIJE Kaizena</div>
+          <div class="ba-body"><textarea id="ba-prije" placeholder="Opišite trenutno stanje — problemi, gubici, neorganiziranost, mjere...&#10;&#10;Primjer:&#10;- Pretrpano skladište, materijal svugdje&#10;- 15 min traženje alata po smjeni&#10;- OEE 58%, veliki škart na spoju A&#10;- Operateri čekaju materijal prosječno 8 min/smjena"></textarea></div>
+        </div>
+        <div class="ba-card ba-after">
+          <div class="ba-header">✅ Stanje POSLIJE Kaizena</div>
+          <div class="ba-body"><textarea id="ba-poslije" placeholder="Opišite ciljano stanje — što bi trebalo izgledati po završetku&#10;&#10;Primjer:&#10;- Jasno označena mjesta za sve materijale&#10;- Alati dostupni na točci upotrebe (shadow board)&#10;- OEE cilj 72%&#10;- Eliminacija čekanja materijala"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Agenda -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#fff7ed">📅</div>
+      <div><h3>Agenda Kaizen eventa</h3><p>Raspored aktivnosti po danima</p></div>
+    </div>
+    <div class="section-card-body">
+      <div id="agenda-container"></div>
+      <button class="btn btn-add" onclick="addAgendaDay()" style="margin-top:8px">+ Dodaj dan</button>
+    </div>
+  </div>
+
+  <!-- 6. Akcijski plan -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#eff6ff">✅</div>
+      <div><h3>Akcijski plan (30-60-90 dana)</h3><p>Konkretne akcije s rokovima i odgovornostima</p></div>
+    </div>
+    <div class="section-card-body">
+      <table class="action-table">
+        <thead><tr>
+          <th>#</th>
+          <th>Akcija</th>
+          <th style="width:130px">Odgovorna osoba</th>
+          <th style="width:110px">Rok</th>
+          <th style="width:90px">Status</th>
+          <th style="width:30px"></th>
+        </tr></thead>
+        <tbody id="action-body"></tbody>
+      </table>
+      <button class="btn btn-add" onclick="addActionRow()" style="margin-top:10px">+ Dodaj akciju</button>
+    </div>
+  </div>
+
+  <!-- 7. Zaključci -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <div class="section-card-icon" style="background:#e8f5f0">💡</div>
+      <div><h3>Zaključci i naučene lekcije</h3><p>Što je prošlo dobro, što bi napravili drugačije</p></div>
+    </div>
+    <div class="section-card-body">
+      <div class="grid-2">
+        <div class="field"><label>Što je prošlo dobro (Keep)</label><textarea id="zakl-good" placeholder="Što bi ponovili na sljedećem Kaizenu..."></textarea></div>
+        <div class="field"><label>Što bi napravili drugačije (Improve)</label><textarea id="zakl-improve" placeholder="Što bi promijenili ili poboljšali..."></textarea></div>
+      </div>
+      <div class="field" style="margin-top:0"><label>Generalni zaključak i preporuke za slijedeće korake</label><textarea id="zakl-general" placeholder="Ukupna ocjena Kaizen eventa, preporuke za nastavak..."></textarea></div>
+    </div>
+  </div>
+
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto">
+
+<!-- Tip / Napojnica -->
+<section class="tip-section" id="napojnica" style="text-align:center;">
+  <div class="tip-inner" style="max-width:680px;margin:0 auto;text-align:center;">
+    <h2>Ostavi napojnicu! ☕</h2>
+    <p>
+      Je li vam Leanopedija pomogla, uštedjela vrijeme, živce i energiju?<br>
+      Smatrate da sadržaj i alati imaju vrijednost?<br>
+      Ako želite podržati naš rad, znanje, vrijeme i trud, možete to učiniti napojnicom. Hvala! 😊
+    </p>
+
+    <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
+
+      <!-- Zaba -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
+          <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Otvorite mobilno bankarstvo (npr. Zaba), odaberite skeniranje barkoda, skenirajte niže prikazani 2D barkod, upišite željeni iznos (npr. 3,00 €) i potvrdite plaćanje.</p>
+          <img src="zaba-2d.jpg" style="max-width:320px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="Zaba 2D barkod za uplatu">
+        </div>
+      </div>
+
+      <!-- KeksPay QR -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
+          <span>🟢 KeksPay uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">KeksPay aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="keks-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="KeksPay QR kod">
+        </div>
+      </div>
+
+      <!-- Revolut -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
+          <span>🔵 Revolut uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Revolut aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="revolut-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;background:#1a1a1a;padding:8px;" alt="Revolut QR kod">
+          <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:8px;">Ili klikom na <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
+        </div>
+      </div>
+
+    <!-- Tracking stats -->
+    
+      <div style="margin-top:16px;">
+        
+        
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span>© Leanopedija — <a href="index.html">lean.opticora.hr</a></span>
+    <span>Obrazac je besplatan za korištenje.</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('meta-datum').valueAsDate = new Date();
+
+const whyHints = [
+  'Opišite problem jasno i konkretno — što se točno dogodilo, kada, gdje?',
+  'Zašto je do toga došlo? Što je neposredni uzrok?',
+  'Zašto je nastao taj uzrok? Idite dublje...',
+  'Zašto se to nije spriječilo? Tražite sistemski uzrok...',
+  'Zašto postoji taj sistemski problem? Ovo je obično korijenski uzrok.',
+];
+const whyLabels = ['Problem (što se dogodilo)', 'Zašto? (1. razina)', 'Zašto? (2. razina)', 'Zašto? (3. razina)', 'Zašto? (4. razina)', 'Zašto? — Korijenski uzrok (5. razina)'];
+const whyColors = ['#e8612a','#d97706','#ca8a04','#4d7c0f','#1a7a5e','#1a7a5e'];
+
+let analysisCount = 0;
+
+function addAnalysis() {
+  analysisCount++;
+  const id = analysisCount;
+  const div = document.createElement('div');
+  div.className = 'analysis-block';
+  div.id = 'analysis-' + id;
+
+  let whyRows = '';
+  for (let i = 0; i < 5; i++) {
+    whyRows += `
+      <div class="why-item">
+        <div class="why-number why-n${i+1}" style="background:${whyColors[i]}">${i+1}</div>
+        <div class="why-label">${whyLabels[i+1]}</div>
+        <textarea class="why-input" id="why-${id}-${i+1}" placeholder="${whyHints[i]}" rows="2"></textarea>
+        ${i < 4 ? '<div class="why-arrow">↓</div>' : ''}
+      </div>`;
+  }
+
+  div.innerHTML = `
+    <div class="analysis-header">
+      <span class="analysis-num">🔍 Analiza #${id}</span>
+      ${id > 1 ? `<button class="del-analysis-btn" onclick="document.getElementById('analysis-${id}').remove()">✕ Ukloni</button>` : ''}
+    </div>
+    <div class="analysis-body">
+      <div class="problem-box">
+        <label>🔴 Problem / Simptom</label>
+        <textarea id="problem-${id}" placeholder="Što se točno dogodilo? Budite specifični — kada, gdje, koliko često, koliki je utjecaj?" rows="2"></textarea>
+      </div>
+      <div class="why-chain">
+        ${whyRows}
+      </div>
+      <div class="root-cause-box">
+        <label>✅ Korijenski uzrok (zaključak)</label>
+        <textarea id="root-${id}" placeholder="Sažmite korijenski uzrok u jednu-dvije rečenice. Ovo je uzrok koji treba eliminirati." rows="2"></textarea>
+      </div>
+      <div class="tip-box">
+        <strong>💡 Savjet:</strong>
+        Kada pronađete korijenski uzrok, zapitajte se: "Da uklonimo ovaj uzrok, hoće li se problem ponoviti?" Ako je odgovor NE — pronašli ste pravi korijenski uzrok.
+      </div>
+    </div>`;
+  document.getElementById('analyses-container').appendChild(div);
+}
+
+let actionCount = 0;
+function addAction() {
+  actionCount++;
+  const div = document.createElement('div');
+  div.className = 'action-row';
+  div.innerHTML = `
+    <input type="text" placeholder="Opis korektivne / preventivne akcije...">
+    <input type="text" placeholder="Ime i prezime">
+    <input type="date">
+    <select><option>📋 Otvoreno</option><option>🔄 U tijeku</option><option>✅ Završeno</option><option>⏸️ Na čekanju</option></select>
+    <button class="del-btn" onclick="this.closest('.action-row').remove()">✕</button>`;
+  document.getElementById('actions-body').appendChild(div);
+}
+
+// Init with one analysis and two actions
+addAnalysis();
+addAction(); addAction();
+
+function exportPDF() {
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const M=14, W=210;
+  doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text('5x Zašto — Analiza korijenskog uzroka',M,18);
+  doc.setFontSize(9); doc.text('lean.opticora.hr',160,10);
+  doc.text(new Date().toLocaleDateString('hr-HR'),160,17);
+  let y=30;
+  const mflds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Odjel:',document.getElementById('meta-odjel').value||'—'],['Kategorija:',document.getElementById('meta-kategorija').value||'—'],['Broj:',document.getElementById('meta-broj').value||'—'],['Tim:',document.getElementById('meta-tim').value||'—']];
+  doc.setTextColor(0,0,0); doc.setFontSize(9);
+  mflds.forEach(([l,v],i)=>{const x=M+(i%2)*90;if(i%2===0&&i>0)y+=7;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,40),x+24,y);});
+  y+=12;
+
+  // Each analysis
+  for(let id=1;id<=analysisCount;id++){
+    const block=document.getElementById('analysis-'+id);
+    if(!block)continue;
+    const problem=document.getElementById('problem-'+id)?.value||'';
+    const root=document.getElementById('root-'+id)?.value||'';
+    if(!problem&&!root)continue;
+
+    doc.setFillColor(232,97,42); doc.rect(M,y-4,W-M*2,8,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('ANALIZA #'+id,M+2,y+1); y+=10;
+
+    doc.setTextColor(0,0,0); doc.setFontSize(9);
+    if(problem){doc.setFillColor(255,247,237);doc.rect(M,y-4,W-M*2,problem.length>80?14:9,'F');doc.setFont('helvetica','bold');doc.text('PROBLEM:',M+2,y);doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(problem,W-M*2-22);doc.text(lines,M+26,y);y+=lines.length*4+4;}
+
+    for(let i=1;i<=5;i++){
+      const val=document.getElementById('why-'+id+'-'+i)?.value||'';
+      if(!val)continue;
+      doc.setFont('helvetica','bold'); doc.text('Zašto '+i+':',M+2,y);
+      doc.setFont('helvetica','normal');
+      const lines=doc.splitTextToSize(val,W-M*2-26);
+      doc.text(lines,M+26,y);
+      y+=lines.length*4+4;
+      if(y>270){doc.addPage();y=20;}
+    }
+
+    if(root){
+      doc.setFillColor(232,245,240);doc.rect(M,y-4,W-M*2,root.length>80?14:9,'F');
+      doc.setFont('helvetica','bold');doc.text('KORIJENSKI UZROK:',M+2,y);
+      doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(root,W-M*2-40);doc.text(lines,M+44,y);y+=lines.length*4+8;
+    }
+    if(y>250){doc.addPage();y=20;}
+  }
+
+  // Actions
+  const actRows=document.querySelectorAll('.action-row');
+  if(actRows.length>0){
+    doc.setFillColor(26,122,94);doc.rect(M,y-4,W-M*2,8,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text('KOREKTIVNE AKCIJE',M+2,y+1);y+=10;
+    const hdr=['Akcija','Odgovorna osoba','Rok','Status'];
+    const cw=[80,40,30,30]; let x=M;
+    doc.setFillColor(240,240,240);doc.rect(M,y-4,W-M*2,6,'F');
+    doc.setTextColor(0,0,0);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];});y+=4;
+    doc.setFont('helvetica','normal');
+    actRows.forEach((row,idx)=>{
+      const inp=row.querySelectorAll('input,select');
+      const vals=[inp[0]?.value||'',inp[1]?.value||'',inp[2]?.value||'',inp[3]?.value||''];
+      x=M;if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
+      vals.forEach((v,i)=>{doc.text(String(v).substring(0,cw[i]/2),x+1,y);x+=cw[i];});y+=6;
+    });y+=6;
+  }
+
+  // Summary
+  const uz=document.getElementById('sum-uzroci').value;
+  const oc=document.getElementById('sum-ocekivano').value;
+  const pot=document.getElementById('sum-potpis').value;
+  if(uz||oc){
+    doc.setTextColor(0,0,0);doc.setFontSize(9);
+    if(uz){doc.setFont('helvetica','bold');doc.text('Sažetak uzroka:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(uz,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
+    if(oc){doc.setFont('helvetica','bold');doc.text('Očekivani rezultat:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(oc,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
+  }
+  if(pot){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(pot,M+16,y);}
+
+  doc.setFontSize(7);doc.setTextColor(150,150,150);
+  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr',M,290);
+  doc.save('5x-Zasto-'+new Date().toISOString().slice(0,10)+'.pdf');
+}
+</script>
+
+<!-- Floating support -->
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+
+<script>
+// ── Scroll to napojnica ──
+function scrollToNapojnica() {
+  const el = document.getElementById('napojnica');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Click tracking ──
+const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+async function trackClick(method) {
+  try {
+    await fetch(`${API}/track?method=${method}`, { method: 'POST' });
+  } catch(e) {}
+}
+
+// ── Accordion ──
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+</script>
+<script>
+// Dropdown - hover on desktop, click on mobile
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  let timer;
+  dropdown.addEventListener('mouseenter', function() {
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    this.classList.add('open');
+  });
+  dropdown.addEventListener('mouseleave', function() {
+    const self = this;
+    timer = setTimeout(function() { self.classList.remove('open'); }, 200);
+  });
+  const menu = dropdown.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.addEventListener('mouseenter', function() { clearTimeout(timer); });
+    menu.addEventListener('mouseleave', function() {
+      timer = setTimeout(function() { dropdown.classList.remove('open'); }, 100);
+    });
+  }
+  const link = dropdown.querySelector('a');
+  if (link) {
+    link.addEventListener('click', function(e) {
+      if (window.innerWidth < 768) { e.preventDefault(); dropdown.classList.toggle('open'); }
+    });
+  }
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+</script>
+</body>
+</html>
+
+<!-- Floating support -->
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <div class="footer-links">
+      <a href="index.html">Početna</a>
+      <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
+      <a href="politika-privatnosti.html">Politika privatnosti</a>
+    </div>
+    <span>© Leanopedija · OptiCora, obrt · leanopedija.opticora.hr</span>
+  </div>
+</footer>
+
+<script>
+const { jsPDF } = window.jspdf;
+let agendaDayCount = 0;
+let actionCount = 0;
+let teamCount = 0;
+let kpiCount = 0;
+
+// ── Team ──
+function addTeamRow() {
+  teamCount++;
+  const roles = ['Voditelj tima','Operater','Inženjer','Voditelj smjene','Menadžer','Lean koordinator','Kvaliteta','Održavanje','Vanjski stručnjak'];
+  const tbody = document.getElementById('team-body');
+  const tr = document.createElement('tr');
+  tr.className = 'team-row';
+  tr.id = 'team-' + teamCount;
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Ime Prezime"></td>
+    <td><input type="text" placeholder="Odjel"></td>
+    <td><select><option value="">— uloga —</option>${roles.map(r=>`<option>${r}</option>`).join('')}</select></td>
+    <td><select><option>Puno radno vrijeme</option><option>Pola radnog vremena</option><option>Po potrebi</option></select></td>
+    <td><button class="del-btn" onclick="document.getElementById('team-${teamCount}').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+// ── KPI ──
+function addKPIRow() {
+  kpiCount++;
+  const div = document.createElement('div');
+  div.className = 'kpi-row';
+  div.id = 'kpi-' + kpiCount;
+  div.innerHTML = `
+    <input type="text" placeholder="npr. OEE linije 3, Čekanje materijala (min), Škart (%)">
+    <input type="text" placeholder="npr. 58%">
+    <input type="text" placeholder="npr. 72%">
+    <input type="text" placeholder="(popuni po završetku)">
+    <button class="del-btn" onclick="document.getElementById('kpi-${kpiCount}').remove()" style="background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px">✕</button>`;
+  document.getElementById('kpi-body').appendChild(div);
+}
+
+// ── Agenda ──
+function addAgendaDay() {
+  agendaDayCount++;
+  const day = agendaDayCount;
+  const container = document.getElementById('agenda-container');
+  const div = document.createElement('div');
+  div.className = 'agenda-day';
+  div.id = 'day-' + day;
+  div.innerHTML = `
+    <div class="agenda-day-header">
+      <span class="agenda-day-title">Dan ${day}</span>
+      <button class="del-btn" onclick="document.getElementById('day-${day}').remove()">✕ Ukloni dan</button>
+    </div>
+    <div class="agenda-items" id="day-items-${day}"></div>
+    <div style="padding:8px">
+      <button class="btn btn-add" onclick="addAgendaItem(${day})">+ Dodaj aktivnost</button>
+    </div>`;
+  container.appendChild(div);
+  // Add default items for first day
+  if (day === 1) {
+    addAgendaItem(day, '08:00', 'Kick-off — uvod, ciljevi, upoznavanje tima');
+    addAgendaItem(day, '09:00', 'Gemba Walk — obilazak procesa, mjerenje trenutnog stanja');
+    addAgendaItem(day, '11:00', 'Analiza podataka — 5x Zašto, Ishikawa dijagram');
+    addAgendaItem(day, '13:00', 'Pauza za ručak');
+    addAgendaItem(day, '14:00', 'Brainstorming rješenja — generiranje ideja');
+    addAgendaItem(day, '16:00', 'Odabir rješenja i plan implementacije');
+  } else if (day === 2) {
+    addAgendaItem(day, '08:00', 'Implementacija rješenja — Dan 2');
+    addAgendaItem(day, '13:00', 'Pauza za ručak');
+    addAgendaItem(day, '14:00', 'Nastavak implementacije');
+    addAgendaItem(day, '17:00', 'Pregled napretka — dnevni standup');
+  } else if (day === 3) {
+    addAgendaItem(day, '08:00', 'Finalizacija implementacije');
+    addAgendaItem(day, '11:00', 'Mjerenje rezultata — usporedba s ciljevima');
+    addAgendaItem(day, '13:00', 'Pauza za ručak');
+    addAgendaItem(day, '14:00', 'Standardizacija i dokumentacija');
+    addAgendaItem(day, '15:30', 'Prezentacija rezultata menadžmentu');
+    addAgendaItem(day, '16:30', 'Retrospektiva i zaključak');
+  }
+}
+
+let agendaItemCount = 0;
+function addAgendaItem(day, time='', activity='') {
+  agendaItemCount++;
+  const id = agendaItemCount;
+  const container = document.getElementById('day-items-' + day);
+  const div = document.createElement('div');
+  div.className = 'agenda-item';
+  div.id = 'ai-' + id;
+  div.innerHTML = `
+    <input type="time" value="${time}">
+    <input type="text" placeholder="Aktivnost / tema" value="${activity}">
+    <input type="text" placeholder="Odgovoran">
+    <button class="del-btn" onclick="document.getElementById('ai-${id}').remove()">✕</button>`;
+  container.appendChild(div);
+}
+
+// ── Action plan ──
+function addActionRow() {
+  actionCount++;
+  const n = actionCount;
+  const tbody = document.getElementById('action-body');
+  const tr = document.createElement('tr');
+  tr.className = 'action-row';
+  tr.id = 'action-' + n;
+  tr.innerHTML = `
+    <td style="font-size:12px;font-weight:600;color:var(--text-faint);text-align:center">${n}</td>
+    <td><input type="text" placeholder="Opis akcije za implementaciju"></td>
+    <td><input type="text" placeholder="Ime Prezime"></td>
+    <td><input type="date"></td>
+    <td>
+      <select onchange="updateStatus(this)">
+        <option value="open">Otvoreno</option>
+        <option value="progress">U tijeku</option>
+        <option value="done">Završeno</option>
+      </select>
+    </td>
+    <td><button class="del-btn" onclick="document.getElementById('action-${n}').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function updateStatus(sel) {
+  const map = {open:'status-open',progress:'status-progress',done:'status-done'};
+  sel.className = 'status-badge ' + (map[sel.value] || '');
+}
+
+// ── Reset ──
+function resetAll() {
+  if (!confirm('Resetirati sve podatke?')) return;
+  ['kz-naziv','kz-proces','kz-voditelj','kz-sponzor','kz-opis','ba-prije','ba-poslije','zakl-good','zakl-improve','zakl-general'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('kz-trajanje').value = '3';
+  document.getElementById('team-body').innerHTML = '';
+  document.getElementById('kpi-body').innerHTML = '';
+  document.getElementById('agenda-container').innerHTML = '';
+  document.getElementById('action-body').innerHTML = '';
+  agendaDayCount = 0; actionCount = 0; teamCount = 0; kpiCount = 0; agendaItemCount = 0;
+  initDefaults();
+}
+
+// ── PDF Export ──
+function exportPDF() {
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const W = 297, M = 14;
+
+  // Header
+  doc.setFillColor(26,122,94);
+  doc.rect(0,0,W,22,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('Leanopedija', M, 10);
+  doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text('Kaizen Event Planer — Izvještaj', M, 18);
+  doc.setFontSize(9);
+  doc.text(new Date().toLocaleDateString('hr-HR'), 250, 14);
+
+  let y = 30;
+
+  // Basic info
+  const naziv = document.getElementById('kz-naziv').value || '—';
+  const proces = document.getElementById('kz-proces').value || '—';
+  const voditelj = document.getElementById('kz-voditelj').value || '—';
+  const sponzor = document.getElementById('kz-sponzor').value || '—';
+  const datumOd = document.getElementById('kz-datum-od').value || '—';
+  const datumDo = document.getElementById('kz-datum-do').value || '—';
+
+  doc.setTextColor(0,0,0); doc.setFontSize(9);
+  doc.setFont('helvetica','bold'); doc.text('Kaizen event:', M, y);
+  doc.setFont('helvetica','normal'); doc.text(naziv, M+28, y); y += 6;
+  doc.setFont('helvetica','bold'); doc.text('Proces:', M, y);
+  doc.setFont('helvetica','normal'); doc.text(proces, M+20, y);
+  doc.setFont('helvetica','bold'); doc.text('Voditelj:', 120, y);
+  doc.setFont('helvetica','normal'); doc.text(voditelj, 140, y);
+  doc.setFont('helvetica','bold'); doc.text('Period:', 200, y);
+  doc.setFont('helvetica','normal'); doc.text(`${datumOd} — ${datumDo}`, 216, y); y += 10;
+
+  // KPIs
+  doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
+  doc.text('CILJEVI I KPI', M+2, y+1); y += 10;
+
+  const kpiRows = document.querySelectorAll('#kpi-body .kpi-row');
+  if (kpiRows.length > 0) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text('KPI / Mjera', M, y); doc.text('Trenutno', 140, y); doc.text('Cilj', 180, y); doc.text('Postignuto', 220, y); y += 5;
+    kpiRows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(0,0,0);
+      doc.text(inputs[0]?.value || '—', M, y);
+      doc.text(inputs[1]?.value || '—', 140, y);
+      doc.text(inputs[2]?.value || '—', 180, y);
+      doc.text(inputs[3]?.value || '—', 220, y); y += 6;
+    });
+  }
+  y += 4;
+
+  // Action plan
+  if (y > 160) { doc.addPage(); y = 20; }
+  doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
+  doc.text('AKCIJSKI PLAN', M+2, y+1); y += 10;
+
+  const actionRows = document.querySelectorAll('.action-row');
+  if (actionRows.length > 0) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text('#', M, y); doc.text('Akcija', M+8, y); doc.text('Odgovorna osoba', 170, y); doc.text('Rok', 215, y); doc.text('Status', 245, y); y += 5;
+    actionRows.forEach((row, i) => {
+      const inputs = row.querySelectorAll('input');
+      const sel = row.querySelector('select');
+      const statusMap = {open:'Otvoreno', progress:'U tijeku', done:'Završeno'};
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
+      doc.text(String(i+1), M, y);
+      const actionText = doc.splitTextToSize(inputs[0]?.value || '—', 120);
+      doc.text(actionText, M+8, y);
+      doc.text(inputs[1]?.value || '—', 170, y);
+      doc.text(inputs[2]?.value || '—', 215, y);
+      doc.text(statusMap[sel?.value] || '—', 245, y);
+      y += Math.max(actionText.length * 4, 6);
+      if (y > 185) { doc.addPage(); y = 20; }
+    });
+  }
+
+  doc.setFontSize(7); doc.setTextColor(150,150,150);
+  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr', M, 198);
+  doc.save(`Kaizen-event-${naziv.replace(/\s+/g,'-').toLowerCase() || 'planer'}-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+// ── Dropdown nav ──
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  let timer;
+  dropdown.addEventListener('mouseenter', function() {
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    this.classList.add('open');
+  });
+  dropdown.addEventListener('mouseleave', function() {
+    const self = this;
+    timer = setTimeout(() => self.classList.remove('open'), 200);
+  });
+  const menu = dropdown.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.addEventListener('mouseenter', () => clearTimeout(timer));
+    menu.addEventListener('mouseleave', () => { timer = setTimeout(() => dropdown.classList.remove('open'), 100); });
+  }
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-dropdown')) document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+});
+
+// ── Init defaults ──
+function initDefaults() {
+  // Default team members
+  addTeamRow();
+  addTeamRow();
+  addTeamRow();
+  // Default KPIs
+  addKPIRow();
+  addKPIRow();
+  // Default agenda (3 days)
+  addAgendaDay();
+  addAgendaDay();
+  addAgendaDay();
+  // Default actions
+  addActionRow();
+  addActionRow();
+  addActionRow();
+}
+
+initDefaults();
+</script>
+
+<script>
+function scrollToNapojnica() {
+  const el = document.getElementById('napojnica');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+async function trackClick(method) {
+  try { await fetch(`${API}/track?method=${method}`, { method: 'POST' }); } catch(e) {}
+}
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
+}
+</script>
