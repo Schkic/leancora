@@ -103,7 +103,6 @@
   .nav-dropdown > a { display: flex; align-items: center; gap: 4px; }
   .nav-dropdown > a::after { content: '▾'; font-size: 10px; }
 
-  .nav-dropdown.open .dropdown-menu{display:block}
   .dropdown-menu {
     display: none;
     position: absolute;
@@ -939,11 +938,6 @@
     color: var(--text-faint);
     padding: 14px 0 6px;
   }
-  @media(max-width:768px){
-    .main-nav { display: none; }
-    .hamburger { display: flex; }
-    .header-cta { display: none; }
-  }
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     /* Header */
@@ -1054,26 +1048,23 @@
       Leanopedija
     </a>
 
-            <nav class="main-nav">
+    <nav class="main-nav">
       <div class="nav-dropdown">
-        <a href="index.html#alati">Alati</a>
+        <a href="#alati">Alati</a>
         <div class="dropdown-menu">
           <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
-          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
-          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <a href="index.html#vodici">Vodiči</a>
+        <a href="#vodici">Vodiči</a>
         <div class="dropdown-menu">
           <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
           <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
           <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
           <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
-          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
         </div>
       </div>
       <a href="zajednica.html">Zajednica</a>
@@ -1220,14 +1211,6 @@
             <div>
               <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je 5x Zašto i kako ga koristiti</div>
               <div style="font-size:12px;color:var(--text-faint);">Rješavanje problema · 5 min čitanja</div>
-            </div>
-            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
-          </a>
-          <a href="vodic-kaizen.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
-            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">♾️</span>
-            <div>
-              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je Kaizen i kako provesti Kaizen event</div>
-              <div style="font-size:12px;color:var(--text-faint);">Kontinuirano poboljšanje · 9 min čitanja</div>
             </div>
             <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
           </a>
@@ -1401,8 +1384,14 @@
     <div class="footer-links">
       <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
       <a href="politika-privatnosti.html">Politika privatnosti</a>
+      
     </div>
-    <span>© Leanopedija · OptiCora, obrt · leanopedija.opticora.hr</span>
+    <div style="color:var(--text-faint); font-size:12px;">
+      NAPOMENA: Sadržaj je informativnog karaktera napisan u najboljoj namjeri.
+    </div>
+    <div class="footer-badge">
+      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora, obrt
+    </div>
   </div>
 </footer>
 
