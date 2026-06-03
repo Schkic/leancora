@@ -2,35 +2,35 @@
 <html lang="hr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5x Zašto (5 Why) Obrazac — Analiza korijenskog uzroka | Leanopedija</title>
+<title>Gemba Walk Obrazac — Besplatni digitalni obrazac | Leanopedija</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc3545;--orange:#e8612a}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc3545;--yellow:#f5c842;--blue:#3b82f6}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
 a{color:inherit;text-decoration:none}
 .site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.header-inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.header-inner{max-width:1000px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
 .logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
 .logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
 .back-link{font-size:13px;color:var(--text-muted)}
 .back-link:hover{color:var(--green)}
 .header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
 .page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
-.page-header-inner{max-width:900px;margin:0 auto}
-.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);background:#fff7ed;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.page-header-inner{max-width:1000px;margin:0 auto}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:#eff6ff;padding:3px 10px;border-radius:20px;margin-bottom:12px}
 .page-header h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:6px}
 .page-header p{font-size:14px;color:var(--text-muted);max-width:600px;line-height:1.7}
 .toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
-.toolbar-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toolbar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
 .btn-primary{background:var(--green);color:white}
 .btn-primary:hover{background:#155f49}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 .btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
-.form-wrap{max-width:900px;margin:0 auto;padding:24px}
+.form-wrap{max-width:1000px;margin:0 auto;padding:24px}
 .card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fafaf8}
 .card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
@@ -42,62 +42,30 @@ a{color:inherit;text-decoration:none}
 .field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);transition:border-color .15s}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
-.field textarea{resize:vertical;min-height:60px}
-
-/* WHY CHAIN */
-.why-chain{position:relative;padding-left:32px}
-.why-chain::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#e8612a,#f5c842,#1a7a5e);opacity:.3}
-.why-item{position:relative;margin-bottom:16px}
-.why-item:last-child{margin-bottom:0}
-.why-number{position:absolute;left:-32px;top:10px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
-.why-n1{background:#e8612a}
-.why-n2{background:#d97706}
-.why-n3{background:#ca8a04}
-.why-n4{background:#4d7c0f}
-.why-n5{background:#1a7a5e}
-.why-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
-.why-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;min-height:56px;resize:vertical}
-.why-input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(26,122,94,.08)}
-.why-input::placeholder{color:var(--text-faint)}
-.why-hint{font-size:11px;color:var(--text-faint);margin-top:4px;font-style:italic}
-.why-arrow{text-align:center;color:var(--text-faint);font-size:18px;margin:-6px 0;padding-left:0}
-
-/* PROBLEM BOX */
-.problem-box{background:linear-gradient(135deg,#fff7ed,#fff);border:2px solid #fed7aa;border-radius:10px;padding:16px;margin-bottom:20px}
-.problem-box label{font-size:12px;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px}
-.problem-box textarea{width:100%;padding:10px 12px;border:1px solid #fed7aa;border-radius:7px;font-family:inherit;font-size:14px;font-weight:500;color:var(--text);background:white;resize:none;min-height:64px}
-.problem-box textarea:focus{outline:none;border-color:var(--orange)}
-
-/* ROOT CAUSE BOX */
-.root-cause-box{background:linear-gradient(135deg,var(--green-light),#fff);border:2px solid #86efac;border-radius:10px;padding:16px;margin-top:20px}
-.root-cause-box label{font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px}
-.root-cause-box textarea{width:100%;padding:10px 12px;border:1px solid #86efac;border-radius:7px;font-family:inherit;font-size:14px;font-weight:500;color:var(--text);background:white;resize:none;min-height:64px}
-.root-cause-box textarea:focus{outline:none;border-color:var(--green)}
-
-/* MULTIPLE ANALYSES */
-.analysis-block{border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
-.analysis-header{background:#fafaf8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.analysis-num{font-size:13px;font-weight:600;color:var(--text)}
-.analysis-body{padding:16px}
-.del-analysis-btn{background:none;border:1px solid var(--border);color:var(--text-faint);padding:4px 10px;border-radius:5px;font-size:12px;cursor:pointer;font-family:inherit}
-.del-analysis-btn:hover{color:var(--red);border-color:#fecaca;background:#fee2e2}
-.add-analysis-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--green);background:none;border:1px dashed var(--green);border-radius:6px;padding:9px 16px;cursor:pointer;font-family:inherit;transition:background .15s;margin-bottom:16px}
-.add-analysis-btn:hover{background:var(--green-light)}
-
-/* CORRECTIVE ACTIONS */
-.action-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--border)}
-.action-row:last-child{border-bottom:none}
-.action-row input,.action-row select{padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;width:100%}
-.action-row input:focus,.action-row select:focus{outline:none;border-color:var(--green)}
-.del-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:16px;padding:6px;border-radius:4px}
+.field textarea{resize:vertical;min-height:70px}
+.obs-table{width:100%;border-collapse:collapse}
+.obs-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;padding:8px 8px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
+.obs-row td{padding:6px 5px;border-bottom:1px solid var(--border);vertical-align:top}
+.obs-row:last-child td{border-bottom:none}
+.obs-row td input,.obs-row td select,.obs-row td textarea{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg);resize:none}
+.obs-row td input:focus,.obs-row td select:focus,.obs-row td textarea:focus{outline:none;border-color:var(--green)}
+.row-num{font-size:11px;color:var(--text-faint);text-align:center;padding:6px 4px;width:22px}
+.add-row-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:none;border:1px dashed var(--green);border-radius:6px;padding:7px 14px;cursor:pointer;margin-top:10px;font-family:inherit;transition:background .15s}
+.add-row-btn:hover{background:var(--green-light)}
+.del-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:3px}
 .del-btn:hover{color:var(--red);background:#fee2e2}
-.action-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;padding:8px 0;border-bottom:2px solid var(--border)}
-.action-header span{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em}
-.add-action-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:none;border:1px dashed var(--green);border-radius:6px;padding:7px 14px;cursor:pointer;margin-top:10px;font-family:inherit;transition:background .15s}
-.add-action-btn:hover{background:var(--green-light)}
-
-.tip-box{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 14px;font-size:13px;color:#92400e;line-height:1.6;margin-top:12px}
-.tip-box strong{display:block;margin-bottom:4px}
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:background .12s}
+.check-item:hover{background:var(--green-light)}
+.check-item input[type=checkbox]{margin-top:2px;accent-color:var(--green);flex-shrink:0}
+.check-item-text{font-size:13px;color:var(--text)}
+.check-item-sub{font-size:11px;color:var(--text-faint);margin-top:1px}
+.rating-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.rating-row:last-child{border-bottom:none}
+.rating-label{flex:1;font-size:13px}
+.star-group{display:flex;gap:3px}
+.star-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#ddd;transition:color .1s;line-height:1;padding:0}
+.star-btn.active{color:var(--yellow)}
 
 
   .main-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -351,16 +319,16 @@ a{color:inherit;text-decoration:none}
   .footer-links a:hover { color: var(--green); }
 </style>
   <!-- SEO -->
-  <meta name="keywords" content="5 Why, 5x Zašto, root cause analysis, analiza korijenskog uzroka, Lean alati, problem solving, Ishikawa">
+  <meta name="keywords" content="Gemba Walk, Gemba Walk obrazac, Lean obilazak pogona, Muda gubici, Lean proizvodnja, kontinuirano poboljšanje">
   <meta name="author" content="Marko Škiljan — OptiCora">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://leanopedija.opticora.hr/5-zasto.html">
+  <link rel="canonical" href="https://leanopedija.opticora.hr/gemba-walk.html">
 
   <!-- Open Graph (dijeljenje na društvenim mrežama) -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="5x Zašto (5 Why) Obrazac — Analiza korijenskog uzroka | Leanopedija">
-  <meta property="og:description" content="Besplatni 5x Zašto (5 Why) obrazac za analizu korijenskog uzroka problema. Vizualni lanac pitanja, više analiza odjednom, PDF izvoz za dokumentaciju.">
-  <meta property="og:url" content="https://leanopedija.opticora.hr/5-zasto.html">
+  <meta property="og:title" content="Gemba Walk Obrazac — Besplatni digitalni obrazac | Leanopedija">
+  <meta property="og:description" content="Strukturirani Gemba Walk obrazac za obilazak proizvodnog pogona. Dokumentirajte zapažanja, identificirajte gubitke (Muda) i definirajte akcije. PDF izvoz.">
+  <meta property="og:url" content="https://leanopedija.opticora.hr/gemba-walk.html">
   <meta property="og:locale" content="hr_HR">
   <meta property="og:site_name" content="Leanopedija">
 
@@ -445,81 +413,132 @@ a{color:inherit;text-decoration:none}
   <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
 </div>
 
-
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="tool-badge">🔍 Besplatni alat</div>
-    <h1>5x Zašto — Analiza korijenskog uzroka</h1>
-    <p>Metoda 5x Zašto (5 Why) je jednostavna tehnika za otkrivanje korijenskog uzroka problema. Postavljajte pitanje "Zašto?" pet puta — svaki odgovor vodi dublje prema pravom uzroku. Ispunite obrazac i preuzmite kao PDF.</p>
+    <div class="tool-badge">🚶 Besplatni alat</div>
+    <h1>Gemba Walk Obrazac</h1>
+    <p>Strukturirani obrazac za Gemba Walk — obilazak mjesta gdje se stvara vrijednost. Dokumentirajte zapažanja, identificirajte gubitke i definirajte akcije za poboljšanje.</p>
   </div>
 </div>
-
 <div class="toolbar">
   <div class="toolbar-inner">
-    <button class="btn btn-outline" onclick="addAnalysis()">+ Dodaj novu analizu</button>
+    <button class="btn btn-outline" onclick="resetForm()">🔄 Resetiraj</button>
     <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
     <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
   </div>
 </div>
-
-<div class="form-wrap" id="main-form">
-
-  <!-- META -->
+<div class="form-wrap" id="gemba-form">
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#fff7ed">📋</div><div><h3>Podaci o analizi</h3><p>Opće informacije o problemu i timu</p></div></div>
+    <div class="card-header"><div class="card-icon" style="background:#eff6ff">📋</div><div><h3>Podaci o Gemba Walku</h3><p>Osnovne informacije o obilasku</p></div></div>
     <div class="card-body">
       <div class="grid-3" style="margin-bottom:12px">
-        <div class="field"><label>Datum analize</label><input type="date" id="meta-datum"></div>
-        <div class="field"><label>Voditelj analize</label><input type="text" id="meta-voditelj" placeholder="Ime i prezime"></div>
-        <div class="field"><label>Tim / Sudionici</label><input type="text" id="meta-tim" placeholder="npr. Voditelj kvalitete, Lean koordinator"></div>
+        <div class="field"><label>Datum obilaska</label><input type="date" id="meta-datum"></div>
+        <div class="field"><label>Početak</label><input type="time" id="meta-pocetak"></div>
+        <div class="field"><label>Kraj</label><input type="time" id="meta-kraj"></div>
       </div>
-      <div class="grid-3">
-        <div class="field"><label>Odjel / Linija / Proces</label><input type="text" id="meta-odjel" placeholder="npr. Montažna linija A"></div>
-        <div class="field"><label>Broj izvještaja / Reference</label><input type="text" id="meta-broj" placeholder="npr. NC-2024-042"></div>
-        <div class="field"><label>Kategorija problema</label>
-          <select id="meta-kategorija">
-            <option value="">— odaberi —</option>
-            <option>Kvaliteta — škart / rework</option>
-            <option>Kvaliteta — reklamacija kupca</option>
-            <option>Sigurnost — incident / near-miss</option>
-            <option>Zastoj stroja / opreme</option>
-            <option>Kašnjenje isporuke</option>
-            <option>Povećani troškovi</option>
-            <option>Procesni problem</option>
-            <option>Ostalo</option>
+      <div class="grid-3" style="margin-bottom:12px">
+        <div class="field"><label>Voditelj Gemba Walka</label><input type="text" id="meta-voditelj" placeholder="Ime i prezime"></div>
+        <div class="field"><label>Sudionici</label><input type="text" id="meta-sudionici" placeholder="npr. Voditelj linije, Lean koordinator"></div>
+        <div class="field"><label>Odjel / Pogon / Linija</label><input type="text" id="meta-lokacija" placeholder="npr. Montažna linija B"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Fokus obilaska</label>
+          <select id="meta-cilj">
+            <option value="">— odaberi fokus —</option>
+            <option>Sigurnost (Safety)</option>
+            <option>Kvaliteta (Quality)</option>
+            <option>Produktivnost i tok (Flow)</option>
+            <option>5S i red na radnom mjestu</option>
+            <option>OEE i učinkovitost strojeva</option>
+            <option>Standardizirani rad</option>
+            <option>Obuka i razvoj radnika</option>
+            <option>Opći pregled (sve kategorije)</option>
           </select>
         </div>
+        <div class="field"><label>Napomena / kontekst</label><input type="text" id="meta-napomena" placeholder="npr. Povećan broj reklamacija u zadnja 2 tjedna"></div>
       </div>
     </div>
   </div>
 
-  <!-- ANALYSES CONTAINER -->
-  <div id="analyses-container"></div>
-
-  <!-- CORRECTIVE ACTIONS -->
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">🎯</div><div><h3>Korektivne i preventivne akcije</h3><p>Definirajte konkretne akcije za uklanjanje korijenskih uzroka</p></div></div>
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">✅</div><div><h3>Na što obratiti pažnju</h3><p>Označite što ste pregledali</p></div></div>
     <div class="card-body">
-      <div class="action-header">
-        <span>Akcija</span><span>Odgovorna osoba</span><span>Rok</span><span>Status</span><span></span>
+      <div class="checklist">
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Sigurnost radnika</div><div class="check-item-sub">PPE oprema, oznake opasnosti, slobodni izlazi</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">5S stanje radnog mjesta</div><div class="check-item-sub">Red, čistoća, označenost, sortiranje</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Tok materijala i WIP</div><div class="check-item-sub">Nedovršena proizvodnja, čekanje, gomilanje</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Standardizirani rad</div><div class="check-item-sub">Rade li radnici prema standardu?</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Kvaliteta i greške</div><div class="check-item-sub">Škart, rework, uzroci grešaka</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Učinkovitost strojeva (OEE)</div><div class="check-item-sub">Zastoji, podešavanja, sporiji rad</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Vizualni management</div><div class="check-item-sub">KPI ploče, andon sustavi, oznake</div></div></label>
+        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Razgovor s radnicima</div><div class="check-item-sub">"Što vas sprječava u radu?" — bez krivnje</div></div></label>
       </div>
-      <div id="actions-body"></div>
-      <button class="add-action-btn" onclick="addAction()">+ Dodaj akciju</button>
     </div>
   </div>
 
-  <!-- SUMMARY -->
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#e8f5f0">📝</div><div><h3>Zaključak i provjera učinkovitosti</h3></div></div>
+    <div class="card-header"><div class="card-icon" style="background:#fffbeb">👁️</div><div><h3>Zapažanja i gubici (Muda)</h3><p>Bilježite sve što ste uočili — probleme, gubitke, prilike za poboljšanje</p></div></div>
+    <div class="card-body" style="padding:0">
+      <table class="obs-table">
+        <thead><tr>
+          <th style="width:22px">#</th>
+          <th style="width:13%">Lokacija</th>
+          <th style="width:18%">Vrsta gubitka</th>
+          <th style="width:30%">Opis zapažanja</th>
+          <th style="width:22%">Mogući uzrok</th>
+          <th style="width:11%">Prioritet</th>
+          <th style="width:22px"></th>
+        </tr></thead>
+        <tbody id="obs-body"></tbody>
+      </table>
+      <div style="padding:12px 18px"><button class="add-row-btn" onclick="addObsRow()">+ Dodaj zapažanje</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#fdf4ff">⭐</div><div><h3>Ocjena zatečenog stanja</h3><p>Subjektivna ocjena po kategorijama (1=loše → 5=izvrsno)</p></div></div>
+    <div class="card-body">
+      <div class="rating-row"><span class="rating-label">Sigurnost</span><div class="star-group" data-cat="sig"></div></div>
+      <div class="rating-row"><span class="rating-label">5S i red</span><div class="star-group" data-cat="5s"></div></div>
+      <div class="rating-row"><span class="rating-label">Tok i produktivnost</span><div class="star-group" data-cat="tok"></div></div>
+      <div class="rating-row"><span class="rating-label">Kvaliteta</span><div class="star-group" data-cat="kval"></div></div>
+      <div class="rating-row"><span class="rating-label">Standardizirani rad</span><div class="star-group" data-cat="std"></div></div>
+      <div class="rating-row"><span class="rating-label">Angažiranost radnika</span><div class="star-group" data-cat="rad"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">🎯</div><div><h3>Akcijski plan</h3><p>Konkretne akcije s odgovornom osobom i rokom</p></div></div>
+    <div class="card-body" style="padding:0">
+      <table class="obs-table">
+        <thead><tr>
+          <th style="width:22px">#</th>
+          <th style="width:38%">Akcija (što točno napraviti)</th>
+          <th style="width:20%">Odgovorna osoba</th>
+          <th style="width:15%">Rok</th>
+          <th style="width:20%">Status</th>
+          <th style="width:22px"></th>
+        </tr></thead>
+        <tbody id="action-body"></tbody>
+      </table>
+      <div style="padding:12px 18px"><button class="add-row-btn" onclick="addActionRow()">+ Dodaj akciju</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#e8f5f0">📝</div><div><h3>Sažetak i zaključci</h3></div></div>
     <div class="card-body">
       <div class="grid-2" style="margin-bottom:12px">
-        <div class="field"><label>Sažetak korijenskih uzroka</label><textarea id="sum-uzroci" placeholder="Ukratko opišite što ste otkrili kao korijenski uzrok..."></textarea></div>
-        <div class="field"><label>Očekivani rezultat nakon provedbe akcija</label><textarea id="sum-ocekivano" placeholder="Što se očekuje poboljšati / koje metrike pratiti?"></textarea></div>
+        <div class="field"><label>Ključna pozitivna zapažanja</label><textarea id="sum-poz" placeholder="Što funkcionira dobro? Što treba pohvaliti?"></textarea></div>
+        <div class="field"><label>Ključni problemi / gubici</label><textarea id="sum-prob" placeholder="Najveći problemi uočeni tijekom obilaska..."></textarea></div>
       </div>
-      <div class="grid-3">
-        <div class="field"><label>Datum provjere učinkovitosti</label><input type="date" id="sum-provjera"></div>
-        <div class="field"><label>Rezultat provjere</label><input type="text" id="sum-rezultat" placeholder="Ispuniti nakon provjere..."></div>
-        <div class="field"><label>Potpis voditelja analize</label><input type="text" id="sum-potpis" placeholder="Ime i prezime"></div>
+      <div class="grid-2">
+        <div class="field"><label>Preporuke za hitnu akciju</label><textarea id="sum-hitno" placeholder="Što treba napraviti odmah?"></textarea></div>
+        <div class="field">
+          <label>Datum sljedećeg Gemba Walka</label><input type="date" id="sum-sljedeci">
+          <label style="margin-top:10px;display:block">Potpis voditelja</label>
+          <input type="text" id="sum-potpis" placeholder="Ime i prezime" style="margin-top:6px">
+        </div>
       </div>
     </div>
   </div>
@@ -606,163 +625,136 @@ a{color:inherit;text-decoration:none}
 <script>
 document.getElementById('meta-datum').valueAsDate = new Date();
 
-const whyHints = [
-  'Opišite problem jasno i konkretno — što se točno dogodilo, kada, gdje?',
-  'Zašto je do toga došlo? Što je neposredni uzrok?',
-  'Zašto je nastao taj uzrok? Idite dublje...',
-  'Zašto se to nije spriječilo? Tražite sistemski uzrok...',
-  'Zašto postoji taj sistemski problem? Ovo je obično korijenski uzrok.',
-];
-const whyLabels = ['Problem (što se dogodilo)', 'Zašto? (1. razina)', 'Zašto? (2. razina)', 'Zašto? (3. razina)', 'Zašto? (4. razina)', 'Zašto? — Korijenski uzrok (5. razina)'];
-const whyColors = ['#e8612a','#d97706','#ca8a04','#4d7c0f','#1a7a5e','#1a7a5e'];
+document.querySelectorAll('.star-group').forEach(group => {
+  group.innerHTML = [1,2,3,4,5].map(i =>
+    `<button class="star-btn" data-val="${i}" onclick="rateStar(this)">★</button>`
+  ).join('');
+});
 
-let analysisCount = 0;
-
-function addAnalysis() {
-  analysisCount++;
-  const id = analysisCount;
-  const div = document.createElement('div');
-  div.className = 'analysis-block';
-  div.id = 'analysis-' + id;
-
-  let whyRows = '';
-  for (let i = 0; i < 5; i++) {
-    whyRows += `
-      <div class="why-item">
-        <div class="why-number why-n${i+1}" style="background:${whyColors[i]}">${i+1}</div>
-        <div class="why-label">${whyLabels[i+1]}</div>
-        <textarea class="why-input" id="why-${id}-${i+1}" placeholder="${whyHints[i]}" rows="2"></textarea>
-        ${i < 4 ? '<div class="why-arrow">↓</div>' : ''}
-      </div>`;
-  }
-
-  div.innerHTML = `
-    <div class="analysis-header">
-      <span class="analysis-num">🔍 Analiza #${id}</span>
-      ${id > 1 ? `<button class="del-analysis-btn" onclick="document.getElementById('analysis-${id}').remove()">✕ Ukloni</button>` : ''}
-    </div>
-    <div class="analysis-body">
-      <div class="problem-box">
-        <label>🔴 Problem / Simptom</label>
-        <textarea id="problem-${id}" placeholder="Što se točno dogodilo? Budite specifični — kada, gdje, koliko često, koliki je utjecaj?" rows="2"></textarea>
-      </div>
-      <div class="why-chain">
-        ${whyRows}
-      </div>
-      <div class="root-cause-box">
-        <label>✅ Korijenski uzrok (zaključak)</label>
-        <textarea id="root-${id}" placeholder="Sažmite korijenski uzrok u jednu-dvije rečenice. Ovo je uzrok koji treba eliminirati." rows="2"></textarea>
-      </div>
-      <div class="tip-box">
-        <strong>💡 Savjet:</strong>
-        Kada pronađete korijenski uzrok, zapitajte se: "Da uklonimo ovaj uzrok, hoće li se problem ponoviti?" Ako je odgovor NE — pronašli ste pravi korijenski uzrok.
-      </div>
-    </div>`;
-  document.getElementById('analyses-container').appendChild(div);
+function rateStar(btn) {
+  const group = btn.closest('.star-group');
+  const val = parseInt(btn.dataset.val);
+  group.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('active', i < val));
 }
 
-let actionCount = 0;
-function addAction() {
-  actionCount++;
-  const div = document.createElement('div');
-  div.className = 'action-row';
-  div.innerHTML = `
-    <input type="text" placeholder="Opis korektivne / preventivne akcije...">
-    <input type="text" placeholder="Ime i prezime">
-    <input type="date">
-    <select><option>📋 Otvoreno</option><option>🔄 U tijeku</option><option>✅ Završeno</option><option>⏸️ Na čekanju</option></select>
-    <button class="del-btn" onclick="this.closest('.action-row').remove()">✕</button>`;
-  document.getElementById('actions-body').appendChild(div);
+function getStarRating(cat) {
+  const g = document.querySelector(`[data-cat="${cat}"]`);
+  return g ? g.querySelectorAll('.star-btn.active').length : 0;
 }
 
-// Init with one analysis and two actions
-addAnalysis();
-addAction(); addAction();
+let obsCount = 0;
+function addObsRow() {
+  obsCount++;
+  const tr = document.createElement('tr');
+  tr.className = 'obs-row';
+  tr.innerHTML = `
+    <td class="row-num">${obsCount}</td>
+    <td><input type="text" placeholder="Linija / zona"></td>
+    <td><select><option value="">— vrsta —</option><option>Prekomjerna proizvodnja</option><option>Čekanje</option><option>Transport</option><option>Prekomjerna obrada</option><option>Zalihe (WIP)</option><option>Nepotrebno kretanje</option><option>Greške / škart</option><option>Neiskorišten talent</option><option>Sigurnost</option><option>Ostalo</option></select></td>
+    <td><textarea rows="2" placeholder="Opis zapažanja..."></textarea></td>
+    <td><input type="text" placeholder="Mogući uzrok..."></td>
+    <td><select><option value="V">🔴 Visoki</option><option value="S" selected>🟡 Srednji</option><option value="N">🟢 Niski</option></select></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('obs-body').appendChild(tr);
+}
+
+let actCount = 0;
+function addActionRow() {
+  actCount++;
+  const tr = document.createElement('tr');
+  tr.className = 'obs-row';
+  tr.innerHTML = `
+    <td class="row-num">${actCount}</td>
+    <td><textarea rows="2" placeholder="Opis akcije..."></textarea></td>
+    <td><input type="text" placeholder="Ime i prezime"></td>
+    <td><input type="date"></td>
+    <td><select><option>📋 Otvoreno</option><option>🔄 U tijeku</option><option>✅ Završeno</option><option>⏸️ Na čekanju</option></select></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('action-body').appendChild(tr);
+}
+
+addObsRow(); addObsRow(); addObsRow();
+addActionRow(); addActionRow();
+
+function resetForm() {
+  if (!confirm('Resetirati cijeli obrazac?')) return;
+  document.querySelectorAll('input,textarea,select').forEach(el => { if(el.type!=='button') el.value=''; });
+  document.getElementById('meta-datum').valueAsDate = new Date();
+  document.querySelectorAll('.star-btn,.check-item input').forEach(b => { b.classList ? b.classList.remove('active') : (b.checked=false); });
+  document.getElementById('obs-body').innerHTML='';
+  document.getElementById('action-body').innerHTML='';
+  obsCount=0; actCount=0;
+  addObsRow(); addObsRow(); addObsRow();
+  addActionRow(); addActionRow();
+}
 
 function exportPDF() {
   const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const M=14, W=210;
+  const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const W=297, M=14;
   doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
   doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
   doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('5x Zašto — Analiza korijenskog uzroka',M,18);
-  doc.setFontSize(9); doc.text('leanopedija.opticora.hr',160,10);
-  doc.text(new Date().toLocaleDateString('hr-HR'),160,17);
+  doc.text('Gemba Walk Obrazac',M,18); doc.setFontSize(9);
+  doc.text('leanopedija.opticora.hr',240,10);
+  doc.text(new Date().toLocaleDateString('hr-HR'),240,17);
   let y=30;
-  const mflds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Odjel:',document.getElementById('meta-odjel').value||'—'],['Kategorija:',document.getElementById('meta-kategorija').value||'—'],['Broj:',document.getElementById('meta-broj').value||'—'],['Tim:',document.getElementById('meta-tim').value||'—']];
+  const flds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Lokacija:',document.getElementById('meta-lokacija').value||'—'],['Fokus:',document.getElementById('meta-cilj').value||'—'],['Sudionici:',document.getElementById('meta-sudionici').value||'—'],['Napomena:',document.getElementById('meta-napomena').value||'—']];
   doc.setTextColor(0,0,0); doc.setFontSize(9);
-  mflds.forEach(([l,v],i)=>{const x=M+(i%2)*90;if(i%2===0&&i>0)y+=7;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,40),x+24,y);});
+  flds.forEach(([l,v],i)=>{const x=M+(i%3)*88;if(i%3===0&&i>0)y+=8;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,35),x+24,y);});
   y+=12;
-
-  // Each analysis
-  for(let id=1;id<=analysisCount;id++){
-    const block=document.getElementById('analysis-'+id);
-    if(!block)continue;
-    const problem=document.getElementById('problem-'+id)?.value||'';
-    const root=document.getElementById('root-'+id)?.value||'';
-    if(!problem&&!root)continue;
-
-    doc.setFillColor(232,97,42); doc.rect(M,y-4,W-M*2,8,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('ANALIZA #'+id,M+2,y+1); y+=10;
-
-    doc.setTextColor(0,0,0); doc.setFontSize(9);
-    if(problem){doc.setFillColor(255,247,237);doc.rect(M,y-4,W-M*2,problem.length>80?14:9,'F');doc.setFont('helvetica','bold');doc.text('PROBLEM:',M+2,y);doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(problem,W-M*2-22);doc.text(lines,M+26,y);y+=lines.length*4+4;}
-
-    for(let i=1;i<=5;i++){
-      const val=document.getElementById('why-'+id+'-'+i)?.value||'';
-      if(!val)continue;
-      doc.setFont('helvetica','bold'); doc.text('Zašto '+i+':',M+2,y);
-      doc.setFont('helvetica','normal');
-      const lines=doc.splitTextToSize(val,W-M*2-26);
-      doc.text(lines,M+26,y);
-      y+=lines.length*4+4;
-      if(y>270){doc.addPage();y=20;}
-    }
-
-    if(root){
-      doc.setFillColor(232,245,240);doc.rect(M,y-4,W-M*2,root.length>80?14:9,'F');
-      doc.setFont('helvetica','bold');doc.text('KORIJENSKI UZROK:',M+2,y);
-      doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(root,W-M*2-40);doc.text(lines,M+44,y);y+=lines.length*4+8;
-    }
-    if(y>250){doc.addPage();y=20;}
+  const cats=['sig','5s','tok','kval','std','rad'];
+  const cNames=['Sigurnost','5S i red','Tok','Kvaliteta','Std. rad','Radnici'];
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('OCJENA STANJA',M,y); y+=6;
+  doc.setFontSize(8);
+  cats.forEach((c,i)=>{const r=getStarRating(c);doc.setFont('helvetica','normal');doc.text(cNames[i]+': '+'★'.repeat(r)+'☆'.repeat(5-r),M+i*44,y);});
+  y+=10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('ZAPAŽANJA I GUBICI',M,y); y+=6;
+  const obsRows=document.querySelectorAll('#obs-body tr');
+  if(obsRows.length>0){
+    const hdr=['#','Lokacija','Vrsta gubitka','Opis zapažanja','Mogući uzrok','Prioritet'];
+    const cw=[8,28,32,80,60,22]; let x=M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold');
+    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
+    doc.setFont('helvetica','normal');
+    obsRows.forEach((row,idx)=>{
+      const tds=row.querySelectorAll('td');if(tds.length<6)return;
+      const vals=[String(idx+1),tds[1].querySelector('input')?.value||'',tds[2].querySelector('select')?.value||'',tds[3].querySelector('textarea')?.value||'',tds[4].querySelector('input')?.value||'',tds[5].querySelector('select')?.value||''];
+      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
+      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
+      if(y>185){doc.addPage();y=20;}
+    });
   }
-
-  // Actions
-  const actRows=document.querySelectorAll('.action-row');
+  y+=6;
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('AKCIJSKI PLAN',M,y); y+=6;
+  const actRows=document.querySelectorAll('#action-body tr');
   if(actRows.length>0){
-    doc.setFillColor(26,122,94);doc.rect(M,y-4,W-M*2,8,'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
-    doc.text('KOREKTIVNE AKCIJE',M+2,y+1);y+=10;
-    const hdr=['Akcija','Odgovorna osoba','Rok','Status'];
-    const cw=[80,40,30,30]; let x=M;
-    doc.setFillColor(240,240,240);doc.rect(M,y-4,W-M*2,6,'F');
-    doc.setTextColor(0,0,0);doc.setFontSize(8);doc.setFont('helvetica','bold');
-    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];});y+=4;
+    const hdr=['#','Akcija','Odgovorna osoba','Rok','Status'];
+    const cw=[8,110,50,32,35]; let x=M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold');
+    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
     doc.setFont('helvetica','normal');
     actRows.forEach((row,idx)=>{
-      const inp=row.querySelectorAll('input,select');
-      const vals=[inp[0]?.value||'',inp[1]?.value||'',inp[2]?.value||'',inp[3]?.value||''];
-      x=M;if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
-      vals.forEach((v,i)=>{doc.text(String(v).substring(0,cw[i]/2),x+1,y);x+=cw[i];});y+=6;
-    });y+=6;
+      const tds=row.querySelectorAll('td');if(tds.length<5)return;
+      const vals=[String(idx+1),tds[1].querySelector('textarea')?.value||'',tds[2].querySelector('input')?.value||'',tds[3].querySelector('input')?.value||'',tds[4].querySelector('select')?.value||''];
+      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
+      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
+    });
   }
-
-  // Summary
-  const uz=document.getElementById('sum-uzroci').value;
-  const oc=document.getElementById('sum-ocekivano').value;
-  const pot=document.getElementById('sum-potpis').value;
-  if(uz||oc){
-    doc.setTextColor(0,0,0);doc.setFontSize(9);
-    if(uz){doc.setFont('helvetica','bold');doc.text('Sažetak uzroka:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(uz,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
-    if(oc){doc.setFont('helvetica','bold');doc.text('Očekivani rezultat:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(oc,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
-  }
-  if(pot){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(pot,M+16,y);}
-
+  const poz=document.getElementById('sum-poz').value;
+  const prob=document.getElementById('sum-prob').value;
+  const hitno=document.getElementById('sum-hitno').value;
+  const potpis=document.getElementById('sum-potpis').value;
+  if(poz||prob||hitno){y+=6;doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SAŽETAK',M,y);y+=6;doc.setFontSize(8);}
+  if(poz){doc.setFont('helvetica','bold');doc.text('Pozitivno:',M,y);doc.setFont('helvetica','normal');doc.text(poz.substring(0,150),M+22,y);y+=6;}
+  if(prob){doc.setFont('helvetica','bold');doc.text('Problemi:',M,y);doc.setFont('helvetica','normal');doc.text(prob.substring(0,150),M+22,y);y+=6;}
+  if(hitno){doc.setFont('helvetica','bold');doc.text('Hitno:',M,y);doc.setFont('helvetica','normal');doc.text(hitno.substring(0,150),M+14,y);y+=6;}
+  if(potpis){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(potpis,M+16,y);}
   doc.setFontSize(7);doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr',M,290);
-  doc.save('5x-Zasto-'+new Date().toISOString().slice(0,10)+'.pdf');
+  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr',M,198);
+  doc.save('Gemba-Walk-'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 </script>
 
