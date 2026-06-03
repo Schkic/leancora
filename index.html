@@ -103,6 +103,7 @@
   .nav-dropdown > a { display: flex; align-items: center; gap: 4px; }
   .nav-dropdown > a::after { content: '▾'; font-size: 10px; }
 
+  .nav-dropdown.open .dropdown-menu{display:block}
   .dropdown-menu {
     display: none;
     position: absolute;
@@ -1053,7 +1054,7 @@
       Leanopedija
     </a>
 
-        <nav class="main-nav">
+            <nav class="main-nav">
       <div class="nav-dropdown">
         <a href="index.html#alati">Alati</a>
         <div class="dropdown-menu">
