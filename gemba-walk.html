@@ -235,6 +235,19 @@ a{color:inherit;text-decoration:none}
     display: block;
   }
 
+
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:auto}
+  .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+  .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+  .mobile-menu{display:none;position:fixed;top:54px;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:16px 24px 32px;z-index:99;overflow-y:auto}
+  .mobile-menu.open{display:block}
+  .mobile-menu a{display:block;padding:12px 0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);font-weight:500}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:hover{color:var(--green)}
+  .mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
+  @media(max-width:768px){.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
 </style>
   <!-- SEO -->
   <meta name="keywords" content="Gemba Walk, Gemba Walk obrazac, Lean obilazak pogona, Muda gubici, Lean proizvodnja, kontinuirano poboljšanje">
@@ -282,17 +295,54 @@ a{color:inherit;text-decoration:none}
       <div class="nav-dropdown">
         <a href="index.html#alati">Alati</a>
         <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
         </div>
       </div>
-      <a href="index.html#vodici">Vodiči</a>
+      <div class="nav-dropdown">
+        <a href="index.html#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+        </div>
+      </div>
+      <a href="zajednica.html">Zajednica</a>
       <a href="o-nama.html">O nama</a>
     </nav>
     <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Izbornik">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-section">Alati</div>
+  <a href="oee-kalkulator.html" onclick="closeMobileMenu()">🧮 OEE kalkulator</a>
+  <a href="5s-audit.html" onclick="closeMobileMenu()">📋 5S audit obrazac</a>
+  <a href="gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk obrazac</a>
+  <a href="5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto obrazac</a>
+  <a href="kaizen-planer.html" onclick="closeMobileMenu()">♾️ Kaizen event planer</a>
+  <a href="kaizen-prijedlog.html" onclick="closeMobileMenu()">💡 Kaizen prijedlog</a>
+  <div class="mobile-menu-section">Vodiči</div>
+  <a href="vodic-oee.html" onclick="closeMobileMenu()">📊 Što je OEE i kako ga mjeriti</a>
+  <a href="vodic-5s.html" onclick="closeMobileMenu()">5️⃣ 5S metodologija — uvod</a>
+  <a href="vodic-gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk — kako organizirati</a>
+  <a href="vodic-5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto — analiza uzroka</a>
+  <a href="vodic-kaizen.html" onclick="closeMobileMenu()">♾️ Kaizen — što je i kako provesti</a>
+  <div class="mobile-menu-section">Ostalo</div>
+  <a href="zajednica.html" onclick="closeMobileMenu()">💬 Zajednica</a>
+  <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
+  <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
+</div>
 <div class="page-header">
   <div class="page-header-inner">
     <div class="tool-badge">🚶 Besplatni alat</div>
@@ -492,10 +542,13 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<footer class="page-footer">
-  <div class="page-footer-inner">
-    <span>© Leanopedija — <a href="index.html">lean.opticora.hr</a></span>
-    <span>Obrazac je besplatan za korištenje.</span>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
+      <a href="politika-privatnosti.html">Politika privatnosti</a>
+    </div>
+    <span>© Leanopedija · OptiCora, obrt · leanopedija.opticora.hr</span>
   </div>
 </footer>
 
