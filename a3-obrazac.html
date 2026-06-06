@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A3 Obrazac — Besplatni digitalni obrazac za rješavanje problema | Leanopedija</title>
+<meta name="description" content="Besplatni A3 obrazac za strukturirano rješavanje problema. Ispunite digitalni A3 report i preuzmite kao PDF. Lean problem solving alat za hrvatsku industriju.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc3545;--yellow:#f5c842;--blue:#3b82f6;--orange:#e8612a}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1000px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
+.header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
+.page-header-inner{max-width:1000px;margin:0 auto}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);background:#fff4ef;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:6px}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:600px;line-height:1.7}
+.toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
+.toolbar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#155f49}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.form-wrap{max-width:1000px;margin:0 auto;padding:24px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fafaf8}
+.card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.card-header h3{font-size:14px;font-weight:600}
+.card-header p{font-size:12px;color:var(--text-faint);margin-top:1px}
+.card-step{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);background:var(--green-light);padding:2px 8px;border-radius:10px;margin-left:auto;flex-shrink:0}
+.card-body{padding:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field textarea{resize:vertical;min-height:80px}
+.field textarea.tall{min-height:120px}
+.zasto-chain{display:flex;flex-direction:column;gap:8px}
+.zasto-item{display:flex;align-items:flex-start;gap:10px}
+.zasto-num{width:24px;height:24px;background:var(--green);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:8px}
+.zasto-arrow{color:var(--text-faint);font-size:18px;margin-top:8px;flex-shrink:0}
+.action-table{width:100%;border-collapse:collapse}
+.action-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;padding:8px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
+.action-row td{padding:6px 5px;border-bottom:1px solid var(--border);vertical-align:top}
+.action-row:last-child td{border-bottom:none}
+.action-row td input,.action-row td select,.action-row td textarea{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg);resize:none}
+.action-row td input:focus,.action-row td select:focus{outline:none;border-color:var(--green)}
+.del-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:3px}
+.del-btn:hover{color:var(--red);background:#fee2e2}
+.add-row-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:none;border:1px dashed var(--green);border-radius:6px;padding:7px 14px;cursor:pointer;margin-top:10px;font-family:inherit;transition:background .15s}
+.add-row-btn:hover{background:var(--green-light)}
+.status-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.status-item{flex:1;min-width:120px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center}
+.status-item select{border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:500;color:var(--text);text-align:center;cursor:pointer;width:100%}
+.status-label{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-bottom:4px}
+.info-box{background:var(--green-light);border-left:3px solid var(--green);padding:10px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.6}
+.info-box strong{color:var(--green)}
+
+/* NAV */
+.main-nav{display:flex;align-items:center;gap:4px;flex:1}
+.main-nav a{font-size:14px;color:var(--text-muted);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s}
+.main-nav a:hover{background:var(--green-light);color:var(--green)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px}
+.nav-dropdown>a::after{content:"▾";font-size:10px}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:200}
+.dropdown-menu::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+.dropdown-menu a{display:block;padding:8px 12px;font-size:13px;color:var(--text);border-radius:6px;line-height:1.4}
+.dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
+.dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
+.nav-dropdown.open .dropdown-menu{display:block}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:54px;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:16px 24px 32px;z-index:99;overflow-y:auto}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:12px 0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);font-weight:500}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a:hover{color:var(--green)}
+.mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
+@media(max-width:768px){.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
+
+/* NAPOJNICA */
+.tip-section{background:#fffdf5;border-top:1px solid #f0e8c0;border-bottom:1px solid #f0e8c0}
+.tip-inner{max-width:1100px;margin:0 auto;padding:40px 24px}
+.accordion{margin-top:24px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.acc-item{border-bottom:1px solid var(--border)}
+.acc-item:last-child{border-bottom:none}
+.acc-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--white);border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;color:var(--text);text-align:left;gap:12px;transition:background .15s}
+.acc-btn:hover{background:var(--green-light)}
+.acc-arrow{width:12px;height:12px;flex-shrink:0;color:var(--text-muted);transition:transform .2s}
+.acc-btn.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:16px 18px 20px;background:#fafaf8;border-top:1px solid var(--border)}
+.acc-body.open{display:block}
+.support-float{position:fixed;bottom:24px;right:24px;z-index:500}
+.support-bubble{background:var(--green);color:white;border-radius:50px;padding:10px 18px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(26,122,94,.35);cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .15s}
+.support-bubble:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(26,122,94,.45)}
+.support-dot{width:8px;height:8px;background:#4eff9e;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.2)}}
+@keyframes float-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* FOOTER */
+.site-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;font-size:12px;color:var(--text-faint)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-links{display:flex;gap:16px}
+.footer-links a{color:var(--text-faint);transition:color .12s}
+.footer-links a:hover{color:var(--green)}
+
+@media(max-width:680px){.grid-2,.grid-3{grid-template-columns:1fr}.status-bar{flex-direction:column}}
+@media print{.site-header,.toolbar,.support-float,.tip-section,.site-footer{display:none}.form-wrap{padding:0}}
+</style>
+<meta name="keywords" content="A3 obrazac, A3 report, problem solving, Lean rješavanje problema, Toyota A3, kontinuirano poboljšanje">
+<meta name="author" content="Marko Škiljan — OptiCora">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://leanopedija.opticora.hr/a3-obrazac.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="A3 Obrazac — Besplatni digitalni obrazac | Leanopedija">
+<meta property="og:description" content="Besplatni A3 obrazac za strukturirano rješavanje problema. Ispunite i preuzmite kao PDF.">
+<meta property="og:url" content="https://leanopedija.opticora.hr/a3-obrazac.html">
+<meta property="og:locale" content="hr_HR">
+<meta property="og:site_name" content="Leanopedija">
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">L°</div>
+      Leanopedija
+    </a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="index.html#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
+          <a href="a3-obrazac.html">📄 A3 obrazac <span>Strukturirano rješavanje problema</span></a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="index.html#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+          <a href="vodic-a3.html">📄 A3 metoda — rješavanje problema <span>7 min čitanja</span></a>
+        </div>
+      </div>
+      <a href="zajednica.html">Zajednica</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
+    <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Izbornik">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-section">Alati</div>
+  <a href="oee-kalkulator.html" onclick="closeMobileMenu()">🧮 OEE kalkulator</a>
+  <a href="5s-audit.html" onclick="closeMobileMenu()">📋 5S audit obrazac</a>
+  <a href="gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk obrazac</a>
+  <a href="5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto obrazac</a>
+  <a href="kaizen-planer.html" onclick="closeMobileMenu()">♾️ Kaizen event planer</a>
+  <a href="kaizen-prijedlog.html" onclick="closeMobileMenu()">💡 Kaizen prijedlog</a>
+  <a href="a3-obrazac.html" onclick="closeMobileMenu()">📄 A3 obrazac</a>
+  <div class="mobile-menu-section">Vodiči</div>
+  <a href="vodic-oee.html" onclick="closeMobileMenu()">📊 Što je OEE i kako ga mjeriti</a>
+  <a href="vodic-5s.html" onclick="closeMobileMenu()">5️⃣ 5S metodologija — uvod</a>
+  <a href="vodic-gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk — kako organizirati</a>
+  <a href="vodic-5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto — analiza uzroka</a>
+  <a href="vodic-kaizen.html" onclick="closeMobileMenu()">♾️ Kaizen — što je i kako provesti</a>
+  <a href="vodic-a3.html" onclick="closeMobileMenu()">📄 A3 metoda — rješavanje problema</a>
+  <div class="mobile-menu-section">Ostalo</div>
+  <a href="zajednica.html" onclick="closeMobileMenu()">💬 Zajednica</a>
+  <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
+  <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
+</div>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="tool-badge">📄 Besplatni alat</div>
+    <h1>A3 Obrazac</h1>
+    <p>Strukturirani obrazac za rješavanje problema A3 metodom — od opisa problema do provjere rezultata. Ispunite sve korake i preuzmite kao PDF.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <button class="btn btn-outline" onclick="resetForm()">🔄 Resetiraj</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
+    <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
+  </div>
+</div>
+
+<div class="form-wrap" id="a3-form">
+
+  <!-- KORAK 1 — Naslov i osnovni podaci -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#eff6ff">📋</div>
+      <div><h3>Osnovni podaci</h3><p>Tko, što, kada i gdje</p></div>
+      <span class="card-step">Korak 1</span>
+    </div>
+    <div class="card-body">
+      <div class="field" style="margin-bottom:12px">
+        <label>Naziv / naslov problema</label>
+        <input type="text" id="naslov" placeholder="npr. Povećan broj reklamacija na sklopu X — Linija 3">
+      </div>
+      <div class="grid-3" style="margin-bottom:12px">
+        <div class="field"><label>Datum otvaranja</label><input type="date" id="datum-otvaranja"></div>
+        <div class="field"><label>Ciljni datum rješenja</label><input type="date" id="datum-ciljni"></div>
+        <div class="field"><label>Broj A3 dokumenta</label><input type="text" id="broj-a3" placeholder="npr. A3-2025-001"></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Vlasnik A3 (odgovorna osoba)</label><input type="text" id="vlasnik" placeholder="Ime i prezime"></div>
+        <div class="field"><label>Odjel / Pogon / Linija</label><input type="text" id="odjel" placeholder="npr. Montaža, Linija 3"></div>
+        <div class="field"><label>Tim / Sudionici</label><input type="text" id="tim" placeholder="npr. Kvaliteta, Proizvodnja, Održavanje"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 2 — Pozadina problema -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff4ef">🎯</div>
+      <div><h3>Pozadina i kontekst problema</h3><p>Zašto je ovaj problem važan?</p></div>
+      <span class="card-step">Korak 2</span>
+    </div>
+    <div class="card-body">
+      <div class="info-box">
+        <strong>Savjet:</strong> Opišite poslovni kontekst — zašto je ovaj problem važan za firmu, kupca ili proces. Navedite kvantitativne podatke ako ih imate (troškovi, količine, frekvencija).
+      </div>
+      <div class="field">
+        <label>Opis pozadine i važnosti problema</label>
+        <textarea class="tall" id="pozadina" placeholder="npr. U posljednjih 30 dana zabilježeno je 47 reklamacija kupca zbog neispravnog sklopa X. Troškovi reworka iznose cca. 2.400 € / mj. Kupac je upozorio da će pokrenuti audit dobavljača ako se problem ne riješi do kraja kvartala..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 3 — Trenutno stanje -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fffbeb">📊</div>
+      <div><h3>Trenutno stanje (Current State)</h3><p>Što se točno događa? Podaci i mjerenja.</p></div>
+      <span class="card-step">Korak 3</span>
+    </div>
+    <div class="card-body">
+      <div class="info-box">
+        <strong>Savjet:</strong> Opišite trenutno stanje s konkretnim podacima — brojevi, postotci, frekvencije. Koristite "5W1H": Što, Gdje, Kada, Tko, Koliko (What, Where, When, Who, How much).
+      </div>
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Što se događa? (opis problema)</label>
+          <textarea id="sto" placeholder="Konkretno što nije u redu..."></textarea>
+        </div>
+        <div class="field">
+          <label>Gdje se pojavljuje? (lokacija, stroj, linija)</label>
+          <textarea id="gdje" placeholder="Na kojoj liniji, operaciji, stroju..."></textarea>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Kada se pojavljuje? (kada, kako često)</label>
+          <textarea id="kada" placeholder="Učestalost, smjena, uvjeti..."></textarea>
+        </div>
+        <div class="field">
+          <label>Koliko je velik problem? (KPI, troškovi, količina)</label>
+          <textarea id="koliko" placeholder="Brojčani prikaz problema — defekti, troškovi, zastoji..."></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <label>Vizualni prikaz / napomena (skica, grafikon, tijek procesa)</label>
+        <textarea id="vizual" placeholder="Opišite ili skicirajte tijek procesa, tok materijala ili mjesta nastanka problema... (za pravi vizual koristite Ispis i ručno dodajte skicu)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 4 — Analiza uzroka -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf4">🔍</div>
+      <div><h3>Analiza uzroka (Root Cause Analysis)</h3><p>Zašto se problem pojavljuje? — 5x Zašto</p></div>
+      <span class="card-step">Korak 4</span>
+    </div>
+    <div class="card-body">
+      <div class="info-box">
+        <strong>Metoda 5x Zašto:</strong> Počnite od simptoma i pitajte "Zašto?" pet puta. Svaki odgovor postaje sljedeće pitanje. Cilj je doći do <strong>korijenskog uzroka</strong> — ne simptoma.
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label>Problem / simptom (polazišna točka)</label>
+        <input type="text" id="simptom" placeholder="npr. Sklop X ima povećan postotak reklamacija">
+      </div>
+      <div class="zasto-chain">
+        <div class="zasto-item">
+          <div class="zasto-num">1</div>
+          <div class="field" style="flex:1">
+            <label>Zašto se to događa?</label>
+            <input type="text" id="z1" placeholder="Zašto 1...">
+          </div>
+        </div>
+        <div class="zasto-item">
+          <div class="zasto-arrow">↓</div>
+          <div class="zasto-num">2</div>
+          <div class="field" style="flex:1">
+            <label>Zašto se to događa?</label>
+            <input type="text" id="z2" placeholder="Zašto 2...">
+          </div>
+        </div>
+        <div class="zasto-item">
+          <div class="zasto-arrow">↓</div>
+          <div class="zasto-num">3</div>
+          <div class="field" style="flex:1">
+            <label>Zašto se to događa?</label>
+            <input type="text" id="z3" placeholder="Zašto 3...">
+          </div>
+        </div>
+        <div class="zasto-item">
+          <div class="zasto-arrow">↓</div>
+          <div class="zasto-num">4</div>
+          <div class="field" style="flex:1">
+            <label>Zašto se to događa?</label>
+            <input type="text" id="z4" placeholder="Zašto 4...">
+          </div>
+        </div>
+        <div class="zasto-item">
+          <div class="zasto-arrow">↓</div>
+          <div class="zasto-num">5</div>
+          <div class="field" style="flex:1">
+            <label>Zašto se to događa? → Korijenski uzrok</label>
+            <input type="text" id="z5" placeholder="Korijenski uzrok...">
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>Zaključak — korijenski uzrok</label>
+        <textarea id="korijen" placeholder="Sažetak korijenskog uzroka na temelju 5x Zašto analize..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 5 — Ciljno stanje -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf4">🎯</div>
+      <div><h3>Ciljno stanje (Target State)</h3><p>Gdje želimo biti? Konkretni i mjerljivi ciljevi.</p></div>
+      <span class="card-step">Korak 5</span>
+    </div>
+    <div class="card-body">
+      <div class="info-box">
+        <strong>SMART ciljevi:</strong> Specifični, Mjerljivi, Ostvarivi, Relevantni, Vremenski ograničeni. Svaki cilj mora imati broj i rok.
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Opis ciljnog stanja</label>
+        <textarea class="tall" id="ciljno" placeholder="npr. Smanjiti broj reklamacija sklopa X s 47 na maksimalno 5 u 30 dana. Eliminirati korijenski uzrok (nedostatak vizualnih uputa na operaciji 7). Uvesti poka-yoke provjeru na kraju linije."></textarea>
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Ciljni KPI (što mjerimo)</label>
+          <input type="text" id="kpi-naziv" placeholder="npr. Broj reklamacija / mj.">
+        </div>
+        <div class="field">
+          <label>Trenutna vrijednost</label>
+          <input type="text" id="kpi-trenutno" placeholder="npr. 47">
+        </div>
+        <div class="field">
+          <label>Ciljana vrijednost</label>
+          <input type="text" id="kpi-ciljano" placeholder="npr. ≤ 5">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 6 — Plan akcija -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#e8f5f0">✅</div>
+      <div><h3>Plan akcija (Countermeasures)</h3><p>Što konkretno radimo, tko i do kada?</p></div>
+      <span class="card-step">Korak 6</span>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table class="action-table">
+        <thead>
+          <tr>
+            <th style="width:22px">#</th>
+            <th style="width:35%">Akcija (što točno napraviti)</th>
+            <th style="width:18%">Odgovorna osoba</th>
+            <th style="width:13%">Rok</th>
+            <th style="width:16%">Status</th>
+            <th style="width:12%">Prioritet</th>
+            <th style="width:22px"></th>
+          </tr>
+        </thead>
+        <tbody id="action-body"></tbody>
+      </table>
+      <div style="padding:12px 18px">
+        <button class="add-row-btn" onclick="addActionRow()">+ Dodaj akciju</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 7 — Provjera rezultata -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fffbeb">📈</div>
+      <div><h3>Provjera rezultata (Check)</h3><p>Jesu li akcije dale željene rezultate?</p></div>
+      <span class="card-step">Korak 7</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Datum provjere</label>
+          <input type="date" id="datum-provjere">
+        </div>
+        <div class="field">
+          <label>Postignuta vrijednost KPI-a</label>
+          <input type="text" id="kpi-postignuto" placeholder="npr. 3 reklamacije">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Rezultati — što smo postigli?</label>
+        <textarea class="tall" id="rezultati" placeholder="Opišite mjerljive rezultate — usporedite ciljno i postignuto stanje. Priložite grafikon ili tablicu ako je moguće..."></textarea>
+      </div>
+      <div class="field">
+        <label>Je li cilj postignut?</label>
+        <select id="cilj-postignut">
+          <option value="">— odaberite —</option>
+          <option value="da">✅ Da — cilj je postignut</option>
+          <option value="dijelomicno">⚠️ Djelomično — potrebne dodatne akcije</option>
+          <option value="ne">❌ Ne — vraćamo se na analizu</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORAK 8 — Standardizacija -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf4">📌</div>
+      <div><h3>Standardizacija i širenje (Standardize & Share)</h3><p>Kako osigurati da se problem ne ponovi?</p></div>
+      <span class="card-step">Korak 8</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-bottom:12px">
+        <div class="field">
+          <label>Što standardiziramo? (upute, procedure, checklist)</label>
+          <textarea id="standardizacija" placeholder="npr. Ažurirane radne upute za operaciju 7, nova vizualna pomagala, dopunjen QC checklist..."></textarea>
+        </div>
+        <div class="field">
+          <label>Gdje još možemo primijeniti ovo rješenje?</label>
+          <textarea id="sirenje" placeholder="npr. Isto rješenje primijeniti na Liniji 4 i 5 koje imaju isti sklop..."></textarea>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Lekcije naučene (Lessons Learned)</label>
+          <textarea id="lekcije" placeholder="Što smo naučili iz ovog problema?"></textarea>
+        </div>
+        <div class="field">
+          <label>Datum standardizacije</label>
+          <input type="date" id="datum-standardizacije">
+          <label style="margin-top:10px;display:block">Potpis vlasnika A3</label>
+          <input type="text" id="potpis" placeholder="Ime i prezime" style="margin-top:6px">
+        </div>
+        <div class="field">
+          <label>Odobrio / Pregledao</label>
+          <input type="text" id="odobrio" placeholder="Ime i prezime nadređenog">
+          <label style="margin-top:10px;display:block">Potpis odobrenja</label>
+          <input type="text" id="potpis-odobrio" placeholder="Ime i prezime" style="margin-top:6px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0 8px">
+    <button class="btn btn-primary" style="padding:11px 28px;font-size:14px" onclick="exportPDF()">⬇️ Preuzmi A3 kao PDF</button>
+  </div>
+
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto;">
+
+<!-- Napojnica -->
+<section class="tip-section" id="napojnica" style="text-align:center;">
+  <div class="tip-inner" style="max-width:680px;margin:0 auto;text-align:center;">
+    <h2>Ostavi napojnicu! ☕</h2>
+    <p>Je li vam Leanopedija pomogla, uštedjela vrijeme, živce i energiju?<br>
+    Ako želite podržati naš rad, možete to učiniti napojnicom. Hvala! 😊</p>
+    <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
+          <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Otvorite mobilno bankarstvo, odaberite skeniranje barkoda, skenirajte 2D barkod i upišite željeni iznos.</p>
+          <img src="zaba-2d.jpg" style="max-width:320px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="Zaba 2D barkod">
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
+          <span>🟢 KeksPay uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <img src="keks-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="KeksPay QR">
+        </div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
+          <span>🔵 Revolut uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <img src="revolut-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;background:#1a1a1a;padding:8px;" alt="Revolut QR">
+          <p style="font-size:12px;color:var(--text-faint);margin-top:8px;">Ili <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
+      <a href="politika-privatnosti.html">Politika privatnosti</a>
+    </div>
+    <span>© Leanopedija · OptiCora, obrt · leanopedija.opticora.hr</span>
+  </div>
+</footer>
+
+<!-- Floating -->
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble" onclick="document.getElementById('napojnica').scrollIntoView({behavior:'smooth'})" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;font-size:13px;font-weight:600;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+<script>
+// Postavi datum
+document.getElementById('datum-otvaranja').valueAsDate = new Date();
+
+// Akcije
+let actCount = 0;
+function addActionRow() {
+  actCount++;
+  const tr = document.createElement('tr');
+  tr.className = 'action-row';
+  tr.innerHTML = `
+    <td style="text-align:center;font-size:11px;color:var(--text-faint);padding:8px 4px">${actCount}</td>
+    <td><textarea rows="2" placeholder="Opis akcije..."></textarea></td>
+    <td><input type="text" placeholder="Ime i prezime"></td>
+    <td><input type="date"></td>
+    <td><select><option>📋 Otvoreno</option><option>🔄 U tijeku</option><option>✅ Završeno</option><option>⏸️ Na čekanju</option></select></td>
+    <td><select><option value="V">🔴 Visoki</option><option value="S" selected>🟡 Srednji</option><option value="N">🟢 Niski</option></select></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('action-body').appendChild(tr);
+}
+addActionRow(); addActionRow(); addActionRow();
+
+function resetForm() {
+  if (!confirm('Resetirati cijeli obrazac?')) return;
+  document.querySelectorAll('input,textarea,select').forEach(el => { if(el.type!=='button') el.value=''; });
+  document.getElementById('datum-otvaranja').valueAsDate = new Date();
+  document.getElementById('action-body').innerHTML = '';
+  actCount = 0;
+  addActionRow(); addActionRow(); addActionRow();
+}
+
+// PDF
+function exportPDF() {
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  const W = 210, M = 14, CW = W - M*2;
+  let y = 0;
+
+  function header() {
+    doc.setFillColor(26,122,94); doc.rect(0,0,W,20,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
+    doc.text('Leanopedija', M, 9);
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.text('A3 Obrazac za rješavanje problema', M, 16);
+    doc.setFontSize(8); doc.text('leanopedija.opticora.hr', W-M, 9, {align:'right'});
+    doc.text(new Date().toLocaleDateString('hr-HR'), W-M, 16, {align:'right'});
+    y = 26;
+  }
+
+  function checkPage(needed=15) {
+    if (y + needed > 280) { doc.addPage(); header(); }
+  }
+
+  function sectionTitle(title) {
+    checkPage(12);
+    doc.setFillColor(232,245,240); doc.rect(M, y-4, CW, 8, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,122,94);
+    doc.text(title, M+2, y);
+    doc.setTextColor(0,0,0); y += 6;
+  }
+
+  function fieldRow(label, value, fullWidth=true) {
+    checkPage(12);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text(label, M, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+    const lines = doc.splitTextToSize(value || '—', CW);
+    doc.text(lines, M, y+5);
+    y += 5 + lines.length * 4 + 3;
+  }
+
+  function twoFields(l1, v1, l2, v2) {
+    checkPage(16);
+    const hw = (CW - 6) / 2;
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text(l1, M, y); doc.text(l2, M+hw+6, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+    doc.text(String(v1||'—').substring(0,40), M, y+5);
+    doc.text(String(v2||'—').substring(0,40), M+hw+6, y+5);
+    y += 12;
+  }
+
+  header();
+
+  // 1. Osnovni podaci
+  sectionTitle('1. OSNOVNI PODACI');
+  fieldRow('Naziv problema:', document.getElementById('naslov').value);
+  twoFields('Vlasnik A3:', document.getElementById('vlasnik').value, 'Odjel / Linija:', document.getElementById('odjel').value);
+  twoFields('Datum otvaranja:', document.getElementById('datum-otvaranja').value, 'Ciljni datum:', document.getElementById('datum-ciljni').value);
+  twoFields('Broj A3:', document.getElementById('broj-a3').value, 'Tim:', document.getElementById('tim').value);
+
+  // 2. Pozadina
+  sectionTitle('2. POZADINA I KONTEKST');
+  fieldRow('', document.getElementById('pozadina').value);
+
+  // 3. Trenutno stanje
+  sectionTitle('3. TRENUTNO STANJE');
+  twoFields('Što:', document.getElementById('sto').value, 'Gdje:', document.getElementById('gdje').value);
+  twoFields('Kada:', document.getElementById('kada').value, 'Koliko:', document.getElementById('koliko').value);
+  fieldRow('Vizualni prikaz:', document.getElementById('vizual').value);
+
+  // 4. Analiza uzroka
+  sectionTitle('4. ANALIZA UZROKA — 5x ZAŠTO');
+  checkPage(10);
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+  doc.text('Simptom:', M, y); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+  doc.text(document.getElementById('simptom').value||'—', M+20, y); y+=7;
+  ['z1','z2','z3','z4','z5'].forEach((id,i) => {
+    checkPage(8);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(26,122,94);
+    doc.text(`Zašto ${i+1}:`, M+i*2, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+    doc.text(document.getElementById(id).value||'—', M+i*2+18, y); y+=7;
+  });
+  fieldRow('Korijenski uzrok:', document.getElementById('korijen').value);
+
+  // 5. Ciljno stanje
+  sectionTitle('5. CILJNO STANJE');
+  fieldRow('', document.getElementById('ciljno').value);
+  const kpiN = document.getElementById('kpi-naziv').value;
+  const kpiT = document.getElementById('kpi-trenutno').value;
+  const kpiC = document.getElementById('kpi-ciljano').value;
+  if (kpiN) {
+    checkPage(8);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text(`KPI: ${kpiN}`, M, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+    doc.text(`Trenutno: ${kpiT||'—'}   →   Ciljano: ${kpiC||'—'}`, M+50, y); y+=8;
+  }
+
+  // 6. Plan akcija
+  sectionTitle('6. PLAN AKCIJA');
+  const rows = document.querySelectorAll('#action-body tr');
+  if (rows.length > 0) {
+    checkPage(12);
+    const cols = [8,80,38,28,28,20];
+    const hdrs = ['#','Akcija','Odgovorna osoba','Rok','Status','Prioritet'];
+    doc.setFillColor(240,240,240); doc.rect(M, y-4, CW, 6, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(80,80,80);
+    let x = M;
+    hdrs.forEach((h,i) => { doc.text(h, x+1, y); x += cols[i]; }); y += 4;
+    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+    rows.forEach((row, idx) => {
+      checkPage(8);
+      const tds = row.querySelectorAll('td');
+      const vals = [String(idx+1), tds[1]?.querySelector('textarea')?.value||'', tds[2]?.querySelector('input')?.value||'', tds[3]?.querySelector('input')?.value||'', tds[4]?.querySelector('select')?.value||'', tds[5]?.querySelector('select')?.value||''];
+      if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M, y-3, CW, 7, 'F'); }
+      x = M;
+      vals.forEach((v,i) => { doc.setFontSize(7); doc.text(String(v).substring(0, Math.floor(cols[i]*1.8)), x+1, y); x += cols[i]; });
+      y += 7;
+    });
+    y += 4;
+  }
+
+  // 7. Provjera
+  sectionTitle('7. PROVJERA REZULTATA');
+  twoFields('Datum provjere:', document.getElementById('datum-provjere').value, 'Postignuti KPI:', document.getElementById('kpi-postignuto').value);
+  fieldRow('Rezultati:', document.getElementById('rezultati').value);
+  fieldRow('Cilj postignut:', document.getElementById('cilj-postignut').value||'—');
+
+  // 8. Standardizacija
+  sectionTitle('8. STANDARDIZACIJA');
+  twoFields('Što standardiziramo:', document.getElementById('standardizacija').value, 'Gdje širimo:', document.getElementById('sirenje').value);
+  fieldRow('Lekcije naučene:', document.getElementById('lekcije').value);
+  twoFields('Vlasnik A3 (potpis):', document.getElementById('potpis').value, 'Odobrio:', document.getElementById('odobrio').value);
+
+  // Footer
+  doc.setFontSize(7); doc.setTextColor(150,150,150);
+  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr', M, 290);
+
+  doc.save('A3-Obrazac-' + (document.getElementById('naslov').value||'dokument').substring(0,30).replace(/\s/g,'-') + '-' + new Date().toISOString().slice(0,10) + '.pdf');
+}
+
+// Accordion
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
+}
+
+// Tracking
+const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+async function trackClick(method) {
+  try { await fetch(`${API}/track?method=${method}`, {method:'POST'}); } catch(e) {}
+}
+
+// Mobile menu
+function toggleMobileMenu(){
+  const m=document.getElementById('mobile-menu'),b=document.getElementById('hamburger');
+  m.classList.toggle('open');b.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('click',function(e){
+  const m=document.getElementById('mobile-menu');
+  if(m&&m.classList.contains('open')&&!e.target.closest('#mobile-menu')&&!e.target.closest('#hamburger'))closeMobileMenu();
+});
+
+// Dropdown nav
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  let timer;
+  dropdown.addEventListener('mouseenter', function() {
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    this.classList.add('open');
+  });
+  dropdown.addEventListener('mouseleave', function() {
+    const self = this;
+    timer = setTimeout(function() { self.classList.remove('open'); }, 200);
+  });
+  const menu = dropdown.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.addEventListener('mouseenter', function() { clearTimeout(timer); });
+    menu.addEventListener('mouseleave', function() {
+      timer = setTimeout(function() { dropdown.classList.remove('open'); }, 100);
+    });
+  }
+  const link = dropdown.querySelector('a');
+  if (link) {
+    link.addEventListener('click', function(e) {
+      if (window.innerWidth < 768) { e.preventDefault(); dropdown.classList.toggle('open'); }
+    });
+  }
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+</script>
+</body>
+</html>

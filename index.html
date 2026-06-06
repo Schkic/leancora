@@ -956,6 +956,9 @@
     .hero-tags { gap: 6px; }
     .hero-tag { font-size: 11px; }
 
+    /* Ads - stack on mobile */
+    #oglas-1, #oglas-2 { display: none; }
+
     /* Vodiči */
     .section { padding: 24px 16px; }
     .guide-layout { grid-template-columns: 1fr; gap: 20px; }
@@ -1053,6 +1056,9 @@
           <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
+          <a href="a3-obrazac.html">📄 A3 obrazac <span>Strukturirano rješavanje problema</span></a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -1062,6 +1068,8 @@
           <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
           <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
           <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+          <a href="vodic-a3.html">📄 A3 metoda — rješavanje problema <span>7 min čitanja</span></a>
         </div>
       </div>
       <a href="zajednica.html">Zajednica</a>
@@ -1084,12 +1092,14 @@
   <a href="5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto obrazac</a>
   <a href="kaizen-planer.html" onclick="closeMobileMenu()">♾️ Kaizen event planer</a>
   <a href="kaizen-prijedlog.html" onclick="closeMobileMenu()">💡 Kaizen prijedlog</a>
+  <a href="a3-obrazac.html" onclick="closeMobileMenu()">📄 A3 obrazac</a>
   <div class="mobile-menu-section">Vodiči</div>
   <a href="vodic-oee.html" onclick="closeMobileMenu()">📊 Što je OEE i kako ga mjeriti</a>
   <a href="vodic-5s.html" onclick="closeMobileMenu()">5️⃣ 5S metodologija — uvod</a>
   <a href="vodic-gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk — kako organizirati</a>
   <a href="vodic-5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto — analiza uzroka</a>
   <a href="vodic-kaizen.html" onclick="closeMobileMenu()">♾️ Kaizen — što je i kako provesti</a>
+  <a href="vodic-a3.html" onclick="closeMobileMenu()">📄 A3 metoda — rješavanje problema</a>
   <div class="mobile-menu-section">Ostalo</div>
   <a href="zajednica.html" onclick="closeMobileMenu()">💬 Zajednica</a>
   <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
@@ -1219,6 +1229,14 @@
             </div>
             <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
           </a>
+          <a href="vodic-a3.html" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--white);text-decoration:none;transition:background .12s;" onmouseover="this.style.background='var(--green-light)'" onmouseout="this.style.background='var(--white)'">
+            <span style="font-size:20px;flex-shrink:0;margin-top:2px;">📄</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px;">Što je A3 metoda i kako je koristiti</div>
+              <div style="font-size:12px;color:var(--text-faint);">Rješavanje problema · 7 min čitanja</div>
+            </div>
+            <span style="margin-left:auto;font-size:12px;color:var(--green);flex-shrink:0;margin-top:3px;">Čitaj →</span>
+          </a>
         </div>
       </div>
 
@@ -1264,6 +1282,11 @@
       <span class="tool-emoji">💡</span>
       <div class="tool-name">Kaizen prijedlog <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
       <div class="tool-desc">Obrazac za prijedloge poboljšanja od radnika. Ispuni i preuzmi kao PDF.</div>
+    </a>
+    <a href="a3-obrazac.html" class="tool-card">
+      <span class="tool-emoji">📄</span>
+      <div class="tool-name">A3 obrazac <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:3px;margin-left:4px;">Dostupno</span></div>
+      <div class="tool-desc">Strukturirano rješavanje problema — od opisa do standardizacije. PDF izvoz.</div>
     </a>
     <a href="#" class="tool-card" style="opacity:0.5;pointer-events:none;">
       <span class="tool-emoji">🗺️</span>
