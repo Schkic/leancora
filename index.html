@@ -822,63 +822,77 @@
   .acc-body.open { display: block; }
 
   /* ── AD SLOTS ── */
-  .ad-slot {
+  /* ── OGLASI ── */
+  .ad-wrap {
     border: 1px solid var(--border);
-    border-radius: var(--border-radius-lg, 10px);
+    border-radius: 12px;
     overflow: hidden;
     background: var(--white);
+    max-width: 1100px;
+    margin: 0 auto;
   }
-  .ad-slot-label {
+  .ad-label {
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-faint);
-    padding: 6px 12px 4px;
+    padding: 6px 16px 4px;
     border-bottom: 1px solid var(--border);
   }
-  .ad-slot-inner {
-    display: block;
+  /* Placeholder dok nema oglasivaca */
+  .ad-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, #f0f9f5 0%, #fafaf8 100%);
     text-decoration: none;
     color: inherit;
-  }
-  .ad-slot-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 20px 16px;
-    background: linear-gradient(135deg, #f0f9f5 0%, #fafaf8 100%);
-    text-align: center;
-    min-height: 120px;
     transition: background 0.15s;
   }
-  .ad-slot-inner:hover .ad-slot-placeholder {
-    background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%);
-  }
-  .ad-slot-icon { font-size: 20px; }
-  .ad-slot-placeholder strong {
-    font-size: 13px;
+  .ad-placeholder:hover { background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%); }
+  .ad-placeholder-icon { font-size: 36px; flex-shrink: 0; }
+  .ad-placeholder-body { flex: 1; }
+  .ad-placeholder-body strong {
+    display: block;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text);
-    display: block;
+    margin-bottom: 6px;
   }
-  .ad-slot-placeholder span {
-    font-size: 11px;
+  .ad-placeholder-body p {
+    font-size: 13px;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.5;
+    margin: 0;
   }
-  .ad-slot-cta {
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    color: var(--green) !important;
-    margin-top: 6px !important;
+  .ad-placeholder-cta {
+    flex-shrink: 0;
+    background: var(--green);
+    color: white;
+    padding: 9px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background 0.15s;
   }
-  /* Real ad - when you have actual advertiser */
-  .ad-slot-real img {
-    width: 100%;
-    height: auto;
-    display: block;
+  .ad-placeholder:hover .ad-placeholder-cta { background: #155f49; }
+  /* Pravi oglas - slika */
+  .ad-real { display: block; text-decoration: none; }
+  .ad-real img { width: 100%; height: auto; display: block; }
+  /* Upit ispod */
+  .ad-inquiry {
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--text-faint);
+    border-top: 1px solid var(--border);
+    text-align: right;
+  }
+  .ad-inquiry a { color: var(--green); }
+  @media(max-width:600px) {
+    .ad-placeholder { flex-direction: column; text-align: center; gap: 16px; padding: 20px 16px; }
+    .ad-placeholder-cta { width: 100%; text-align: center; }
   }
 
   /* ── HAMBURGER MENU ── */
@@ -957,8 +971,6 @@
     .hero-tag { font-size: 11px; }
 
     /* Ads - stack on mobile */
-    #oglas-1, #oglas-2 { display: none; }
-
     /* Vodiči */
     .section { padding: 24px 16px; }
     .guide-layout { grid-template-columns: 1fr; gap: 20px; }
@@ -1129,53 +1141,34 @@
       <p class="hero-note">Od OptiCora tima — iz prve ruke. Bez skrivene prodaje, bez sponzorstva.</p>
     </div>
 
-    <!-- Ad banners - horizontal -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px;">
-
-      <!--
-        ╔══════════════════════════════════════════════════════╗
-        ║  OGLAS 1 — Kako zamijeniti s pravim oglasom:        ║
-        ║                                                      ║
-        ║  OPCIJA A - Slika + link:                           ║
-        ║  Zamijeni cijeli <div class="ad-slot-inner">        ║
-        ║  s ovim:                                            ║
-        ║  <a href="URL_OGLASIVACA" target="_blank"           ║
-        ║     class="ad-slot-inner">                          ║
-        ║    <div class="ad-slot-real">                       ║
-        ║      <img src="banner.jpg" alt="Naziv firme">       ║
-        ║    </div>                                           ║
-        ║  </a>                                               ║
-        ╚══════════════════════════════════════════════════════╝
-      -->
-      <!-- Oglas 1 -->
-      <div class="ad-slot" id="oglas-1">
-        <div class="ad-slot-label">oglas</div>
-        <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
-          <div class="ad-slot-placeholder">
-            <span class="ad-slot-icon">📢</span>
-            <strong>Vaš oglas ovdje</strong>
-            <span>Dosegnite voditelje proizvodnje i Lean stručnjake</span>
-            <span class="ad-slot-cta">Pošaljite upit →</span>
-          </div>
-        </a>
-      </div>
-
-      <!-- Oglas 2 - ZAMIJENI s pravim oglasom -->
-      <div class="ad-slot" id="oglas-2">
-        <div class="ad-slot-label">oglas</div>
-        <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
-          <div class="ad-slot-placeholder">
-            <span class="ad-slot-icon">📢</span>
-            <strong>Vaš oglas ovdje</strong>
-            <span>Idealno za dobavljače opreme i software za proizvodnju</span>
-            <span class="ad-slot-cta">Pošaljite upit →</span>
-          </div>
-        </a>
-      </div>
-
-    </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════
+     OGLAS 1 — ispod heroa
+     
+     Kako zamijeniti s pravim oglasom:
+     1. Ukloni cijeli <a class="ad-placeholder"> blok
+     2. Na njegovo mjesto stavi:
+        <a href="URL_OGLASIVACA" target="_blank" class="ad-real">
+          <img src="banner.jpg" alt="Naziv firme — tagline">
+        </a>
+     3. Promijeni tekst u .ad-inquiry ako trebaš
+════════════════════════════════════════════════════ -->
+<div class="section" style="padding-top:0;padding-bottom:0;">
+  <div class="ad-wrap" id="oglas-1">
+    <div class="ad-label">oglas</div>
+    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-placeholder">
+      <span class="ad-placeholder-icon">🏭</span>
+      <div class="ad-placeholder-body">
+        <strong>Dosegnite voditelje proizvodnje i Lean stručnjake</strong>
+        <p>Leanopedija je jedino centralno Lean mjesto u Hrvatskoj. Vaš oglas vidjet će voditelji proizvodnje, Lean koordinatori i direktori koji aktivno traže rješenja.</p>
+      </div>
+      <span class="ad-placeholder-cta">Pošaljite upit →</span>
+    </a>
+    <div class="ad-inquiry">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
+  </div>
+</div>
 
 <!-- Guides + Sidebar -->
 <div class="section">
@@ -1303,28 +1296,22 @@
 
 <hr class="divider">
 
-<!-- Oglas 3 - široki banner -->
-<div class="section" style="padding-top:16px;padding-bottom:16px;">
-  <div class="ad-slot" id="oglas-3">
-    <div class="ad-slot-label">oglas — široki banner</div>
-    <!--
-      Kako zamijeniti s pravim oglasom:
-      <a href="URL_OGLASIVACA" target="_blank" class="ad-slot-inner">
-        <div class="ad-slot-real">
-          <img src="banner-728x90.jpg" alt="Naziv firme — opis">
-        </div>
-      </a>
-    -->
-    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-slot-inner">
-      <div class="ad-slot-placeholder" style="min-height:80px;flex-direction:row;gap:20px;justify-content:center;">
-        <span class="ad-slot-icon">📢</span>
-        <div style="text-align:left;">
-          <strong>OGLASNI PROSTOR — široki banner (728×90)</strong>
-          <span style="display:block;margin-top:3px;">Dosegnite voditelje proizvodnje, Lean koordinatore i direktore iz cijele Hrvatske. Od 20 €/mj.</span>
-        </div>
-        <span class="ad-slot-cta" style="white-space:nowrap;flex-shrink:0;font-size:12px;">Pošaljite upit →</span>
+<!-- ═══════════════════════════════════════════════════
+     OGLAS 2 — pred kraj stranice
+     Zamjena s pravim oglasom: isti postupak kao Oglas 1
+════════════════════════════════════════════════════ -->
+<div class="section" style="padding-top:0;padding-bottom:0;">
+  <div class="ad-wrap" id="oglas-2">
+    <div class="ad-label">oglas</div>
+    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-placeholder">
+      <span class="ad-placeholder-icon">⚙️</span>
+      <div class="ad-placeholder-body">
+        <strong>Idealno za dobavljače opreme, softvera i usluga za proizvodnju</strong>
+        <p>Drugi oglas na stranici — vidljiv korisnicima koji su pročitali vodiče i razgledali alate. Publika koja zna što traži.</p>
       </div>
+      <span class="ad-placeholder-cta">Pošaljite upit →</span>
     </a>
+    <div class="ad-inquiry">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
   </div>
 </div>
 
