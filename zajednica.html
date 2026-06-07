@@ -82,6 +82,10 @@ a{color:inherit;text-decoration:none}
 .post-action{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:3px 8px;border-radius:5px;transition:background .12s,color .12s}
 .post-action:hover{background:var(--green-light);color:var(--green)}
 .post-action.liked{color:var(--green);font-weight:600}
+.post-views{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-faint);margin-left:auto}
+.post-share{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:3px 8px;border-radius:5px;transition:background .12s,color .12s}
+.post-share:hover{background:var(--green-light);color:var(--green)}
+.post-share.copied{color:var(--green)}
 
 .comments-section{padding:14px 16px;border-top:1px solid var(--border);background:#fafaf8;display:none}
 .comments-section.open{display:block}
@@ -504,6 +508,7 @@ async function loadPosts() {
   container.innerHTML = posts.map(post => {
     const commentCount = post.community_comments?.[0]?.count || 0;
     const isLiked = likedPosts.includes(post.id);
+    const views = post.views || 0;
     return `
     <div class="post-card" id="post-${post.id}">
       <div class="post-header">
@@ -523,8 +528,12 @@ async function loadPosts() {
           👍 ${post.likes || 0}
         </button>
         <button class="post-action" onclick="toggleComments('${post.id}')">
-          💬 ${commentCount > 0 ? commentCount + ' komentara' : 'Komentiraj'}
+          💬 ${commentCount > 0 ? commentCount + (commentCount === 1 ? ' komentar' : ' komentara') : 'Komentiraj'}
         </button>
+        <button class="post-share" onclick="sharePost('${post.id}', this)" title="Kopiraj link">
+          🔗 Podijeli
+        </button>
+        <span class="post-views">👁 ${views > 0 ? views : '—'}</span>
       </div>
       <div class="comments-section" id="comments-${post.id}">
         <div id="comments-list-${post.id}"><div style="text-align:center;padding:12px;color:var(--text-faint);font-size:13px">Učitavam komentare...</div></div>
@@ -543,6 +552,10 @@ async function toggleComments(postId) {
   const section = document.getElementById('comments-' + postId);
   const isOpen = section.classList.contains('open');
   section.classList.toggle('open');
+  if (!isOpen) {
+    // Inkrement views kad korisnik otvori komentare (angažman = pravi pregled)
+    sb.rpc('increment_views', { post_id: postId }).catch(() => {});
+  }
   if (!isOpen) await loadComments(postId);
 }
 
@@ -583,6 +596,21 @@ async function submitComment(postId) {
   await loadPosts();
   document.getElementById('comments-' + postId).classList.add('open');
   showToast('✅ Komentar objavljen!');
+}
+
+// ── Share post ──
+function sharePost(postId, btn) {
+  const url = window.location.origin + window.location.pathname + '?post=' + postId;
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = '✅ Kopirano';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '🔗 Podijeli';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    showToast('Ne mogu kopirati — kopirajte ručno: ' + url);
+  });
 }
 
 // ── Like post ──
