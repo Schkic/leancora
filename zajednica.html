@@ -565,7 +565,22 @@ async function toggleComments(postId) {
   const section = document.getElementById('comments-' + postId);
   const isOpen = section.classList.contains('open');
   section.classList.toggle('open');
-  if (!isOpen) await loadComments(postId);
+  if (!isOpen) {
+    await loadComments(postId);
+    sb.rpc('increment_views', { post_id: postId }).then(() => {
+      // Ažuriraj pill lokalno bez reload
+      const card = document.getElementById('post-' + postId);
+      if (!card) return;
+      const pills = card.querySelectorAll('.post-pill');
+      pills.forEach(pill => {
+        if (pill.textContent.includes('👁')) {
+          const current = parseInt(pill.textContent.replace(/\D/g, '')) || 0;
+          const next = current + 1;
+          pill.textContent = '👁 ' + next + (next === 1 ? ' pregled' : ' pregleda');
+        }
+      });
+    }).catch(() => {});
+  }
 }
 
 // ── Load comments ──
