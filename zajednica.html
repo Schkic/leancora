@@ -80,7 +80,7 @@ a{color:inherit;text-decoration:none}
 .post-pill-share{cursor:pointer;font-family:inherit;transition:background .12s,color .12s}
 .post-pill-share:hover,.post-pill-share.copied{background:var(--green-light);color:var(--green);border-color:var(--green)}
 .post-body{padding:0 16px 12px}
-.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:6px;white-space:pre-wrap}
+.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:6px;white-space:pre-wrap;cursor:pointer}
 .post-more{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;font-weight:500}
 .post-more:hover{text-decoration:underline}
 .post-image{margin-bottom:10px}
@@ -536,7 +536,7 @@ async function loadPosts() {
         </div>
       </div>
       <div class="post-body">
-        <div class="post-text" id="post-text-${post.id}">${shortText}</div>
+        <div class="post-text" id="post-text-${post.id}" onclick="trackView('${post.id}')">${shortText}</div>
         ${isLong ? `<button class="post-more" onclick="expandPost('${post.id}')">Više...</button>` : ''}
         ${post.image_url ? `<div class="post-image"><img src="${post.image_url}" alt="Slika uz objavu" onclick="openImgModal('${post.image_url}')"></div>` : ''}
       </div>
@@ -567,19 +567,6 @@ async function toggleComments(postId) {
   section.classList.toggle('open');
   if (!isOpen) {
     await loadComments(postId);
-    sb.rpc('increment_views', { post_id: postId }).then(() => {
-      // Ažuriraj pill lokalno bez reload
-      const card = document.getElementById('post-' + postId);
-      if (!card) return;
-      const pills = card.querySelectorAll('.post-pill');
-      pills.forEach(pill => {
-        if (pill.textContent.includes('👁')) {
-          const current = parseInt(pill.textContent.replace(/\D/g, '')) || 0;
-          const next = current + 1;
-          pill.textContent = '👁 ' + next + (next === 1 ? ' pregled' : ' pregleda');
-        }
-      });
-    }).catch(() => {});
   }
 }
 
@@ -682,6 +669,24 @@ document.addEventListener('click', function(e) {
     document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
   }
 });
+// ── Track view ──
+const viewedPosts = new Set();
+function trackView(postId) {
+  if (viewedPosts.has(postId)) return; // broji samo jednom po sesiji
+  viewedPosts.add(postId);
+  sb.rpc('increment_views', { post_id: postId }).then(() => {
+    const card = document.getElementById('post-' + postId);
+    if (!card) return;
+    card.querySelectorAll('.post-pill').forEach(pill => {
+      if (pill.textContent.includes('👁')) {
+        const current = parseInt(pill.textContent.replace(/[^0-9]/g, '')) || 0;
+        const next = current + 1;
+        pill.textContent = '👁 ' + next + (next === 1 ? ' pregled' : ' pregleda');
+      }
+    });
+  }).catch(() => {});
+}
+
 // ── Expand post ──
 function expandPost(postId) {
   const el = document.getElementById('post-text-' + postId);
