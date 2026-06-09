@@ -68,20 +68,27 @@ a{color:inherit;text-decoration:none}
 
 .post-card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;transition:border-color .15s}
 .post-card:hover{border-color:#bbb}
-.post-header{padding:14px 16px 0}
-.post-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.post-header{padding:12px 16px 0}
+.post-meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.post-meta-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.post-meta-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .post-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0}
 .post-author{font-size:13px;font-weight:500}
 .post-time{font-size:11px;color:var(--text-faint)}
 .post-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--green-light);color:var(--green)}
-.post-body{padding:0 16px 14px}
-.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:10px;white-space:pre-wrap}
+.post-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);white-space:nowrap}
+.post-pill-share{cursor:pointer;font-family:inherit;transition:background .12s,color .12s}
+.post-pill-share:hover,.post-pill-share.copied{background:var(--green-light);color:var(--green);border-color:var(--green)}
+.post-body{padding:0 16px 12px}
+.post-text{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:6px;white-space:pre-wrap}
+.post-more{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;font-weight:500}
+.post-more:hover{text-decoration:underline}
 .post-image{margin-bottom:10px}
 .post-image img{max-width:100%;max-height:300px;border-radius:8px;object-fit:cover;cursor:pointer}
-.post-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;background:#fafaf8}
-.post-action{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:3px 8px;border-radius:5px;transition:background .12s,color .12s}
-.post-action:hover{background:var(--green-light);color:var(--green)}
-.post-action.liked{color:var(--green);font-weight:600}
+.post-footer{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;background:#fafaf8}
+.post-action{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);cursor:pointer;background:none;border:none;font-family:inherit;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:background .12s,color .12s}
+.post-action:hover{background:var(--green-light);color:var(--green);border-color:var(--green)}
+.post-action.liked{color:var(--green);font-weight:600;border-color:var(--green)}
 
 .comments-section{padding:14px 16px;border-top:1px solid var(--border);background:#fafaf8;display:none}
 .comments-section.open{display:block}
@@ -504,18 +511,33 @@ async function loadPosts() {
   container.innerHTML = posts.map(post => {
     const commentCount = post.community_comments?.[0]?.count || 0;
     const isLiked = likedPosts.includes(post.id);
+    const views = post.views || 0;
+    const isLong = post.text.length > 280;
+    const shortText = isLong ? escHtml(post.text.substring(0, 280)) + '...' : escHtml(post.text);
+    const commentLabel = commentCount > 0
+      ? (commentCount === 1 ? '💬 1 komentar' : `💬 ${commentCount} komentara`)
+      : '💬 Nema komentara još';
+    const viewsLabel = views > 0 ? `👁 ${views} ${views === 1 ? 'pregled' : 'pregleda'}` : '👁 —';
     return `
     <div class="post-card" id="post-${post.id}">
       <div class="post-header">
-        <div class="post-meta">
-          <div class="post-avatar" style="background:${avatarColor(post.author)}">${avatarInitials(post.author)}</div>
-          <span class="post-author">${escHtml(post.author)}</span>
-          <span class="post-time">${timeAgo(post.created_at)}</span>
-          ${post.category ? `<span class="post-badge">${escHtml(post.category)}</span>` : ''}
+        <div class="post-meta-row">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:${avatarColor(post.author)}">${avatarInitials(post.author)}</div>
+            <span class="post-author">${escHtml(post.author)}</span>
+            <span class="post-time">${timeAgo(post.created_at)}</span>
+            ${post.category ? `<span class="post-badge">${escHtml(post.category)}</span>` : ''}
+          </div>
+          <div class="post-meta-right">
+            <button class="post-pill post-pill-share" onclick="sharePost('${post.id}', this)">🔗 Podijeli</button>
+            <span class="post-pill">${commentLabel}</span>
+            <span class="post-pill">${viewsLabel}</span>
+          </div>
         </div>
       </div>
       <div class="post-body">
-        <div class="post-text">${escHtml(post.text)}</div>
+        <div class="post-text" id="post-text-${post.id}">${shortText}</div>
+        ${isLong ? `<button class="post-more" onclick="expandPost('${post.id}')">Više...</button>` : ''}
         ${post.image_url ? `<div class="post-image"><img src="${post.image_url}" alt="Slika uz objavu" onclick="openImgModal('${post.image_url}')"></div>` : ''}
       </div>
       <div class="post-footer">
@@ -523,7 +545,7 @@ async function loadPosts() {
           👍 ${post.likes || 0}
         </button>
         <button class="post-action" onclick="toggleComments('${post.id}')">
-          💬 ${commentCount > 0 ? commentCount + ' komentara' : 'Komentiraj'}
+          💬 Komentiraj
         </button>
       </div>
       <div class="comments-section" id="comments-${post.id}">
@@ -645,6 +667,28 @@ document.addEventListener('click', function(e) {
     document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
   }
 });
+// ── Expand post ──
+function expandPost(postId) {
+  const el = document.getElementById('post-text-' + postId);
+  el.style.webkitLineClamp = 'unset';
+  el.style.overflow = 'visible';
+  const btn = el.nextElementSibling;
+  if (btn && btn.classList.contains('post-more')) btn.style.display = 'none';
+}
+
+// ── Share post ──
+function sharePost(postId, btn) {
+  const url = window.location.origin + window.location.pathname + '?post=' + postId;
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.innerHTML;
+    btn.textContent = '✅ Kopirano';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    alert('Kopirajte ručno: ' + url);
+  });
+}
+
 // Mobile menu
 function toggleMobileMenu() {
   var m = document.getElementById('mobile-menu');
