@@ -100,7 +100,7 @@ a{color:inherit;text-decoration:none}
 .tip-box strong{display:block;margin-bottom:4px}
 .page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
 .page-footer-inner{max-width:900px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between}
-@media(max-width:680px){.grid-2,.grid-3{grid-template-columns:1fr}.action-row{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.action-row{grid-template-columns:1fr 1fr}.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
 
   /* ── HEADER NAV (tool pages) ── */
   .main-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -267,6 +267,17 @@ a{color:inherit;text-decoration:none}
     display: block;
   }
 
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:54px;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:16px 24px 32px;z-index:99;overflow-y:auto}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:12px 0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);font-weight:500}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a:hover{color:var(--green)}
+.mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
 </style>
   <!-- SEO -->
   <meta name="keywords" content="5 Why, 5x Zašto, root cause analysis, analiza korijenskog uzroka, Lean alati, problem solving, Ishikawa">
@@ -323,8 +334,35 @@ a{color:inherit;text-decoration:none}
       <a href="o-nama.html">O nama</a>
     </nav>
     <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Izbornik">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-section">Alati</div>
+  <a href="oee-kalkulator.html" onclick="closeMobileMenu()">🧮 OEE kalkulator</a>
+  <a href="5s-audit.html" onclick="closeMobileMenu()">📋 5S audit obrazac</a>
+  <a href="gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk obrazac</a>
+  <a href="5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto obrazac</a>
+  <a href="kaizen-planer.html" onclick="closeMobileMenu()">♾️ Kaizen event planer</a>
+  <a href="kaizen-prijedlog.html" onclick="closeMobileMenu()">💡 Kaizen prijedlog</a>
+  <a href="a3-obrazac.html" onclick="closeMobileMenu()">📄 A3 obrazac</a>
+  <div class="mobile-menu-section">Vodiči</div>
+  <a href="vodic-oee.html" onclick="closeMobileMenu()">📊 Što je OEE i kako ga mjeriti</a>
+  <a href="vodic-5s.html" onclick="closeMobileMenu()">5️⃣ 5S metodologija — uvod</a>
+  <a href="vodic-gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk — kako organizirati</a>
+  <a href="vodic-5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto — analiza uzroka</a>
+  <a href="vodic-kaizen.html" onclick="closeMobileMenu()">♾️ Kaizen — što je i kako provesti</a>
+  <a href="vodic-a3.html" onclick="closeMobileMenu()">📄 A3 metoda — rješavanje problema</a>
+  <a href="vodic-vizualni-management.html" onclick="closeMobileMenu()">🎨 Vizualni management — boje i oznake</a>
+  <div class="mobile-menu-section">Ostalo</div>
+  <a href="zajednica.html" onclick="closeMobileMenu()">💬 Zajednica</a>
+  <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
+  <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
+</div>
 
 <div class="page-header">
   <div class="page-header-inner">
@@ -712,6 +750,24 @@ document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.nav-dropdown')) {
     document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+// Mobile menu
+function toggleMobileMenu() {
+  var m = document.getElementById('mobile-menu');
+  var b = document.getElementById('hamburger');
+  m.classList.toggle('open');
+  b.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  var m = document.getElementById('mobile-menu');
+  if (m && m.classList.contains('open') && !e.target.closest('#mobile-menu') && !e.target.closest('#hamburger')) {
+    closeMobileMenu();
   }
 });
 </script>
