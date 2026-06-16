@@ -188,6 +188,10 @@ a{color:inherit;text-decoration:none}
     bottom: 24px;
     right: 24px;
     z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
   }
 .support-bubble {
     background: var(--green);
@@ -865,6 +869,20 @@ function resetAll() {
 
 function exportPDF() {
   const { jsPDF } = window.jspdf;
+
+  // jsPDF helvetica ne podrzava hrvatske dijakritike - zamjena s ASCII
+  function hr2ascii(s) {
+    if (!s) return '';
+    return s
+      .replace(/č/g,'c').replace(/Č/g,'C')
+      .replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S')
+      .replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
+      .replace(/[\u{2600}-\u{27BF}]/gu,'')
+      .trim();
+  }
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const W = 297, M = 14;
 
@@ -875,7 +893,7 @@ function exportPDF() {
   doc.setFontSize(16); doc.setFont('helvetica', 'bold');
   doc.text('Leanopedija', M, 10);
   doc.setFontSize(11); doc.setFont('helvetica', 'normal');
-  doc.text('OEE Kalkulator — Izvještaj', M, 18);
+  doc.text('OEE Kalkulator — Izvjestaj', M, 18);
   doc.setFontSize(9);
   doc.text('leanopedija.opticora.hr', 220, 10);
   doc.text(new Date().toLocaleDateString('hr-HR'), 220, 17);
@@ -888,11 +906,11 @@ function exportPDF() {
   const osoba = document.getElementById('meta-osoba').value || '—';
   doc.setTextColor(0,0,0); doc.setFontSize(9);
   doc.setFont('helvetica','bold'); doc.text('Pogon/Linija:', M, y);
-  doc.setFont('helvetica','normal'); doc.text(pogon, M+28, y);
+  doc.setFont('helvetica','normal'); doc.text(hr2ascii(pogon), M+28, y);
   doc.setFont('helvetica','bold'); doc.text('Period:', 100, y);
-  doc.setFont('helvetica','normal'); doc.text(period, 118, y);
+  doc.setFont('helvetica','normal'); doc.text(hr2ascii(period), 118, y);
   doc.setFont('helvetica','bold'); doc.text('Odgovorna osoba:', 180, y);
-  doc.setFont('helvetica','normal'); doc.text(osoba, 215, y);
+  doc.setFont('helvetica','normal'); doc.text(hr2ascii(osoba), 215, y);
   y += 10;
 
   // Global OEE
@@ -905,12 +923,7 @@ function exportPDF() {
 
   // ── OEE Gauge (polukrug, gornji) ──
   // Strip emoji iz gradeText - helvetica ne podržava unicode emoji
-  // Strip emoji i specijalne Unicode znakove, ali zadrži dijakritike (čćšžđ itd.)
-  const gradeClean = gradeText
-    .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')  // emoji blokovi
-    .replace(/[\u{2600}-\u{26FF}]/gu, '')     // miscellaneous symbols (⭐⚠️)
-    .replace(/[\u{2700}-\u{27BF}]/gu, '')     // dingbats
-    .trim();
+  const gradeClean = gradeText;
 
   const gCX = M + 38, gCY = y + 30, gR = 26;
 
@@ -951,7 +964,7 @@ function exportPDF() {
   // Grade tekst (bez emojija)
   doc.setFont('helvetica','normal'); doc.setFontSize(7);
   doc.setTextColor(120,120,120);
-  doc.text(gradeClean, gCX, gCY + 12, { align: 'center' });
+  doc.text(hr2ascii(gradeClean), gCX, gCY + 12, { align: 'center' });
 
   // ── A / P / Q barovi desno od gaugea ──
   const bX = M + 82, bY = y + 4, bW = 80, bH = 3.5;
@@ -993,7 +1006,7 @@ function exportPDF() {
     doc.setTextColor(0,0,0);
     doc.setFillColor(240,240,240);
     doc.rect(M, y-4, W-M*2, 8, 'F');
-    doc.text(`${name}  —  ${badge}`, M+2, y+1);
+    doc.text(hr2ascii(`${name}  —  ${badge}`), M+2, y+1);
     y += 10;
 
     // Shift table
@@ -1012,7 +1025,7 @@ function exportPDF() {
       const r = calcShiftOEE(row);
       const sName = row.querySelector('.inp-name').value || `Smjena ${idx+1}`;
       const vals = r ? [
-        sName,
+        hr2ascii(sName),
         row.querySelector('.inp-planned').value || '—',
         row.querySelector('.inp-downtime').value || '—',
         row.querySelector('.inp-ideal').value || '—',
@@ -1024,7 +1037,7 @@ function exportPDF() {
       x = M;
       if (idx % 2 === 0) { doc.setFillColor(252,252,252); doc.rect(M, y-3, W-M*2, 6, 'F'); }
       doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
-      vals.forEach((v,i) => { doc.text(String(v).substring(0,14), x+1, y); x += colW[i]; });
+      vals.forEach((v,i) => { doc.text(hr2ascii(String(v)).substring(0,14), x+1, y); x += colW[i]; });
       y += 6;
     });
     y += 6;
@@ -1036,19 +1049,14 @@ function exportPDF() {
   if (recItems.length > 0) {
     doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(0,0,0);
     doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8, 'F');
-    doc.setTextColor(26,122,94); doc.text('PREPORUKE ZA POBOLJŠANJE', M+2, y+1);
+    doc.setTextColor(26,122,94); doc.text('PREPORUKE ZA POBOLJSANJE', M+2, y+1);
     y += 10; doc.setTextColor(0,0,0);
     recItems.forEach(item => {
       const titleRaw = item.querySelector('.rec-title').textContent;
       const descRaw = item.querySelector('.rec-desc').textContent;
       // Strip emoji i non-latin znakova koje helvetica ne može renderirati
-      const stripEmoji = s => s
-        .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
-        .replace(/[\u{2600}-\u{26FF}]/gu, '')
-        .replace(/[\u{2700}-\u{27BF}]/gu, '')
-        .trim();
-      const title = stripEmoji(titleRaw);
-      const desc = stripEmoji(descRaw);
+      const title = hr2ascii(titleRaw);
+      const desc = hr2ascii(descRaw);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(30,30,30);
       doc.text('• ' + title, M, y); y += 5;
       doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
@@ -1059,7 +1067,7 @@ function exportPDF() {
   }
 
   doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr', M, 198);
+  doc.text('Izradeno uz pomoc Leanopedija — leanopedija.opticora.hr', M, 198);
   doc.save('OEE-izvjestaj-' + new Date().toISOString().slice(0,10) + '.pdf');
 }
 
@@ -1107,7 +1115,7 @@ document.addEventListener('click', function(e) {
   }
 });</script>
 <!-- Floating support -->
-<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+<div class="support-float">
   <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
     ❤️ Zahvali se
   </div>
