@@ -230,6 +230,17 @@ a{color:inherit;text-decoration:none}
   transform: translateY(-2px) scale(1.04) !important;
   box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
 }
+
+  @media print {
+    .support-float { display: none !important; }
+    .btn-bar { display: none !important; }
+    .site-header { position: static !important; box-shadow: none !important; }
+    .nav-dropdown, .hamburger, .header-cta { display: none !important; }
+    .main-nav { display: none !important; }
+    .tip-section, .page-footer { display: none !important; }
+    body { background: white !important; }
+    .card, .machine-block, .sidebar-block { box-shadow: none !important; border: 1px solid #ddd !important; }
+  }
 </style>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
@@ -889,12 +900,73 @@ function exportPDF() {
   const avgA = document.getElementById('avg-a').textContent;
   const avgP = document.getElementById('avg-p').textContent;
   const avgQ = document.getElementById('avg-q').textContent;
-  doc.setFillColor(232, 245, 240);
-  doc.rect(M, y-4, W-M*2, 12, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.setTextColor(26,122,94);
-  doc.text(`UKUPNI OEE: ${gaugeNum}   |   A: ${avgA}   |   P: ${avgP}   |   Q: ${avgQ}`, M+2, y+3);
-  y += 16;
+  const gradeText = document.getElementById('gauge-grade').textContent;
+  const oeeVal = parseFloat(gaugeNum) || 0;
+
+  // ── OEE Gauge (polukrug) ──
+  const gCX = M + 38, gCY = y + 28, gR = 28;
+  // Sivi background luk
+  doc.setDrawColor(220, 220, 220);
+  doc.setLineWidth(5);
+  // jsPDF nema arc - crtamo segmentima
+  function drawArc(cx, cy, r, startDeg, endDeg, color, lw) {
+    doc.setDrawColor(...color);
+    doc.setLineWidth(lw);
+    const steps = 40;
+    const startR = startDeg * Math.PI / 180;
+    const endR = endDeg * Math.PI / 180;
+    for (let i = 0; i < steps; i++) {
+      const a1 = startR + (endR - startR) * i / steps;
+      const a2 = startR + (endR - startR) * (i + 1) / steps;
+      doc.line(cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+               cx + r * Math.cos(a2), cy + r * Math.sin(a2));
+    }
+  }
+  // Background luk (180° -> 0°, tj. lijevo prema desno gore)
+  drawArc(gCX, gCY, gR, 180, 0, [220,220,220], 4);
+  // OEE fill luk
+  const oeeColor = oeeVal >= 85 ? [26,122,94] : oeeVal >= 75 ? [34,197,94] : oeeVal >= 60 ? [234,179,8] : oeeVal >= 40 ? [249,115,22] : [220,38,38];
+  const endAngle = 180 - (oeeVal / 100) * 180;
+  drawArc(gCX, gCY, gR, 180, endAngle, oeeColor, 4);
+  // OEE broj u sredini
+  doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.setTextColor(...oeeColor);
+  const oeeLabel = oeeVal > 0 ? gaugeNum : '—';
+  doc.text(oeeLabel, gCX, gCY + 4, { align: 'center' });
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.setTextColor(100,100,100);
+  doc.text(gradeText, gCX, gCY + 10, { align: 'center' });
+
+  // ── A / P / Q barovi desno od gaugea ──
+  const bX = M + 82, bY = y + 4, bW = 80, bH = 3.5;
+  const components = [
+    { label: 'Dostupnost (A)', val: avgA, color: [59,130,246], bench: '≥90%' },
+    { label: 'Performansa (P)', val: avgP, color: [139,92,246], bench: '≥95%' },
+    { label: 'Kvaliteta (Q)',   val: avgQ, color: [16,185,129], bench: '≥99.9%' },
+  ];
+  let bYcur = bY;
+  components.forEach(comp => {
+    const pct = parseFloat(comp.val) || 0;
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(30,30,30);
+    doc.text(comp.label, bX, bYcur);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...comp.color);
+    doc.text(comp.val || '—', bX + bW + 8, bYcur);
+    // Track
+    doc.setFillColor(230,230,230);
+    doc.roundedRect(bX, bYcur + 2, bW, bH, 1, 1, 'F');
+    // Fill
+    if (pct > 0) {
+      doc.setFillColor(...comp.color);
+      doc.roundedRect(bX, bYcur + 2, bW * Math.min(pct/100,1), bH, 1, 1, 'F');
+    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('WC benchmark: ' + comp.bench, bX, bYcur + 10);
+    bYcur += 16;
+  });
+
+  y += 58;
+  doc.setDrawColor(220,220,220); doc.setLineWidth(0.3);
+  doc.line(M, y - 4, W - M, y - 4);
 
   // Each machine
   const blocks = document.querySelectorAll('.machine-block');
