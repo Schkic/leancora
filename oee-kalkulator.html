@@ -846,6 +846,8 @@ function resetAll() {
   document.getElementById('meta-osoba').value = '';
   machineCount = 0;
   shiftCounts = {};
+  document.getElementById('rec-card').style.display = 'none';
+  document.getElementById('rec-body').innerHTML = '';
   updateGlobalOEE();
   addMachine();
 }
