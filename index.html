@@ -248,7 +248,7 @@
     overflow: hidden;
   }
 
-  .ad-label {
+  .sponzor-oznaka {
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -279,14 +279,14 @@
 
   .ad-cta:hover { background: var(--green); color: white; }
 
-  .ad-inquiry {
+  .sponzor-kontakt {
     padding: 10px 16px;
     font-size: 12px;
     color: var(--text-faint);
     border-top: 1px solid var(--border);
   }
 
-  .ad-inquiry a { color: var(--green); text-decoration: underline; }
+  .sponzor-kontakt a { color: var(--green); text-decoration: underline; }
 
   /* ── DIVIDER ── */
   .divider {
@@ -823,7 +823,7 @@
 
   /* ── AD SLOTS ── */
   /* ── OGLASI ── */
-  .ad-wrap {
+  .sponzor-blok {
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
@@ -831,7 +831,7 @@
     max-width: 1100px;
     margin: 0 auto;
   }
-  .ad-label {
+  .sponzor-oznaka {
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -840,7 +840,7 @@
     border-bottom: 1px solid var(--border);
   }
   /* Placeholder dok nema oglasivaca */
-  .ad-placeholder {
+  .sponzor-upit {
     display: flex;
     align-items: center;
     gap: 32px;
@@ -850,23 +850,23 @@
     color: inherit;
     transition: background 0.15s;
   }
-  .ad-placeholder:hover { background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%); }
-  .ad-placeholder-icon { font-size: 36px; flex-shrink: 0; }
-  .ad-placeholder-body { flex: 1; }
-  .ad-placeholder-body strong {
+  .sponzor-upit:hover { background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%); }
+  .sponzor-upit-icon { font-size: 36px; flex-shrink: 0; }
+  .sponzor-upit-body { flex: 1; }
+  .sponzor-upit-body strong {
     display: block;
     font-size: 16px;
     font-weight: 600;
     color: var(--text);
     margin-bottom: 6px;
   }
-  .ad-placeholder-body p {
+  .sponzor-upit-body p {
     font-size: 13px;
     color: var(--text-muted);
     line-height: 1.5;
     margin: 0;
   }
-  .ad-placeholder-cta {
+  .sponzor-upit-cta {
     flex-shrink: 0;
     background: var(--green);
     color: white;
@@ -877,22 +877,22 @@
     white-space: nowrap;
     transition: background 0.15s;
   }
-  .ad-placeholder:hover .ad-placeholder-cta { background: #155f49; }
+  .sponzor-upit:hover .sponzor-upit-cta { background: #155f49; }
   /* Pravi oglas - slika */
-  .ad-real { display: block; text-decoration: none; }
-  .ad-real img { width: 100%; height: auto; display: block; }
+  .sponzor-banner { display: block; text-decoration: none; }
+  .sponzor-banner img { width: 100%; height: auto; display: block; }
   /* Upit ispod */
-  .ad-inquiry {
+  .sponzor-kontakt {
     padding: 8px 16px;
     font-size: 11px;
     color: var(--text-faint);
     border-top: 1px solid var(--border);
     text-align: right;
   }
-  .ad-inquiry a { color: var(--green); }
+  .sponzor-kontakt a { color: var(--green); }
   @media(max-width:600px) {
-    .ad-placeholder { flex-direction: column; text-align: center; gap: 16px; padding: 20px 16px; }
-    .ad-placeholder-cta { width: 100%; text-align: center; }
+    .sponzor-upit { flex-direction: column; text-align: center; gap: 16px; padding: 20px 16px; }
+    .sponzor-upit-cta { width: 100%; text-align: center; }
   }
 
   /* ── HAMBURGER MENU ── */
@@ -1151,25 +1151,25 @@
      OGLAS 1 — ispod heroa
      
      Kako zamijeniti s pravim oglasom:
-     1. Ukloni cijeli <a class="ad-placeholder"> blok
+     1. Ukloni cijeli <a class="sponzor-upit"> blok
      2. Na njegovo mjesto stavi:
-        <a href="URL_OGLASIVACA" target="_blank" class="ad-real">
+        <a href="URL_OGLASIVACA" target="_blank" class="sponzor-banner">
           <img src="banner.jpg" alt="Naziv firme — tagline">
         </a>
-     3. Promijeni tekst u .ad-inquiry ako trebaš
+     3. Promijeni tekst u .sponzor-kontakt ako trebaš
 ════════════════════════════════════════════════════ -->
 <div class="section" style="padding-top:0;padding-bottom:0;">
-  <div class="ad-wrap" id="oglas-1">
-    <div class="ad-label">oglas</div>
-    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-placeholder">
-      <span class="ad-placeholder-icon">🏭</span>
-      <div class="ad-placeholder-body">
+  <div class="sponzor-blok" id="sponzor-1">
+    <div class="sponzor-oznaka">sponzorirano</div>
+    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="sponzor-upit">
+      <span class="sponzor-upit-ikona">🏭</span>
+      <div class="sponzor-upit-tekst">
         <strong>Dosegnite voditelje proizvodnje i Lean stručnjake</strong>
         <p>Leanopedija je jedino centralno Lean mjesto u Hrvatskoj. Vaš oglas vidjet će voditelji proizvodnje, Lean koordinatori i direktori koji aktivno traže rješenja.</p>
       </div>
-      <span class="ad-placeholder-cta">Pošaljite upit →</span>
+      <span class="sponzor-upit-btn">Pošaljite upit →</span>
     </a>
-    <div class="ad-inquiry">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
+    <div class="sponzor-kontakt">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
   </div>
 </div>
 
@@ -1304,17 +1304,17 @@
      Zamjena s pravim oglasom: isti postupak kao Oglas 1
 ════════════════════════════════════════════════════ -->
 <div class="section" style="padding-top:0;padding-bottom:0;">
-  <div class="ad-wrap" id="oglas-2">
-    <div class="ad-label">oglas</div>
-    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="ad-placeholder">
-      <span class="ad-placeholder-icon">⚙️</span>
-      <div class="ad-placeholder-body">
+  <div class="sponzor-blok" id="sponzor-2">
+    <div class="sponzor-oznaka">sponzorirano</div>
+    <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji" class="sponzor-upit">
+      <span class="sponzor-upit-ikona">⚙️</span>
+      <div class="sponzor-upit-tekst">
         <strong>Idealno za dobavljače opreme, softvera i usluga za proizvodnju</strong>
         <p>Drugi oglas na stranici — vidljiv korisnicima koji su pročitali vodiče i razgledali alate. Publika koja zna što traži.</p>
       </div>
-      <span class="ad-placeholder-cta">Pošaljite upit →</span>
+      <span class="sponzor-upit-btn">Pošaljite upit →</span>
     </a>
-    <div class="ad-inquiry">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
+    <div class="sponzor-kontakt">Oglašavate se? <a href="mailto:info@opticora.hr?subject=Oglašavanje na Leanopediji">info@opticora.hr</a></div>
   </div>
 </div>
 
