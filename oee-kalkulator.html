@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -868,207 +869,71 @@ function resetAll() {
 }
 
 function exportPDF() {
-  const { jsPDF } = window.jspdf;
-
-  // jsPDF helvetica ne podrzava hrvatske dijakritike - zamjena s ASCII
-  function hr2ascii(s) {
-    if (!s) return '';
-    return s
-      .replace(/č/g,'c').replace(/Č/g,'C')
-      .replace(/ć/g,'c').replace(/Ć/g,'C')
-      .replace(/š/g,'s').replace(/Š/g,'S')
-      .replace(/ž/g,'z').replace(/Ž/g,'Z')
-      .replace(/đ/g,'d').replace(/Đ/g,'D')
-      .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
-      .replace(/[\u{2600}-\u{27BF}]/gu,'')
-      .trim();
-  }
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const W = 297, M = 14;
-
-  // Header
-  doc.setFillColor(26, 122, 94);
-  doc.rect(0, 0, W, 22, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-  doc.text('Leanopedija', M, 10);
-  doc.setFontSize(11); doc.setFont('helvetica', 'normal');
-  doc.text('OEE Kalkulator — Izvjestaj', M, 18);
-  doc.setFontSize(9);
-  doc.text('leanopedija.opticora.hr', 220, 10);
-  doc.text(new Date().toLocaleDateString('hr-HR'), 220, 17);
-
-  let y = 30;
-
-  // Meta
-  const pogon = document.getElementById('meta-pogon').value || '—';
-  const period = document.getElementById('meta-period').value || '—';
-  const osoba = document.getElementById('meta-osoba').value || '—';
-  doc.setTextColor(0,0,0); doc.setFontSize(9);
-  doc.setFont('helvetica','bold'); doc.text('Pogon/Linija:', M, y);
-  doc.setFont('helvetica','normal'); doc.text(hr2ascii(pogon), M+28, y);
-  doc.setFont('helvetica','bold'); doc.text('Period:', 100, y);
-  doc.setFont('helvetica','normal'); doc.text(hr2ascii(period), 118, y);
-  doc.setFont('helvetica','bold'); doc.text('Odgovorna osoba:', 180, y);
-  doc.setFont('helvetica','normal'); doc.text(hr2ascii(osoba), 215, y);
-  y += 10;
-
-  // Global OEE
-  const gaugeNum = document.getElementById('gauge-num').textContent;
-  const avgA = document.getElementById('avg-a').textContent;
-  const avgP = document.getElementById('avg-p').textContent;
-  const avgQ = document.getElementById('avg-q').textContent;
-  const gradeText = document.getElementById('gauge-grade').textContent;
-  const oeeVal = parseFloat(gaugeNum) || 0;
-
-  // ── OEE Gauge (polukrug, gornji) ──
-  // Strip emoji iz gradeText - helvetica ne podržava unicode emoji
-  const gradeClean = gradeText;
-
-  const gCX = M + 38, gCY = y + 30, gR = 26;
-
-  // Crtamo gornji polukrug: kut 0=desno, PI=lijevo, MI=gore
-  // Za gornji polukrug: od PI (lijevo) do 0 (desno), Y = cy - r*sin(a)
-  function drawArcTop(cx, cy, r, startDeg, endDeg, color, lw) {
-    doc.setDrawColor(...color);
-    doc.setLineWidth(lw);
-    const steps = 50;
-    const startR = startDeg * Math.PI / 180;
-    const endR = endDeg * Math.PI / 180;
-    for (let i = 0; i < steps; i++) {
-      const a1 = startR + (endR - startR) * i / steps;
-      const a2 = startR + (endR - startR) * (i + 1) / steps;
-      // sin je negativan jer Y raste prema dolje u PDF koordinatama
-      doc.line(cx + r * Math.cos(a1), cy - r * Math.sin(a1),
-               cx + r * Math.cos(a2), cy - r * Math.sin(a2));
-    }
-  }
-
-  // Background luk (cijeli gornji polukrug, 180° lijevo do 0° desno)
-  drawArcTop(gCX, gCY, gR, 180, 0, [220,220,220], 5);
-
-  // OEE fill: lijevo (180°) = 0%, desno (0°) = 100%
-  // endAngle = 180 - (oeeVal/100)*180
-  const oeeColor = oeeVal >= 85 ? [26,122,94] : oeeVal >= 75 ? [34,197,94] : oeeVal >= 60 ? [234,179,8] : oeeVal >= 40 ? [249,115,22] : [220,38,38];
-  if (oeeVal > 0) {
-    const fillEnd = 180 - (oeeVal / 100) * 180;
-    drawArcTop(gCX, gCY, gR, 180, fillEnd, oeeColor, 5);
-  }
-
-  // OEE % tekst
-  doc.setFont('helvetica','bold'); doc.setFontSize(13);
-  doc.setTextColor(...oeeColor);
-  const oeeLabel = oeeVal > 0 ? gaugeNum : '--';
-  doc.text(oeeLabel, gCX, gCY + 6, { align: 'center' });
-
-  // Grade tekst (bez emojija)
-  doc.setFont('helvetica','normal'); doc.setFontSize(7);
-  doc.setTextColor(120,120,120);
-  doc.text(hr2ascii(gradeClean), gCX, gCY + 12, { align: 'center' });
-
-  // ── A / P / Q barovi desno od gaugea ──
-  const bX = M + 82, bY = y + 4, bW = 80, bH = 3.5;
-  const components = [
-    { label: 'Dostupnost (A)', val: avgA, color: [59,130,246], bench: '≥90%' },
-    { label: 'Performansa (P)', val: avgP, color: [139,92,246], bench: '≥95%' },
-    { label: 'Kvaliteta (Q)',   val: avgQ, color: [16,185,129], bench: '≥99.9%' },
-  ];
-  let bYcur = bY;
-  components.forEach(comp => {
-    const pct = parseFloat(comp.val) || 0;
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(30,30,30);
-    doc.text(comp.label, bX, bYcur);
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...comp.color);
-    doc.text(comp.val || '—', bX + bW + 8, bYcur);
-    // Track
-    doc.setFillColor(230,230,230);
-    doc.roundedRect(bX, bYcur + 2, bW, bH, 1, 1, 'F');
-    // Fill
-    if (pct > 0) {
-      doc.setFillColor(...comp.color);
-      doc.roundedRect(bX, bYcur + 2, bW * Math.min(pct/100,1), bH, 1, 1, 'F');
-    }
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
-    doc.text('WC benchmark: ' + comp.bench.replace(/\u2265/g, '>='), bX, bYcur + 10);
-    bYcur += 16;
+  // Sakrij elemente koji ne trebaju biti u PDF-u
+  const hide = ['.support-float', '.btn-bar', '.site-header', '.tip-section', '.page-footer', '#napojnica'];
+  const hiddenEls = [];
+  hide.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      hiddenEls.push({ el, display: el.style.display });
+      el.style.display = 'none';
+    });
   });
 
-  y += 58;
-  doc.setDrawColor(220,220,220); doc.setLineWidth(0.3);
-  doc.line(M, y - 4, W - M, y - 4);
+  // Privremeno makni fixed positioning sa sidebar-a za screenshot
+  const sidebar = document.querySelector('.sidebar');
+  let sidebarPos = '';
+  if (sidebar) { sidebarPos = sidebar.style.position; sidebar.style.position = 'relative'; }
 
-  // Each machine
-  const blocks = document.querySelectorAll('.machine-block');
-  blocks.forEach(block => {
-    const name = block.querySelector('.machine-name-input').value || 'Stroj';
-    const badge = block.querySelector('.machine-oee-badge').textContent;
-    doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.setTextColor(0,0,0);
-    doc.setFillColor(240,240,240);
-    doc.rect(M, y-4, W-M*2, 8, 'F');
-    doc.text(hr2ascii(`${name}  —  ${badge}`), M+2, y+1);
-    y += 10;
+  const target = document.querySelector('.page-wrap') || document.body;
 
-    // Shift table
-    const headers = ['Smjena','Planirano (min)','Zastoji (min)','Ideal. ciklus','Uk. komada','Dobri komadi','A%','P%','Q%','OEE%'];
-    const colW = [25,25,22,22,22,22,14,14,14,16];
-    let x = M;
-    doc.setFillColor(250,250,248);
-    doc.rect(M, y-4, W-M*2, 6, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(7);
-    doc.setTextColor(100,100,100);
-    headers.forEach((h,i) => { doc.text(h, x+1, y); x += colW[i]; });
-    y += 4;
+  html2canvas(target, {
+    scale: 2,
+    useCORS: true,
+    logging: false,
+    backgroundColor: '#fafaf8',
+    windowWidth: 1200
+  }).then(canvas => {
+    // Vrati skrivene elemente
+    hiddenEls.forEach(({ el, display }) => { el.style.display = display; });
+    if (sidebar) sidebar.style.position = sidebarPos;
 
-    const rows = block.querySelectorAll('.shift-row');
-    rows.forEach((row, idx) => {
-      const r = calcShiftOEE(row);
-      const sName = row.querySelector('.inp-name').value || `Smjena ${idx+1}`;
-      const vals = r ? [
-        hr2ascii(sName),
-        row.querySelector('.inp-planned').value || '—',
-        row.querySelector('.inp-downtime').value || '—',
-        row.querySelector('.inp-ideal').value || '—',
-        row.querySelector('.inp-total').value || '—',
-        row.querySelector('.inp-good').value || '—',
-        r.A+'%', r.P+'%', r.Q+'%', r.OEE+'%'
-      ] : [sName,'—','—','—','—','—','—','—','—','—'];
+    const { jsPDF } = window.jspdf;
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const imgW = canvas.width;
+    const imgH = canvas.height;
 
-      x = M;
-      if (idx % 2 === 0) { doc.setFillColor(252,252,252); doc.rect(M, y-3, W-M*2, 6, 'F'); }
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
-      vals.forEach((v,i) => { doc.text(hr2ascii(String(v)).substring(0,14), x+1, y); x += colW[i]; });
-      y += 6;
-    });
-    y += 6;
-    if (y > 175) { doc.addPage(); y = 20; }
+    // A4 landscape dimenzije u px pri 2x scale
+    const pdfW = 297;
+    const pdfH = Math.round((imgH / imgW) * pdfW);
+    const pageH = 210; // A4 landscape visina
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+    let posY = 0;
+    let remaining = pdfH;
+    let page = 0;
+
+    while (remaining > 0) {
+      if (page > 0) doc.addPage();
+      const sliceH = Math.min(pageH, remaining);
+      // Crop canvas slice
+      const sliceCanvas = document.createElement('canvas');
+      sliceCanvas.width = canvas.width;
+      sliceCanvas.height = Math.round((sliceH / pdfH) * imgH);
+      const ctx = sliceCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, Math.round((posY / pdfH) * imgH), canvas.width, sliceCanvas.height, 0, 0, canvas.width, sliceCanvas.height);
+      const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+      doc.addImage(sliceData, 'JPEG', 0, 0, pdfW, sliceH);
+      posY += sliceH;
+      remaining -= sliceH;
+      page++;
+    }
+
+    doc.save('OEE-izvjestaj-' + new Date().toISOString().slice(0,10) + '.pdf');
+  }).catch(err => {
+    console.error('html2canvas error:', err);
+    alert('Greška pri generiranju PDF-a. Pokušajte koristiti Ispis > Spremi kao PDF.');
   });
-
-  // Recommendations
-  const recItems = document.querySelectorAll('.rec-item');
-  if (recItems.length > 0) {
-    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(0,0,0);
-    doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8, 'F');
-    doc.setTextColor(26,122,94); doc.text('PREPORUKE ZA POBOLJSANJE', M+2, y+1);
-    y += 10; doc.setTextColor(0,0,0);
-    recItems.forEach(item => {
-      const titleRaw = item.querySelector('.rec-title').textContent;
-      const descRaw = item.querySelector('.rec-desc').textContent;
-      // Strip emoji i non-latin znakova koje helvetica ne može renderirati
-      const title = hr2ascii(titleRaw);
-      const desc = hr2ascii(descRaw);
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(30,30,30);
-      doc.text('• ' + title, M, y); y += 5;
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(60,60,60);
-      const lines = doc.splitTextToSize(desc, W - M * 2 - 8);
-      doc.text(lines, M + 5, y); y += lines.length * 4.5 + 5;
-      if (y > 185) { doc.addPage(); y = 20; }
-    });
-  }
-
-  doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Izradeno uz pomoc Leanopedija — leanopedija.opticora.hr', M, 198);
-  doc.save('OEE-izvjestaj-' + new Date().toISOString().slice(0,10) + '.pdf');
 }
 
 
