@@ -905,7 +905,12 @@ function exportPDF() {
 
   // ── OEE Gauge (polukrug, gornji) ──
   // Strip emoji iz gradeText - helvetica ne podržava unicode emoji
-  const gradeClean = gradeText.replace(/[^\u0000-\u00FF]/g, '').trim();
+  // Strip emoji i specijalne Unicode znakove, ali zadrži dijakritike (čćšžđ itd.)
+  const gradeClean = gradeText
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')  // emoji blokovi
+    .replace(/[\u{2600}-\u{26FF}]/gu, '')     // miscellaneous symbols (⭐⚠️)
+    .replace(/[\u{2700}-\u{27BF}]/gu, '')     // dingbats
+    .trim();
 
   const gCX = M + 38, gCY = y + 30, gR = 26;
 
@@ -926,13 +931,15 @@ function exportPDF() {
     }
   }
 
-  // Background luk (cijeli gornji polukrug, 0° do 180°)
-  drawArcTop(gCX, gCY, gR, 0, 180, [220,220,220], 5);
+  // Background luk (cijeli gornji polukrug, 180° lijevo do 0° desno)
+  drawArcTop(gCX, gCY, gR, 180, 0, [220,220,220], 5);
 
-  // OEE fill (od 0° do oeeVal% od 180°)
+  // OEE fill: lijevo (180°) = 0%, desno (0°) = 100%
+  // endAngle = 180 - (oeeVal/100)*180
   const oeeColor = oeeVal >= 85 ? [26,122,94] : oeeVal >= 75 ? [34,197,94] : oeeVal >= 60 ? [234,179,8] : oeeVal >= 40 ? [249,115,22] : [220,38,38];
   if (oeeVal > 0) {
-    drawArcTop(gCX, gCY, gR, 0, (oeeVal / 100) * 180, oeeColor, 5);
+    const fillEnd = 180 - (oeeVal / 100) * 180;
+    drawArcTop(gCX, gCY, gR, 180, fillEnd, oeeColor, 5);
   }
 
   // OEE % tekst
@@ -1035,7 +1042,11 @@ function exportPDF() {
       const titleRaw = item.querySelector('.rec-title').textContent;
       const descRaw = item.querySelector('.rec-desc').textContent;
       // Strip emoji i non-latin znakova koje helvetica ne može renderirati
-      const stripEmoji = s => s.replace(/[^\u0000-\u00FF]/g, '').trim();
+      const stripEmoji = s => s
+        .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
+        .replace(/[\u{2600}-\u{26FF}]/gu, '')
+        .replace(/[\u{2700}-\u{27BF}]/gu, '')
+        .trim();
       const title = stripEmoji(titleRaw);
       const desc = stripEmoji(descRaw);
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(30,30,30);
