@@ -617,357 +617,72 @@ function resetForm() {
 }
 
 function exportPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const W = 297, H = 210, M = 12;
-  let y = 0;
-
-  const GREEN   = [26, 122, 94];
-  const GREEN_D = [14, 95, 70];
-  const GREEN_L = [232, 245, 240];
-  const GRAY    = [130, 130, 130];
-  const DARK    = [26, 26, 26];
-  const WHITE   = [255, 255, 255];
-  const BORDER  = [220, 220, 220];
-  const ROW_ALT = [248, 252, 250];
-  const YELLOW  = [202, 138, 10];
-
-  function hr2a(s) {
-    if (!s) return '';
-    return String(s)
-      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
-      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
-      .replace(/đ/g,'d').replace(/Đ/g,'D')
-      .replace(/[^\u0000-\u00FF]/g,'').trim();
-  }
-  function checkY(need) {
-    if (y + need > H - 10) { doc.addPage(); y = 14; return true; }
-    return false;
-  }
-  function sectionTitle(title) {
-    checkY(12);
-    doc.setFillColor(...GREEN_L);
-    doc.roundedRect(M, y, W-M*2, 7, 1.5, 1.5, 'F');
-    doc.setDrawColor(...GREEN); doc.setLineWidth(1);
-    doc.line(M, y, M, y+7);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GREEN);
-    doc.text(title, M+4, y+5);
-    y += 12;
-  }
-
-  // ══ ZAGLAVLJE ════════════════════════════════════════
-  doc.setFillColor(...GREEN_D);
-  doc.rect(0, 0, W, 20, 'F');
-
-  doc.setFillColor(60,150,115);
-  doc.roundedRect(M, 4, 12, 12, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
-  doc.text('L', M+3.5, 11.5);
-  doc.setFontSize(6); doc.text('o', M+7.5, 9.5);
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
-  doc.text('Leanopedija', M+16, 10);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,225,210);
-  doc.text('Gemba Walk Obrazac  |  Biljeske s terena i akcijski plan', M+16, 16);
-
-  const d = new Date();
-  doc.setFontSize(7.5); doc.setTextColor(180,225,210);
-  doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 10, { align:'right' });
-  doc.setTextColor(140,200,175);
-  doc.text('leanopedija.opticora.hr', W-M, 16, { align:'right' });
-  y = 26;
-
-  // ══ META PODACI ════════════════════════════════════
-  const datum     = hr2a(document.getElementById('meta-datum').value) || '—';
-  const pocetak   = hr2a(document.getElementById('meta-pocetak').value) || '—';
-  const kraj      = hr2a(document.getElementById('meta-kraj').value) || '—';
-  const voditelj  = hr2a(document.getElementById('meta-voditelj').value) || '—';
-  const lokacija  = hr2a(document.getElementById('meta-lokacija').value) || '—';
-  const cilj      = hr2a(document.getElementById('meta-cilj').value) || '—';
-  const sudionici = hr2a(document.getElementById('meta-sudionici').value) || '—';
-  const napomena  = hr2a(document.getElementById('meta-napomena').value) || '';
-
-  doc.setFillColor(...GREEN_L);
-  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'F');
-  doc.setDrawColor(...GREEN); doc.setLineWidth(0.3);
-  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'S');
-
-  const col4 = (W-M*2-8) / 4;
-  const metaRow1 = [
-    ['DATUM', datum, M+4],
-    ['VODITELJ', voditelj, M+4+col4],
-    ['LOKACIJA / ODJEL', lokacija, M+4+col4*2],
-    ['FOKUS', cilj, M+4+col4*3],
-  ];
-  metaRow1.forEach(([lbl, val, x]) => {
-    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-    doc.text(lbl, x, y+5);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
-    doc.text(val.substring(0,28), x, y+10);
-  });
-  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-  doc.text('VRIJ. OBILASKA', M+4, y+16);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
-  doc.text(`${pocetak} – ${kraj}`, M+4, y+20.5);
-  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-  doc.text('SUDIONICI', M+4+col4, y+16);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
-  doc.text(sudionici.substring(0,55), M+4+col4, y+20.5);
-  if (napomena) {
-    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-    doc.text('NAPOMENA', M+4+col4*2, y+16);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
-    doc.text(napomena.substring(0,55), M+4+col4*2, y+20.5);
-  }
-  y += 28;
-
-  // ══ CHECKLIST ════════════════════════════════════════
-  sectionTitle('CHECKLIST OBILASKA');
-  const checkItems = document.querySelectorAll('.check-item');
-  const checkW = (W-M*2) / 3;
-  let ci = 0;
-  const checkData = [];
-  checkItems.forEach(item => {
-    checkData.push({
-      checked: item.querySelector('input')?.checked || false,
-      text: hr2a(item.querySelector('.check-item-text')?.textContent || ''),
-      sub: hr2a(item.querySelector('.check-item-sub')?.textContent || '')
-    });
-  });
-  // 2 stupca
-  const halfLen = Math.ceil(checkData.length / 2);
-  checkData.forEach((item, i) => {
-    const col = i < halfLen ? 0 : 1;
-    const rowInCol = i < halfLen ? i : i - halfLen;
-    const x = M + col * ((W-M*2)/2);
-    const yy = y + rowInCol * 8;
-    if (col === 0 && rowInCol === 0) checkY(halfLen * 8 + 4);
-    // Checkbox
-    doc.setFillColor(item.checked ? ...GREEN : ...WHITE);
-    doc.setDrawColor(item.checked ? ...GREEN : ...BORDER);
-    doc.setLineWidth(0.5);
-    doc.roundedRect(x+2, yy-3, 4, 4, 0.8, 0.8, item.checked ? 'FD' : 'S');
-    if (item.checked) {
-      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...WHITE);
-      doc.text('✓', x+2.8, yy+0.2);
-    }
-    doc.setFont('helvetica', item.checked ? 'bold' : 'normal');
-    doc.setFontSize(8); doc.setTextColor(...DARK);
-    doc.text(item.text, x+8, yy);
-    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-    doc.text(item.sub.substring(0,45), x+8, yy+3.5);
-  });
-  y += halfLen * 8 + 6;
-
-  // ══ OCJENA STANJA (zvjezdice) ════════════════════════
-  checkY(20);
-  sectionTitle('OCJENA STANJA');
-  const cats = ['sig','5s','tok','kval','std','rad'];
-  const cNames = ['Sigurnost','5S i red','Tok i produktivnost','Kvaliteta','Standardizirani rad','Angaziranost radnika'];
-  const catW = (W-M*2) / 3;
-  cats.forEach((cat, i) => {
-    const stars = getStarRating(cat);
-    const col = i % 3;
-    const row = Math.floor(i / 3);
-    const x = M + col * catW;
-    const yy = y + row * 14;
-    const starColor = stars >= 4 ? GREEN : stars >= 3 ? [34,150,80] : stars >= 2 ? [202,138,10] : [220,38,38];
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
-    doc.text(cNames[i], x+2, yy);
-    // Progress bar zvjezdice
-    doc.setFillColor(...BORDER);
-    doc.roundedRect(x+2, yy+2, catW-12, 4, 1, 1, 'F');
-    if (stars > 0) {
-      doc.setFillColor(...starColor);
-      doc.roundedRect(x+2, yy+2, (catW-12)*(stars/5), 4, 1, 1, 'F');
-    }
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...starColor);
-    doc.text(`${stars}/5`, x+catW-9, yy+5, { align:'right' });
-    // Zvjezdice kao tekst
-    doc.setFontSize(7); doc.setTextColor(stars >= 1 ? ...starColor : ...GRAY);
-    doc.text('★★★★★'.substring(0, stars*2) + '☆☆☆☆☆'.substring(0, (5-stars)*2), x+2, yy+10);
-  });
-  y += 32;
-
-  // ══ ZAPAŽANJA I GUBICI ════════════════════════════════
-  const obsRows = document.querySelectorAll('#obs-body tr');
-  if (obsRows.length > 0) {
-    checkY(20);
-    sectionTitle('ZAPAZANJA I GUBICI');
-
-    const hCols = ['#', 'Lokacija', 'Vrsta gubitka', 'Opis zapazanja', 'Moguci uzrok', 'Prioritet'];
-    const hW    = [8, 30, 36, 80, 65, 22];
-    const hTotal = hW.reduce((a,b)=>a+b,0);
-
-    // Zaglavlje
-    doc.setFillColor(240,245,243);
-    doc.rect(M, y, W-M*2, 6.5, 'F');
-    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
-    doc.rect(M, y, W-M*2, 6.5, 'S');
-    let x = M;
-    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-    hCols.forEach((h,i) => { doc.text(h, x+1.5, y+4.5); x += hW[i]; });
-    y += 6.5;
-
-    obsRows.forEach((row, idx) => {
-      checkY(8);
-      const tds = row.querySelectorAll('td');
-      if (tds.length < 6) return;
-      const prioritet = tds[5].querySelector('select')?.value || '';
-      const prioColor = prioritet === 'Kritično' || prioritet === 'Visoki' ? [220,38,38] :
-                        prioritet === 'Srednji' ? [202,138,10] : GREEN;
-
-      if (idx%2===0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W-M*2, 7, 'F'); }
-      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
-      doc.line(M, y+7, W-M, y+7);
-
-      const vals = [
-        String(idx+1),
-        hr2a(tds[1].querySelector('input')?.value||''),
-        hr2a(tds[2].querySelector('select')?.value||''),
-        hr2a(tds[3].querySelector('textarea')?.value||''),
-        hr2a(tds[4].querySelector('input')?.value||''),
-        hr2a(prioritet)
-      ];
-
-      x = M;
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
-      vals.forEach((v,i) => {
-        if (i === 5 && v) {
-          const bg = prioColor.map(n => Math.min(255, n+185));
-          doc.setFillColor(...bg);
-          doc.roundedRect(x+0.5, y+1.5, hW[i]-2, 4, 1, 1, 'F');
-          doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...prioColor);
-          doc.text(v.substring(0,10), x+hW[i]/2, y+4.5, { align:'center' });
-          doc.setFont('helvetica','normal'); doc.setTextColor(...DARK);
-        } else {
-          doc.text(v.substring(0, Math.floor(hW[i]*1.3)), x+1.5, y+4.5);
-        }
-        x += hW[i];
-      });
-      y += 7;
-    });
-    y += 6;
-  }
-
-  // ══ AKCIJSKI PLAN ════════════════════════════════════
-  const actRows = document.querySelectorAll('#action-body tr');
-  if (actRows.length > 0) {
-    checkY(20);
-    sectionTitle('AKCIJSKI PLAN');
-
-    const aH = ['#', 'Opis akcije', 'Odgovorna osoba', 'Rok', 'Status'];
-    const aW = [8, 120, 55, 30, 30];
-
-    doc.setFillColor(240,245,243);
-    doc.rect(M, y, W-M*2, 6.5, 'F');
-    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
-    doc.rect(M, y, W-M*2, 6.5, 'S');
-    let x = M;
-    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
-    aH.forEach((h,i) => { doc.text(h, x+1.5, y+4.5); x += aW[i]; });
-    y += 6.5;
-
-    actRows.forEach((row, idx) => {
-      checkY(8);
-      const tds = row.querySelectorAll('td');
-      if (tds.length < 5) return;
-      const status = hr2a(tds[4].querySelector('select')?.value || '');
-      const statusColor = status === 'Zavrseno' || status === 'Završeno' ? GREEN :
-                          status === 'U tijeku' ? [59,130,246] : GRAY;
-
-      if (idx%2===0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W-M*2, 7, 'F'); }
-      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
-      doc.line(M, y+7, W-M, y+7);
-
-      const vals = [
-        String(idx+1),
-        hr2a(tds[1].querySelector('textarea')?.value||''),
-        hr2a(tds[2].querySelector('input')?.value||''),
-        hr2a(tds[3].querySelector('input')?.value||''),
-        status
-      ];
-
-      x = M;
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
-      vals.forEach((v,i) => {
-        if (i === 4 && v) {
-          const bg = statusColor.map(n => Math.min(255, n+185));
-          doc.setFillColor(...bg);
-          doc.roundedRect(x+0.5, y+1.5, aW[i]-2, 4, 1, 1, 'F');
-          doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...statusColor);
-          doc.text(v.substring(0,12), x+aW[i]/2, y+4.5, { align:'center' });
-          doc.setFont('helvetica','normal'); doc.setTextColor(...DARK);
-        } else {
-          doc.text(v.substring(0, Math.floor(aW[i]*1.4)), x+1.5, y+4.5);
-        }
-        x += aW[i];
-      });
-      y += 7;
-    });
-    y += 6;
-  }
-
-  // ══ SAŽETAK ══════════════════════════════════════════
-  const poz    = hr2a(document.getElementById('sum-poz').value);
-  const prob   = hr2a(document.getElementById('sum-prob').value);
-  const hitno  = hr2a(document.getElementById('sum-hitno').value);
-  const sljedeci = hr2a(document.getElementById('sum-sljedeci').value);
-  const potpis   = hr2a(document.getElementById('sum-potpis').value);
-
-  if (poz || prob || hitno) {
-    checkY(20);
-    sectionTitle('SAZETAK OBILASKA');
-    const sumItems = [
-      { lbl:'Pozitivna zapazanja', val: poz, col:[22,163,74] },
-      { lbl:'Kljucni problemi / gubici', val: prob, col:[220,38,38] },
-      { lbl:'Preporuke za hitnu akciju', val: hitno, col:[202,138,10] },
-    ];
-    sumItems.forEach(({ lbl, val, col }) => {
-      if (!val) return;
-      checkY(16);
-      doc.setFillColor(...col);
-      doc.circle(M+2.5, y+2, 1.8, 'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
-      doc.text(lbl, M+7, y+3.5);
-      y += 7;
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
-      const lines = doc.splitTextToSize(val, W-M*2-10);
-      lines.forEach(ln => { checkY(5); doc.text(ln, M+7, y); y+=4.5; });
-      y += 3;
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const W=297, M=14;
+  doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text('Gemba Walk Obrazac',M,18); doc.setFontSize(9);
+  doc.text('lean.opticora.hr',240,10);
+  doc.text(new Date().toLocaleDateString('hr-HR'),240,17);
+  let y=30;
+  const flds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Lokacija:',document.getElementById('meta-lokacija').value||'—'],['Fokus:',document.getElementById('meta-cilj').value||'—'],['Sudionici:',document.getElementById('meta-sudionici').value||'—'],['Napomena:',document.getElementById('meta-napomena').value||'—']];
+  doc.setTextColor(0,0,0); doc.setFontSize(9);
+  flds.forEach(([l,v],i)=>{const x=M+(i%3)*88;if(i%3===0&&i>0)y+=8;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,35),x+24,y);});
+  y+=12;
+  const cats=['sig','5s','tok','kval','std','rad'];
+  const cNames=['Sigurnost','5S i red','Tok','Kvaliteta','Std. rad','Radnici'];
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('OCJENA STANJA',M,y); y+=6;
+  doc.setFontSize(8);
+  cats.forEach((c,i)=>{const r=getStarRating(c);doc.setFont('helvetica','normal');doc.text(cNames[i]+': '+'★'.repeat(r)+'☆'.repeat(5-r),M+i*44,y);});
+  y+=10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('ZAPAŽANJA I GUBICI',M,y); y+=6;
+  const obsRows=document.querySelectorAll('#obs-body tr');
+  if(obsRows.length>0){
+    const hdr=['#','Lokacija','Vrsta gubitka','Opis zapažanja','Mogući uzrok','Prioritet'];
+    const cw=[8,28,32,80,60,22]; let x=M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold');
+    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
+    doc.setFont('helvetica','normal');
+    obsRows.forEach((row,idx)=>{
+      const tds=row.querySelectorAll('td');if(tds.length<6)return;
+      const vals=[String(idx+1),tds[1].querySelector('input')?.value||'',tds[2].querySelector('select')?.value||'',tds[3].querySelector('textarea')?.value||'',tds[4].querySelector('input')?.value||'',tds[5].querySelector('select')?.value||''];
+      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
+      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
+      if(y>185){doc.addPage();y=20;}
     });
   }
-
-  if (sljedeci || potpis) {
-    checkY(14);
-    doc.setDrawColor(...BORDER); doc.setLineWidth(0.3);
-    doc.line(M, y, W-M, y); y += 6;
-    if (sljedeci) {
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
-      doc.text('Datum sljedeceg Gemba Walka:', M, y);
-      doc.setFont('helvetica','normal'); doc.text(sljedeci, M+62, y);
-      y += 7;
-    }
-    if (potpis) {
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
-      doc.text('Potpis voditelja:', M, y);
-      doc.setFont('helvetica','normal'); doc.text(potpis, M+38, y);
-    }
+  y+=6;
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('AKCIJSKI PLAN',M,y); y+=6;
+  const actRows=document.querySelectorAll('#action-body tr');
+  if(actRows.length>0){
+    const hdr=['#','Akcija','Odgovorna osoba','Rok','Status'];
+    const cw=[8,110,50,32,35]; let x=M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold');
+    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
+    doc.setFont('helvetica','normal');
+    actRows.forEach((row,idx)=>{
+      const tds=row.querySelectorAll('td');if(tds.length<5)return;
+      const vals=[String(idx+1),tds[1].querySelector('textarea')?.value||'',tds[2].querySelector('input')?.value||'',tds[3].querySelector('input')?.value||'',tds[4].querySelector('select')?.value||''];
+      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
+      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
+    });
   }
-
-  // ══ FOOTER SVAKE STRANICE ════════════════════════════
-  const total = doc.internal.getNumberOfPages();
-  for (let i=1; i<=total; i++) {
-    doc.setPage(i);
-    doc.setFillColor(...GREEN_D);
-    doc.rect(0, H-7, W, 7, 'F');
-    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
-    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-2.5);
-    doc.setTextColor(...WHITE);
-    doc.text(`Stranica ${i} / ${total}`, W-M, H-2.5, { align:'right' });
-  }
-
-  doc.save('Gemba-Walk-' + new Date().toISOString().slice(0,10) + '.pdf');
+  const poz=document.getElementById('sum-poz').value;
+  const prob=document.getElementById('sum-prob').value;
+  const hitno=document.getElementById('sum-hitno').value;
+  const potpis=document.getElementById('sum-potpis').value;
+  if(poz||prob||hitno){y+=6;doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SAŽETAK',M,y);y+=6;doc.setFontSize(8);}
+  if(poz){doc.setFont('helvetica','bold');doc.text('Pozitivno:',M,y);doc.setFont('helvetica','normal');doc.text(poz.substring(0,150),M+22,y);y+=6;}
+  if(prob){doc.setFont('helvetica','bold');doc.text('Problemi:',M,y);doc.setFont('helvetica','normal');doc.text(prob.substring(0,150),M+22,y);y+=6;}
+  if(hitno){doc.setFont('helvetica','bold');doc.text('Hitno:',M,y);doc.setFont('helvetica','normal');doc.text(hitno.substring(0,150),M+14,y);y+=6;}
+  if(potpis){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(potpis,M+16,y);}
+  doc.setFontSize(7);doc.setTextColor(150,150,150);
+  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr',M,198);
+  doc.save('Gemba-Walk-'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 </script>
 
