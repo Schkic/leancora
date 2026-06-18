@@ -737,32 +737,27 @@
   .site-footer {
     background: var(--white);
     border-top: 1px solid var(--border);
-    padding: 24px;
+    padding: 28px 24px;
     font-size: 12px;
     color: var(--text-faint);
     text-align: center;
   }
-
-  .footer-inner {
-    max-width: 1100px;
-    margin: 0 auto;
+  .footer-inner { max-width: 1100px; margin: 0 auto; }
+  .footer-bottom {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
+    gap: 10px;
   }
-
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a { color: var(--text-faint); transition: color 0.12s; }
-  .footer-links a:hover { color: var(--green); }
-
-  .footer-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
+  .footer-bottom-links { display: flex; gap: 20px; justify-content: center; }
+  .footer-bottom-links a { color: var(--text-faint); text-decoration: none; }
+  .footer-bottom-links a:hover { color: var(--green); }
+  .footer-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--border);
   }
+  .footer-note { color: var(--text-faint); line-height: 1.6; }
 
   /* ── FLOATING SUPPORT ── */
   .support-float {
@@ -1421,16 +1416,14 @@
 <!-- Footer -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-links">
-      <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
-      <a href="politika-privatnosti.html">Politika privatnosti</a>
-      
-    </div>
-    <div style="color:var(--text-faint); font-size:12px;">
-      NAPOMENA: Sadržaj je informativnog karaktera napisan u najboljoj namjeri.
-    </div>
-    <div class="footer-badge">
-      🇭🇷 100% Made in Croatia &nbsp;·&nbsp; OptiCora, obrt
+    <div class="footer-bottom">
+      <div class="footer-bottom-links">
+        <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
+        <a href="politika-privatnosti.html">Politika privatnosti</a>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-note">🇭🇷 100% Made in Croatia (EU) &nbsp;·&nbsp; Sadržaj je informativnog karaktera napisan u najboljoj namjeri.</div>
+      <div class="footer-note">OptiCora, obrt za industrijski dizajn, tehničke usluge i savjetovanje</div>
     </div>
   </div>
 </footer>
