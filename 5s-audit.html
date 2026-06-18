@@ -1123,16 +1123,18 @@ function exportPDF() {
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
     doc.text(sNames[i], M+15, y+5.3);
 
-    // Progress bar
+    // Progress bar — barX od 90, završava na W-M-22 (ostavlja prostor za score)
     const barX = M+90;
+    const scoreW = 22; // rezervirano za "20 / 20"
+    const actualBarW = W - M - barX - scoreW - 4;
     doc.setFillColor(...BORDER);
-    doc.roundedRect(barX, y+2.5, barW, 3, 1, 1, 'F');
+    doc.roundedRect(barX, y+2.5, actualBarW, 3, 1, 1, 'F');
     doc.setFillColor(...sc2.text);
-    doc.roundedRect(barX, y+2.5, barW*(pct/100), 3, 1, 1, 'F');
+    doc.roundedRect(barX, y+2.5, actualBarW*(pct/100), 3, 1, 1, 'F');
 
-    // Score desno
+    // Score desno — s postotkom
     doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...sc2.text);
-    doc.text(`${sc} / 20`, W-M-3, y+5.3, { align:'right' });
+    doc.text(`${sc} / 20  (${Math.round(pct)}%)`, W-M-3, y+5.3, { align:'right' });
     y += 10;
   });
   y += 5;
