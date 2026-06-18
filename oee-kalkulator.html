@@ -904,26 +904,9 @@ function exportPDF() {
     }
   }
 
-  // Izračun iz inputa (ne oslanjamo se na DOM prikaz)
+  // Koristimo isti calcShiftOEE koji koristi stranica - isti rezultat, bez duplikacije
   function calcFromRow(row) {
-    const inputs = row.querySelectorAll('input');
-    const planned = parseFloat(inputs[1]?.value) || 0;
-    const downtime = parseFloat(inputs[2]?.value) || 0;
-    const idealCycle = parseFloat(inputs[3]?.value) || 0;
-    const total = parseFloat(inputs[4]?.value) || 0;
-    const good = parseFloat(inputs[5]?.value) || 0;
-    if (planned<=0 || idealCycle<=0 || total<=0) return null;
-    const op = planned - downtime;
-    const A = op / planned;
-    const P = (total * idealCycle) / op;
-    const Q = good / total;
-    const OEE = A * P * Q * 100;
-    return {
-      A: Math.round(A*1000)/10,
-      P: Math.round(Math.min(P,1)*1000)/10,
-      Q: Math.round(Q*1000)/10,
-      OEE: Math.round(OEE*10)/10
-    };
+    return calcShiftOEE(row);
   }
 
   function oeeColor(v) {
