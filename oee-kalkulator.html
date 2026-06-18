@@ -869,71 +869,273 @@ function resetAll() {
 }
 
 function exportPDF() {
-  // Sakrij elemente koji ne trebaju biti u PDF-u
-  const hide = ['.support-float', '.btn-bar', '.site-header', '.tip-section', '.page-footer', '#napojnica'];
-  const hiddenEls = [];
-  hide.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      hiddenEls.push({ el, display: el.style.display });
-      el.style.display = 'none';
-    });
-  });
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const W = 297, H = 210, M = 14;
+  let y = 0;
 
-  // Privremeno makni fixed positioning sa sidebar-a za screenshot
-  const sidebar = document.querySelector('.sidebar');
-  let sidebarPos = '';
-  if (sidebar) { sidebarPos = sidebar.style.position; sidebar.style.position = 'relative'; }
+  // ── Boje ──
+  const GREEN = [26, 122, 94];
+  const GREEN_LIGHT = [232, 245, 240];
+  const GRAY = [120, 120, 120];
+  const DARK = [26, 26, 26];
+  const BORDER = [220, 220, 220];
+  const WHITE = [255, 255, 255];
 
-  const target = document.querySelector('.page-wrap') || document.body;
-
-  html2canvas(target, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    backgroundColor: '#fafaf8',
-    windowWidth: 1200
-  }).then(canvas => {
-    // Vrati skrivene elemente
-    hiddenEls.forEach(({ el, display }) => { el.style.display = display; });
-    if (sidebar) sidebar.style.position = sidebarPos;
-
-    const { jsPDF } = window.jspdf;
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    const imgW = canvas.width;
-    const imgH = canvas.height;
-
-    // A4 landscape dimenzije u px pri 2x scale
-    const pdfW = 297;
-    const pdfH = Math.round((imgH / imgW) * pdfW);
-    const pageH = 210; // A4 landscape visina
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
-    let posY = 0;
-    let remaining = pdfH;
-    let page = 0;
-
-    while (remaining > 0) {
-      if (page > 0) doc.addPage();
-      const sliceH = Math.min(pageH, remaining);
-      // Crop canvas slice
-      const sliceCanvas = document.createElement('canvas');
-      sliceCanvas.width = canvas.width;
-      sliceCanvas.height = Math.round((sliceH / pdfH) * imgH);
-      const ctx = sliceCanvas.getContext('2d');
-      ctx.drawImage(canvas, 0, Math.round((posY / pdfH) * imgH), canvas.width, sliceCanvas.height, 0, 0, canvas.width, sliceCanvas.height);
-      const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
-      doc.addImage(sliceData, 'JPEG', 0, 0, pdfW, sliceH);
-      posY += sliceH;
-      remaining -= sliceH;
-      page++;
+  // ── Pomoćne funkcije ──
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[^\u0000-\u00FF]/g,'').trim();
+  }
+  function newPageIfNeeded(needed) {
+    if (y + needed > H - 16) { doc.addPage(); y = 14; return true; }
+    return false;
+  }
+  function drawArcTop(cx, cy, r, startDeg, endDeg, color, lw) {
+    doc.setDrawColor(...color); doc.setLineWidth(lw);
+    const steps = 50;
+    const s = startDeg * Math.PI / 180, e = endDeg * Math.PI / 180;
+    for (let i = 0; i < steps; i++) {
+      const a1 = s + (e-s)*i/steps, a2 = s + (e-s)*(i+1)/steps;
+      doc.line(cx + r*Math.cos(a1), cy - r*Math.sin(a1), cx + r*Math.cos(a2), cy - r*Math.sin(a2));
     }
+  }
 
-    doc.save('OEE-izvjestaj-' + new Date().toISOString().slice(0,10) + '.pdf');
-  }).catch(err => {
-    console.error('html2canvas error:', err);
-    alert('Greška pri generiranju PDF-a. Pokušajte koristiti Ispis > Spremi kao PDF.');
+  // ══════════════════════════════════════════
+  // ZAGLAVLJE
+  // ══════════════════════════════════════════
+  // Zelena traka
+  doc.setFillColor(...GREEN);
+  doc.rect(0, 0, W, 22, 'F');
+
+  // Logo L°
+  doc.setFillColor(...WHITE);
+  doc.roundedRect(M, 4, 14, 14, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...GREEN);
+  doc.text('L', M+4.5, 13);
+
+  // Naziv
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...WHITE);
+  doc.text('Leanopedija', M+18, 10);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('OEE Kalkulator — Izvjestaj', M+18, 16);
+
+  // Datum desno
+  doc.setFontSize(8); doc.setTextColor(200,235,225);
+  const d = new Date();
+  doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 13, { align:'right' });
+  doc.text('leanopedija.opticora.hr', W-M, 18, { align:'right' });
+  y = 28;
+
+  // ── Meta podaci ──
+  const pogon = hr2a(document.getElementById('meta-pogon').value) || '—';
+  const period = hr2a(document.getElementById('meta-period').value) || '—';
+  const osoba = hr2a(document.getElementById('meta-osoba').value) || '—';
+
+  doc.setFillColor(...GREEN_LIGHT);
+  doc.roundedRect(M, y, W-M*2, 10, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text('POGON / LINIJA', M+4, y+4);
+  doc.text('PERIOD MJERENJA', M+70, y+4);
+  doc.text('ODGOVORNA OSOBA', M+155, y+4);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text(pogon, M+4, y+8.5);
+  doc.text(period, M+70, y+8.5);
+  doc.text(osoba, M+155, y+8.5);
+  y += 16;
+
+  // ══════════════════════════════════════════
+  // UKUPNI OEE — GAUGE + KOMPONENTE
+  // ══════════════════════════════════════════
+  const gaugeNum = document.getElementById('gauge-num').textContent || '—';
+  const gaugeGrade = hr2a(document.getElementById('gauge-grade').textContent);
+  const avgA = document.getElementById('avg-a').textContent || '—';
+  const avgP = document.getElementById('avg-p').textContent || '—';
+  const avgQ = document.getElementById('avg-q').textContent || '—';
+  const oeeVal = parseFloat(gaugeNum) || 0;
+  const oeeColor = oeeVal >= 85 ? [26,122,94] : oeeVal >= 75 ? [34,197,94] : oeeVal >= 60 ? [234,179,8] : oeeVal >= 40 ? [249,115,22] : [220,38,38];
+
+  // Naslov sekcije
+  doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.setTextColor(...GREEN);
+  doc.text('UKUPNI OEE', M, y); y += 5;
+
+  const gaugeX = M + 28, gaugeY = y + 24, gaugeR = 22;
+
+  // Gauge luk
+  drawArcTop(gaugeX, gaugeY, gaugeR, 180, 0, BORDER, 5);
+  if (oeeVal > 0) drawArcTop(gaugeX, gaugeY, gaugeR, 180, 180 - (oeeVal/100)*180, oeeColor, 5);
+
+  // OEE broj
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...oeeColor);
+  doc.text(gaugeNum, gaugeX, gaugeY+6, { align:'center' });
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.text(gaugeGrade, gaugeX, gaugeY+11, { align:'center' });
+
+  // Komponente A/P/Q
+  const comps = [
+    { label:'Dostupnost (A)',  val: avgA, pct: parseFloat(avgA)||0, color:[59,130,246],  bench:'>=90%'  },
+    { label:'Performansa (P)', val: avgP, pct: parseFloat(avgP)||0, color:[139,92,246],  bench:'>=95%'  },
+    { label:'Kvaliteta (Q)',   val: avgQ, pct: parseFloat(avgQ)||0, color:[16,185,129],  bench:'>=99.9%'},
+  ];
+  const bX = M + 68, bW = 130, bH = 3;
+  let bY = y + 4;
+  comps.forEach(comp => {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
+    doc.text(comp.label, bX, bY);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...comp.color);
+    doc.text(comp.val, bX + bW + 6, bY, { align:'right' });
+    // Track
+    doc.setFillColor(...BORDER); doc.roundedRect(bX, bY+1.5, bW, bH, 1, 1, 'F');
+    // Fill
+    if (comp.pct > 0) {
+      doc.setFillColor(...comp.color);
+      doc.roundedRect(bX, bY+1.5, bW * Math.min(comp.pct/100,1), bH, 1, 1, 'F');
+    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    doc.text('WC benchmark: ' + comp.bench, bX, bY+8);
+    bY += 17;
   });
+  y += 58;
+
+  // Razdjelnica
+  doc.setDrawColor(...BORDER); doc.setLineWidth(0.3);
+  doc.line(M, y, W-M, y); y += 6;
+
+  // ══════════════════════════════════════════
+  // STROJEVI — tablice
+  // ══════════════════════════════════════════
+  const machines = document.querySelectorAll('.machine-block');
+  machines.forEach(machine => {
+    const nameEl = machine.querySelector('.machine-name');
+    const badgeEl = machine.querySelector('.machine-oee-badge');
+    const name = hr2a(nameEl ? nameEl.textContent : 'Stroj');
+    const badge = hr2a(badgeEl ? badgeEl.textContent : '');
+
+    newPageIfNeeded(28);
+
+    // Naslov stroja
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(M, y, W-M*2, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+    doc.text(`${name}  —  ${badge}`, M+4, y+5.5);
+    y += 11;
+
+    // Zaglavlje tablice
+    const cols = ['Smjena','Planirano (min)','Zastoji (min)','Ideal. ciklus','Uk. komada','Dobri komadi','A%','P%','Q%','OEE%'];
+    const cW =   [28, 24, 22, 22, 22, 24, 14, 14, 14, 16];
+    let x = M;
+    doc.setFillColor(240,240,240);
+    doc.rect(M, y, W-M*2, 6, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...DARK);
+    cols.forEach((col,i) => {
+      doc.text(col, x+1.5, y+4);
+      x += cW[i];
+    });
+    y += 6;
+
+    // Retci
+    const rows = machine.querySelectorAll('.shift-row');
+    rows.forEach((row, ri) => {
+      newPageIfNeeded(7);
+      if (ri%2===0) { doc.setFillColor(250,252,251); doc.rect(M, y, W-M*2, 6, 'F'); }
+      const cells = row.querySelectorAll('input');
+      const oeeCell = row.querySelector('.shift-oee');
+      const aCell = row.querySelector('.shift-a');
+      const pCell = row.querySelector('.shift-p');
+      const qCell = row.querySelector('.shift-q');
+      const vals = [
+        hr2a(cells[0]?.value || ''),
+        hr2a(cells[1]?.value || ''),
+        hr2a(cells[2]?.value || ''),
+        hr2a(cells[3]?.value || ''),
+        hr2a(cells[4]?.value || ''),
+        hr2a(cells[5]?.value || ''),
+        hr2a(aCell?.textContent || ''),
+        hr2a(pCell?.textContent || ''),
+        hr2a(qCell?.textContent || ''),
+        hr2a(oeeCell?.textContent || ''),
+      ];
+      x = M;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
+      vals.forEach((v,i) => {
+        // OEE stupac u boji
+        if (i===9) {
+          const pct = parseFloat(v)||0;
+          const cl = pct>=85?GREEN:pct>=75?[34,197,94]:pct>=60?[234,179,8]:pct>=40?[249,115,22]:[220,38,38];
+          doc.setFont('helvetica','bold'); doc.setTextColor(...cl);
+          doc.text(v.substring(0,10), x+1.5, y+4);
+          doc.setFont('helvetica','normal'); doc.setTextColor(...DARK);
+        } else {
+          doc.text(v.substring(0,14), x+1.5, y+4);
+        }
+        x += cW[i];
+      });
+      // Donja linija retka
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      doc.line(M, y+6, W-M, y+6);
+      y += 6;
+    });
+    y += 5;
+  });
+
+  // ══════════════════════════════════════════
+  // PREPORUKE
+  // ══════════════════════════════════════════
+  const recCard = document.getElementById('rec-card');
+  const recItems = recCard ? recCard.querySelectorAll('.rec-item') : [];
+  if (recItems.length > 0) {
+    newPageIfNeeded(16);
+    doc.setFillColor(...GREEN_LIGHT);
+    doc.roundedRect(M, y, W-M*2, 7, 1.5, 1.5, 'F');
+    doc.setDrawColor(...GREEN); doc.setLineWidth(0.8);
+    doc.line(M, y, M, y+7);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GREEN);
+    doc.text('PREPORUKE ZA POBOLJSANJE', M+4, y+5);
+    y += 11;
+
+    recItems.forEach(item => {
+      newPageIfNeeded(18);
+      const title = hr2a(item.querySelector('.rec-title')?.textContent || '');
+      const desc = hr2a(item.querySelector('.rec-desc')?.textContent || '');
+
+      // Bullet + naslov
+      doc.setFillColor(...oeeColor);
+      doc.circle(M+2, y+2, 1.5, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+      doc.text(title, M+6, y+3.5);
+      y += 7;
+
+      // Opis
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      const lines = doc.splitTextToSize(desc, W - M*2 - 10);
+      lines.forEach(line => {
+        newPageIfNeeded(5);
+        doc.text(line, M+6, y);
+        y += 4.5;
+      });
+      y += 3;
+    });
+  }
+
+  // ══════════════════════════════════════════
+  // FOOTER SVAKE STRANICE
+  // ══════════════════════════════════════════
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...GREEN);
+    doc.rect(0, H-8, W, 8, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...WHITE);
+    doc.text('Izradeno uz pomoc Leanopedija — leanopedija.opticora.hr', M, H-3);
+    doc.text(`Stranica ${i} / ${totalPages}`, W-M, H-3, { align:'right' });
+  }
+
+  doc.save('OEE-izvjestaj-' + new Date().toISOString().slice(0,10) + '.pdf');
 }
 
 
