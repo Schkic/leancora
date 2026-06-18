@@ -972,130 +972,325 @@ function resetForm() {
 function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, M = 12;
+  let y = 0;
 
-  const firma = document.getElementById('meta-firma').value || '—';
-  const osoba = document.getElementById('meta-osoba').value || '—';
-  const datum = document.getElementById('meta-datum').value || '—';
-  const lokacija = document.getElementById('meta-lokacija').value || '—';
-  const smjena = document.getElementById('meta-smjena').value || '—';
-  const broj = document.getElementById('meta-broj').value || '—';
+  const GREEN   = [26, 122, 94];
+  const GREEN_D = [14, 95, 70];
+  const GREEN_L = [232, 245, 240];
+  const GRAY    = [130, 130, 130];
+  const DARK    = [26, 26, 26];
+  const WHITE   = [255, 255, 255];
+  const BORDER  = [220, 220, 220];
+  const ROW_ALT = [248, 252, 250];
 
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[^\u0000-\u00FF]/g,'').trim();
+  }
+  function checkY(need) {
+    if (y + need > H - 12) {
+      // Footer na trenutnoj stranici
+      drawFooter();
+      doc.addPage(); y = 14;
+      return true;
+    }
+    return false;
+  }
+  function drawFooter() {
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, H-8, W, 8, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-3);
+    doc.setTextColor(...WHITE);
+    doc.text('Obrazac je besplatan za koristenje', W-M, H-3, { align:'right' });
+  }
+  function scoreColor(pct) {
+    if (pct >= 80) return { fill:[220,252,231], text:[22,163,74] };
+    if (pct >= 60) return { fill:[254,249,195], text:[202,138,10] };
+    if (pct >= 40) return { fill:[255,237,213], text:[234,88,12] };
+    return { fill:[254,226,226], text:[220,38,38] };
+  }
+
+  // ══ ZAGLAVLJE ════════════════════════════════════════
+  doc.setFillColor(...GREEN_D);
+  doc.rect(0, 0, W, 22, 'F');
+
+  // Logo
+  doc.setFillColor(60,150,115);
+  doc.roundedRect(M, 5, 12, 12, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+  doc.text('L', M+3.5, 12.5);
+  doc.setFontSize(6); doc.text('o', M+7.5, 10.5);
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+  doc.text('Leanopedija', M+16, 11);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,225,210);
+  doc.text('5S Audit Obrazac  |  Ocjena stanja urednosti i organizacije', M+16, 17);
+
+  const d = new Date();
+  doc.setFontSize(7.5); doc.setTextColor(180,225,210);
+  doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 11, { align:'right' });
+  doc.setTextColor(140,200,175);
+  doc.text('leanopedija.opticora.hr', W-M, 17, { align:'right' });
+  y = 28;
+
+  // ══ META PODACI ════════════════════════════════════
+  const firma    = hr2a(document.getElementById('meta-firma').value)    || '—';
+  const osoba    = hr2a(document.getElementById('meta-osoba').value)    || '—';
+  const datum    = hr2a(document.getElementById('meta-datum').value)    || '—';
+  const lokacija = hr2a(document.getElementById('meta-lokacija').value) || '—';
+  const smjena   = hr2a(document.getElementById('meta-smjena').value)   || '—';
+  const broj     = hr2a(document.getElementById('meta-broj').value)     || '—';
+
+  doc.setFillColor(...GREEN_L);
+  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'F');
+  doc.setDrawColor(...GREEN); doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'S');
+
+  const hw = (W-M*2)/2;
+  const metaItems = [
+    ['FIRMA / POGON', firma, M+4, y+7],
+    ['AUDITOR', osoba, M+4+hw, y+7],
+    ['DATUM AUDITA', datum, M+4, y+18],
+    ['LOKACIJA', lokacija, M+4+hw, y+18],
+  ];
+  metaItems.forEach(([lbl, val, x, yy]) => {
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    doc.text(lbl, x, yy-3.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...DARK);
+    doc.text(val.substring(0,30), x, yy);
+  });
+
+  // Smjena i broj desno dolje
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.text(`Smjena: ${smjena}   |   Audit br.: ${broj}`, W-M-4, y+20, { align:'right' });
+  y += 28;
+
+  // ══ UKUPNI REZULTAT ════════════════════════════════
   const sections = ['s1','s2','s3','s4','s5'];
-  const sNames = ['S1 — Sortiranje','S2 — Sređivanje','S3 — Čišćenje','S4 — Standardizacija','S5 — Samodisciplina'];
+  const sNames = ['S1 — Sortiranje','S2 — Uredivanje','S3 — Ciscenje','S4 — Standardizacija','S5 — Samodisciplina'];
+  const sEmoji = ['','','','',''];
   let scores = {};
   sections.forEach(s => { scores[s] = getSectionScore(s).score; });
   const total = sections.reduce((a,s) => a + scores[s], 0);
+  const totalPct = total;
+  const gradeObj = getGrade(totalPct);
+  const gradeClean = hr2a(gradeObj.grade);
+  const tipClean = hr2a(gradeObj.tip);
+  const mainSC = scoreColor(totalPct);
 
-  // Header
-  doc.setFillColor(26, 122, 94);
-  doc.rect(0, 0, 210, 28, 'F');
-  doc.setTextColor(255,255,255);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Leanopedija', 14, 12);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text('5S Audit Obrazac', 14, 20);
-  doc.setFontSize(9);
-  doc.text('lean.opticora.hr', 150, 12);
+  // Ukupni score box
+  doc.setFillColor(...mainSC.fill);
+  doc.roundedRect(M, y, W-M*2, 18, 2, 2, 'F');
+  doc.setDrawColor(...mainSC.text); doc.setLineWidth(0.5);
+  doc.roundedRect(M, y, W-M*2, 18, 2, 2, 'S');
 
-  // Score box
-  const pct = total;
-  doc.setFillColor(pct >= 80 ? 220 : pct >= 60 ? 254 : pct >= 40 ? 255 : 254,
-                   pct >= 80 ? 252 : pct >= 60 ? 249 : pct >= 40 ? 237 : 226,
-                   pct >= 80 ? 231 : pct >= 60 ? 195 : pct >= 40 ? 213 : 226);
-  doc.rect(150, 14, 46, 12, 'F');
-  doc.setTextColor(pct >= 80 ? 22 : pct >= 60 ? 202 : 220, pct >= 80 ? 163 : pct >= 60 ? 138 : 50, pct >= 80 ? 74 : pct >= 60 ? 10 : 50);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text(total + ' / 100', 160, 22);
+  doc.setFont('helvetica','bold'); doc.setFontSize(26); doc.setTextColor(...mainSC.text);
+  doc.text(`${total}`, M+10, y+13);
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...GRAY);
+  doc.text('/ 100', M+28, y+13);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...mainSC.text);
+  doc.text(gradeClean, M+50, y+9);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+  doc.text(tipClean, M+50, y+15);
+  y += 24;
 
-  // Meta info
-  doc.setTextColor(0,0,0);
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
-  let y = 36;
-  const meta = [['Firma / Pogon:', firma], ['Auditor:', osoba], ['Datum:', datum],
-                 ['Lokacija:', lokacija], ['Smjena:', smjena], ['Broj audita:', broj]];
-  meta.forEach(([label, val], i) => {
-    const col = i % 2 === 0 ? 14 : 110;
-    if (i % 2 === 0 && i > 0) y += 6;
-    doc.setFont('helvetica', 'bold'); doc.text(label, col, y);
-    doc.setFont('helvetica', 'normal'); doc.text(val, col + 30, y);
-  });
-  y += 10;
-
-  // Section scores
-  doc.setFillColor(248,248,248);
-  doc.rect(14, y, 182, 7, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(80,80,80);
-  doc.text('REZULTATI PO KATEGORIJAMA', 16, y + 5);
-  y += 12;
+  // ══ REZULTATI PO KATEGORIJAMA ══════════════════════
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.text('REZULTATI PO KATEGORIJAMA', M, y); y += 5;
 
   sections.forEach((s, i) => {
     const sc = scores[s];
-    const pctS = (sc / 20) * 100;
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(0,0,0);
-    doc.setFontSize(9);
-    doc.text(sNames[i], 14, y);
-    doc.text(sc + ' / 20', 170, y);
-    doc.setFillColor(230,230,230);
-    doc.rect(80, y - 4, 80, 5, 'F');
-    const barColor = pctS >= 80 ? [22,163,74] : pctS >= 60 ? [202,138,10] : [220,50,50];
-    doc.setFillColor(...barColor);
-    doc.rect(80, y - 4, (pctS / 100) * 80, 5, 'F');
-    y += 8;
+    const pct = (sc / 20) * 100;
+    const sc2 = scoreColor(pct);
+    const barW = W - M*2 - 52;
+
+    doc.setFillColor(...sc2.fill);
+    doc.roundedRect(M, y, W-M*2, 8, 1.5, 1.5, 'F');
+
+    // S badge
+    doc.setFillColor(...sc2.text);
+    doc.roundedRect(M+2, y+1.5, 10, 5, 1, 1, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...WHITE);
+    doc.text('S'+(i+1), M+4.5, y+5.3);
+
+    // Naziv
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+    doc.text(sNames[i], M+15, y+5.3);
+
+    // Progress bar
+    const barX = M+90;
+    doc.setFillColor(...BORDER);
+    doc.roundedRect(barX, y+2.5, barW, 3, 1, 1, 'F');
+    doc.setFillColor(...sc2.text);
+    doc.roundedRect(barX, y+2.5, barW*(pct/100), 3, 1, 1, 'F');
+
+    // Score desno
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...sc2.text);
+    doc.text(`${sc} / 20`, W-M-3, y+5.3, { align:'right' });
+    y += 10;
+  });
+  y += 5;
+
+  // ══ DETALJI PO SEKCIJAMA ═══════════════════════════
+  const sFullNames = [
+    'S1 — Sortiranje (Seiri)',
+    'S2 — Uredivanje (Seiton)',
+    'S3 — Ciscenje (Seiso)',
+    'S4 — Standardizacija (Seiketsu)',
+    'S5 — Samodisciplina (Shitsuke)'
+  ];
+
+  sections.forEach((sId, si) => {
+    checkY(20);
+
+    const sc = scores[sId];
+    const pct = (sc / 20) * 100;
+    const sc2 = scoreColor(pct);
+
+    // Sekcija zaglavlje
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(M, y, W-M*2, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+    doc.text(sFullNames[si], M+4, y+5.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(`${sc} / 20`, W-M-4, y+5.5, { align:'right' });
+    y += 11;
+
+    // Zaglavlje tablice
+    doc.setFillColor(240,245,243);
+    doc.rect(M, y, W-M*2, 6, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    doc.text('Kriterij', M+3, y+4);
+    doc.text('Komentar', M+115, y+4);
+    doc.text('Ocjena', W-M-10, y+4, { align:'right' });
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.line(M, y+6, W-M, y+6);
+    y += 6;
+
+    // Pitanja
+    const groups = document.querySelectorAll(`[data-section="${sId}"]`);
+    groups.forEach((group, qi) => {
+      checkY(8);
+
+      // Tekst kriterija
+      const row = group.closest('tr');
+      const criteriaText = hr2a(row?.querySelector('.criteria-text')?.textContent || `Kriterij ${qi+1}`);
+      const commentInput = row?.querySelector('.inline-comment input');
+      const commentVal = hr2a(commentInput?.value || '');
+
+      // Odabrana ocjena
+      const selectedBtn = group.querySelector('.rating-btn[class*="selected-"]');
+      const score = selectedBtn ? parseInt(selectedBtn.dataset.val) : null;
+      const scoreStr = score !== null ? String(score) : '—';
+
+      if (qi%2===0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W-M*2, 7, 'F'); }
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      doc.line(M, y+7, W-M, y+7);
+
+      // Kriterij tekst (skraćen)
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
+      const shortText = criteriaText.length > 58 ? criteriaText.substring(0,55)+'...' : criteriaText;
+      doc.text(shortText, M+3, y+4.5);
+
+      // Komentar
+      if (commentVal) {
+        doc.setTextColor(...GRAY); doc.setFontSize(7);
+        const shortComment = commentVal.length > 22 ? commentVal.substring(0,19)+'...' : commentVal;
+        doc.text(shortComment, M+115, y+4.5);
+      }
+
+      // Ocjena badge
+      if (score !== null) {
+        const badgeColor = score >= 3 ? [22,163,74] : score >= 2 ? [202,138,10] : score >= 1 ? [234,88,12] : [220,38,38];
+        const badgeBg = badgeColor.map(n => Math.min(255, n+185));
+        doc.setFillColor(...badgeBg);
+        doc.roundedRect(W-M-12, y+1.5, 10, 4.5, 1, 1, 'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...badgeColor);
+        doc.text(scoreStr + ' / 4', W-M-7, y+4.8, { align:'center' });
+      } else {
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        doc.text('—', W-M-7, y+4.5, { align:'center' });
+      }
+      y += 7;
+    });
+    y += 6;
   });
 
-  y += 4;
-  doc.setFillColor(26, 122, 94);
-  doc.setTextColor(255,255,255);
-  doc.rect(14, y, 182, 8, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.text('UKUPNO: ' + total + ' / 100', 16, y + 5.5);
+  // ══ OPSERVACIJE I AKCIJSKI PLAN ════════════════════
+  const posit  = hr2a(document.getElementById('obs-pozitivno').value);
+  const pobolj = hr2a(document.getElementById('obs-poboljsanje').value);
+  const akcije = hr2a(document.getElementById('obs-akcije').value);
+  const sljedeci = hr2a(document.getElementById('obs-sljedeci').value);
+  const potpis   = hr2a(document.getElementById('obs-potpis').value);
 
-  // Observations
-  const posit = document.getElementById('obs-pozitivno').value;
-  const pobolj = document.getElementById('obs-poboljsanje').value;
-  const akcije = document.getElementById('obs-akcije').value;
-  const sljedeci = document.getElementById('obs-sljedeci').value;
-  const potpis = document.getElementById('obs-potpis').value;
+  const obsItems = [
+    { label:'Pozitivna zapazanja', val: posit },
+    { label:'Podrucja za poboljsanje', val: pobolj },
+    { label:'Prioritetne akcije', val: akcije },
+  ];
 
-  y += 14;
-  doc.setTextColor(0,0,0);
-  doc.setFontSize(9);
+  const hasObs = obsItems.some(o => o.val) || sljedeci || potpis;
+  if (hasObs) {
+    checkY(16);
+    doc.setFillColor(...GREEN_L);
+    doc.roundedRect(M, y, W-M*2, 8, 1.5, 1.5, 'F');
+    doc.setDrawColor(...GREEN); doc.setLineWidth(1);
+    doc.line(M, y, M, y+8);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...GREEN);
+    doc.text('OPSERVACIJE I AKCIJSKI PLAN', M+4, y+5.5);
+    y += 13;
 
-  if (posit) {
-    doc.setFont('helvetica', 'bold'); doc.text('Pozitivna zapažanja:', 14, y); y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.text(doc.splitTextToSize(posit, 180), 14, y); y += doc.splitTextToSize(posit, 180).length * 4 + 4;
+    obsItems.forEach(({ label, val }) => {
+      if (!val) return;
+      checkY(14);
+      doc.setFillColor(60,150,115);
+      doc.circle(M+2.5, y+2, 1.8, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+      doc.text(label, M+7, y+3.5);
+      y += 7;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      const lines = doc.splitTextToSize(val, W-M*2-10);
+      lines.forEach(ln => { checkY(5); doc.text(ln, M+7, y); y+=4.5; });
+      y += 4;
+    });
+
+    if (sljedeci || potpis) {
+      checkY(14);
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.3);
+      doc.line(M, y, W-M, y); y += 6;
+      if (sljedeci) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
+        doc.text('Datum sljedeceg audita:', M, y);
+        doc.setFont('helvetica','normal'); doc.text(sljedeci, M+52, y);
+        y += 7;
+      }
+      if (potpis) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
+        doc.text('Potpis auditora:', M, y);
+        doc.setFont('helvetica','normal'); doc.text(potpis, M+40, y);
+      }
+    }
   }
-  if (pobolj) {
-    doc.setFont('helvetica', 'bold'); doc.text('Područja za poboljšanje:', 14, y); y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.text(doc.splitTextToSize(pobolj, 180), 14, y); y += doc.splitTextToSize(pobolj, 180).length * 4 + 4;
+
+  // ══ FOOTER SVAKE STRANICE ══════════════════════════
+  const total2 = doc.internal.getNumberOfPages();
+  for (let i=1; i<=total2; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, H-8, W, 8, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-3);
+    doc.setTextColor(...WHITE);
+    doc.text(`Stranica ${i} / ${total2}`, W-M, H-3, { align:'right' });
   }
-  if (akcije) {
-    doc.setFont('helvetica', 'bold'); doc.text('Prioritetne akcije:', 14, y); y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.text(doc.splitTextToSize(akcije, 180), 14, y); y += doc.splitTextToSize(akcije, 180).length * 4 + 4;
-  }
 
-  y += 4;
-  if (sljedeci) { doc.setFont('helvetica', 'bold'); doc.text('Datum sljedećeg audita: ', 14, y); doc.setFont('helvetica', 'normal'); doc.text(sljedeci, 70, y); y += 7; }
-  if (potpis) { doc.setFont('helvetica', 'bold'); doc.text('Potpis auditora: ', 14, y); doc.setFont('helvetica', 'normal'); doc.text(potpis, 55, y); }
-
-  // Footer
-  doc.setFontSize(7);
-  doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr | Obrazac je besplatan za korištenje', 14, 290);
-
-  const dateStr = new Date().toISOString().slice(0,10);
-  doc.save(`5S-audit-${dateStr}.pdf`);
+  doc.save(`5S-audit-${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 updateScores();
