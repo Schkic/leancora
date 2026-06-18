@@ -102,11 +102,7 @@ a{color:inherit;text-decoration:none}
 .mobile-menu a:hover{color:var(--green)}
 .mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
 @media(max-width:768px){.grid-2,.before-after,.priority-grid,.impact-grid{grid-template-columns:1fr}.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
-.tip-section {
-    background: #fffdf5;
-    border-top: 1px solid #f0e8c0;
-    border-bottom: 1px solid #f0e8c0;
-  }
+
 .tip-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -159,6 +155,28 @@ a{color:inherit;text-decoration:none}
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.2); }
   }
+.tip-section {
+    background: #fffdf5;
+    border-top: 1px solid #f0e8c0;
+    border-bottom: 1px solid #f0e8c0;
+  }
+.tip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+.accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
+    text-align: left; gap: 12px; transition: background 0.15s;
+  }
+.acc-btn:hover { background: var(--green-light); }
+.acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
+.acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
+.acc-body.open { display: block; }
 </style>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'>
 // Mobile menu
@@ -178,6 +196,22 @@ document.addEventListener('click', function(e) {
     closeMobileMenu();
   }
 });
+
+function toggleAcc(btn) {
+  var body = btn.nextElementSibling;
+  var isOpen = body.classList.contains('open');
+  document.querySelectorAll('.acc-body').forEach(function(b) { b.classList.remove('open'); });
+  document.querySelectorAll('.acc-btn').forEach(function(b) { b.classList.remove('open'); });
+  if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
+}
+function scrollToNapojnica() {
+  var el = document.getElementById('napojnica');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+var API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
+function trackClick(method) {
+  try { fetch(API + '/track?method=' + method, { method: 'POST' }); } catch(e) {}
+}
 </script>
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://leanopedija.opticora.hr/kaizen-prijedlog.html">
@@ -436,3 +470,85 @@ document.addEventListener('click', function(e) {
   </div>
 
 </div>
+
+<section class="tip-section" id="napojnica" style="text-align:center;">
+  <div class="tip-inner" style="max-width:680px;margin:0 auto;text-align:center;">
+    <h2>Ostavi napojnicu! ☕</h2>
+    <p>
+      Je li vam Leanopedija pomogla, uštedjela vrijeme, živce i energiju?<br>
+      Smatrate da sadržaj i alati imaju vrijednost?<br>
+      Ako želite podržati naš rad, znanje, vrijeme i trud, možete to učiniti napojnicom. Hvala! 😊
+    </p>
+
+    <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
+
+      <!-- Zaba -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
+          <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Otvorite mobilno bankarstvo (npr. Zaba), odaberite skeniranje barkoda, skenirajte niže prikazani 2D barkod, upišite željeni iznos (npr. 3,00 €) i potvrdite plaćanje.</p>
+          <img src="zaba-2d.jpg" style="max-width:320px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="Zaba 2D barkod za uplatu">
+        </div>
+      </div>
+
+      <!-- KeksPay QR -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
+          <span>🟢 KeksPay uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">KeksPay aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="keks-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;" alt="KeksPay QR kod">
+        </div>
+      </div>
+
+      <!-- Revolut -->
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
+          <span>🔵 Revolut uplata — skeniraj QR kod</span>
+          <svg class="acc-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="acc-body" style="text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;text-align:left;">Revolut aplikacijom skenirajte niže prikazani QR barkod, upišite željeni iznos (npr. 3,00 €) i to je to!</p>
+          <img src="revolut-qr.jpg" style="max-width:280px;width:100%;margin:0 auto;display:block;border-radius:6px;background:#1a1a1a;padding:8px;" alt="Revolut QR kod">
+          <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:8px;">Ili klikom na <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
+        </div>
+      </div>
+
+    <!-- Tracking stats -->
+    
+      <div style="margin-top:16px;">
+        
+        
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<hr style="border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto">
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.opticora.hr</a></span>
+    <span>Obrazac je besplatan za korištenje.</span>
+  </div>
+</footer>
+
+<div class="support-float">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
+</body>
+</html>
