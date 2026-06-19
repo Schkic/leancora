@@ -793,8 +793,9 @@ function exportPDF() {
   </div>
 </footer>
 
+<!-- Floating -->
 <div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
-  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;font-size:13px;font-weight:600;">
+  <div class="support-bubble" onclick="document.getElementById('napojnica').scrollIntoView({behavior:'smooth'})" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;font-size:13px;font-weight:600;">
     ❤️ Zahvali se
   </div>
   <div class="support-bubble" onclick="window.location='o-nama.html'">
@@ -802,6 +803,16 @@ function exportPDF() {
     Stručna podrška — dostupni smo
   </div>
 </div>
+    
+<!-- <div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;font-size:13px;font-weight:600;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div> -->
 
 </body>
 </html>
