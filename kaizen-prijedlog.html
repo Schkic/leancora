@@ -231,14 +231,6 @@ function selectPriority(el, value) {
   document.getElementById('selected-priority').value = value;
 }
 
-// Odabir statusa prijedloga
-function selectStatus(el, value) {
-  var grid = el.closest('.priority-grid');
-  grid.querySelectorAll('.priority-card').forEach(function(c) { c.classList.remove('selected'); });
-  el.classList.add('selected');
-  document.getElementById('selected-status').value = value;
-}
-
 // Reset obrasca
 function resetForm() {
   if (!confirm('Obrisati sve podatke i započeti novi prijedlog?')) return;
@@ -246,7 +238,6 @@ function resetForm() {
   document.querySelectorAll('.impact-card, .priority-card').forEach(function(c) { c.classList.remove('selected'); });
   document.getElementById('selected-impact').value = '';
   document.getElementById('selected-priority').value = '';
-  document.getElementById('selected-status').value = '';
 }
 
 // Izvoz u PDF
@@ -303,13 +294,81 @@ function exportPDF() {
   addTitle('4. Utjecaj i prioritet');
   addLine('Kategorija poboljšanja', val('selected-impact'));
   addLine('Prioritet', val('selected-priority'));
+  y += 5;
+
+  // --- 5. Odluka voditelja: prazan obrazac za ručno popunjavanje ---
+  if (y + 70 > 285) { doc.addPage(); y = 15; }
+
+  doc.setFontSize(13);
+  doc.setFont(undefined, 'bold');
+  doc.text('5. Odluka voditelja / Lean koordinatora', marginX, y);
+  y += 5;
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'italic');
+  doc.setTextColor(120,120,120);
+  doc.text('Popunjava se ručno nakon predaje obrasca.', marginX, y);
+  doc.setTextColor(0,0,0);
+  doc.setFont(undefined, 'normal');
+  y += 8;
+
+  // Status prijedloga — checkboxes
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.text('Status prijedloga:', marginX, y);
+  doc.setFont(undefined, 'normal');
+  y += 7;
+
+  var statusi = ['Zaprimljeno', 'Odobreno', 'U tijeku', 'Implementirano'];
+  var boxSize = 4.5;
+  var colW = maxW / statusi.length;
+  statusi.forEach(function(label, i) {
+    var x = marginX + i * colW;
+    doc.rect(x, y - boxSize + 1, boxSize, boxSize);
+    doc.text(label, x + boxSize + 2, y);
+  });
+  y += 12;
+
+  // Odgovorna osoba / Rok — linije za upis
+  var halfW = maxW / 2 - 4;
+  doc.setFont(undefined, 'bold');
+  doc.text('Odgovorna osoba za implementaciju:', marginX, y);
+  doc.text('Rok implementacije:', marginX + halfW + 8, y);
+  doc.setFont(undefined, 'normal');
+  y += 6;
+  doc.line(marginX, y, marginX + halfW, y);
+  doc.line(marginX + halfW + 8, y, marginX + maxW, y);
+  y += 10;
+
+  // Komentar voditelja — prazne linije
+  doc.setFont(undefined, 'bold');
+  doc.text('Komentar voditelja:', marginX, y);
+  doc.setFont(undefined, 'normal');
+  y += 6;
+  for (var i = 0; i < 3; i++) {
+    doc.line(marginX, y, marginX + maxW, y);
+    y += 7;
+  }
   y += 3;
 
-  addTitle('5. Odluka voditelja / Lean koordinatora');
-  addLine('Status prijedloga', val('selected-status'));
-  addLine('Odgovorna osoba', val('vod-odgovorni'));
-  addLine('Rok implementacije', val('vod-rok'));
-  addLine('Komentar voditelja', val('vod-komentar'));
+  // Potpis i datum
+  doc.line(marginX, y, marginX + halfW, y);
+  doc.line(marginX + halfW + 8, y, marginX + maxW, y);
+  y += 5;
+  doc.setFontSize(9);
+  doc.setTextColor(120,120,120);
+  doc.text('Potpis voditelja / koordinatora', marginX, y);
+  doc.text('Datum odluke', marginX + halfW + 8, y);
+  doc.setTextColor(0,0,0);
+  y += 12;
+
+  // Napomena o predaji obrasca
+  if (y + 14 > 285) { doc.addPage(); y = 15; }
+  doc.setFillColor(232, 245, 240);
+  doc.rect(marginX, y - 5, maxW, 12, 'F');
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'italic');
+  doc.text('Nakon popunjavanja, obrazac predajte ili poslati nadređenom / Lean koordinatoru na odobrenje.', marginX + 3, y + 2);
+  doc.setFont(undefined, 'normal');
 
   doc.save('kaizen-prijedlog.pdf');
 }
@@ -533,41 +592,12 @@ function exportPDF() {
     </div>
   </div>
 
-  <!-- 5. Odluka voditelja -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon" style="background:#e8f5f0">✍️</div>
-      <div><h3>Odluka voditelja / Lean koordinatora</h3><p>Popunjava voditelj — odobrenje i praćenje</p></div>
-    </div>
-    <div class="card-body">
-      <div class="status-section">
-        <div class="status-title">Status prijedloga</div>
-        <div class="priority-grid" style="grid-template-columns:repeat(4,1fr)">
-          <div class="priority-card" onclick="selectStatus(this,'Zaprimljeno')">
-            <div class="priority-icon">📥</div>
-            <div class="priority-label" style="font-size:11px">Zaprimljeno</div>
-          </div>
-          <div class="priority-card" onclick="selectStatus(this,'Odobreno')">
-            <div class="priority-icon">✅</div>
-            <div class="priority-label" style="font-size:11px">Odobreno</div>
-          </div>
-          <div class="priority-card" onclick="selectStatus(this,'U tijeku')">
-            <div class="priority-icon">🔄</div>
-            <div class="priority-label" style="font-size:11px">U tijeku</div>
-          </div>
-          <div class="priority-card" onclick="selectStatus(this,'Implementirano')">
-            <div class="priority-icon">🎉</div>
-            <div class="priority-label" style="font-size:11px">Implementirano</div>
-          </div>
-        </div>
-        <input type="hidden" id="selected-status" value="">
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Odgovorna osoba za implementaciju</label><input type="text" id="vod-odgovorni" placeholder="Ime Prezime"></div>
-        <div class="field"><label>Rok implementacije</label><input type="date" id="vod-rok"></div>
-      </div>
-      <div class="field"><label>Komentar voditelja</label><textarea id="vod-komentar" placeholder="Obrazloženje odluke, napomene, uvjeti odobrenja..."></textarea></div>
-    </div>
+  <div class="field" style="font-size:12px;color:var(--text-faint);text-align:center;padding:6px 0 0;">
+    ℹ️ Sekcija "Odluka voditelja" nalazi se na zadnjoj stranici PDF-a — popunjava se ručno nakon predaje obrasca.
+  </div>
+
+  <div style="text-align:center;padding:20px 0 4px;">
+    <button class="btn btn-primary" onclick="exportPDF()" style="padding:10px 22px;font-size:14px">⬇️ Preuzmi PDF</button>
   </div>
 
 </div>
@@ -641,8 +671,8 @@ function exportPDF() {
   </div>
 </footer>
 
-<div class="support-float">
-  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;font-size:13px;font-weight:600;">
     ❤️ Zahvali se
   </div>
   <div class="support-bubble" onclick="window.location='o-nama.html'">
