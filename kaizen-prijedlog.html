@@ -242,135 +242,230 @@ function resetForm() {
 
 // Izvoz u PDF
 function exportPDF() {
-  var val = function(id) { return document.getElementById(id).value || '-'; };
+  var v = function(id) { return document.getElementById(id).value || ''; };
   var { jsPDF } = window.jspdf;
-  var doc = new jsPDF();
-  var y = 15;
-  var pageW = doc.internal.pageSize.getWidth();
-  var marginX = 14;
-  var maxW = pageW - marginX * 2;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = 210, H = 297, M = 14;
+  var y = 0;
 
-  function addTitle(text) {
-    doc.setFontSize(13);
-    doc.setFont(undefined, 'bold');
-    doc.text(text, marginX, y);
+  var GREEN   = [26, 122, 94];
+  var GREEN_D = [14, 95, 70];
+  var GREEN_L = [232, 245, 240];
+  var GRAY    = [130, 130, 130];
+  var DARK    = [26, 26, 26];
+  var WHITE   = [255, 255, 255];
+  var BORDER  = [225, 225, 225];
+  var RED     = [200, 40, 40];
+
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D');
+  }
+  function newPage() { doc.addPage(); drawHeader(); y = 26; }
+  function checkY(need) { if (y + need > H - 14) newPage(); }
+
+  function drawHeader() {
+    doc.setFillColor.apply(doc, GREEN_D);
+    doc.rect(0, 0, W, 20, 'F');
+    doc.setFillColor(60, 150, 115);
+    doc.roundedRect(M, 4, 12, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor.apply(doc, WHITE);
+    doc.text('L', M + 3.5, 11.5);
+    doc.setFontSize(6); doc.text('o', M + 7.5, 9.5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor.apply(doc, WHITE);
+    doc.text('Leanopedija', M + 16, 10);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(180, 225, 210);
+    doc.text('Kaizen prijedlog poboljsanja', M + 16, 15.5);
+    var d = new Date();
+    var dateStr = d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + d.getFullYear() + '.';
+    doc.setFontSize(7.5); doc.setTextColor(180, 225, 210);
+    doc.text(dateStr, W - M, 10, { align: 'right' });
+    doc.setTextColor(140, 200, 175);
+    doc.text('leanopedija.opticora.hr', W - M, 15.5, { align: 'right' });
+  }
+
+  function sectionBar(title) {
+    checkY(16);
+    doc.setFillColor.apply(doc, GREEN);
+    doc.roundedRect(M, y, W - M * 2, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor.apply(doc, WHITE);
+    doc.text(hr2a(title), M + 4, y + 5.5);
+    y += 13;
+  }
+  function field(label, value, fullWidth) {
+    var text = hr2a(value) || '—';
+    var w = fullWidth ? W - M * 2 : W - M * 2;
+    var lines = doc.splitTextToSize(text, w);
+    checkY(6 + lines.length * 4.5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor.apply(doc, GRAY);
+    doc.text(hr2a(label).toUpperCase(), M, y);
+    y += 4.5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor.apply(doc, DARK);
+    doc.text(lines, M, y);
+    y += lines.length * 4.5 + 4;
+  }
+  function fieldRow(label1, value1, label2, value2) {
+    checkY(10);
+    var halfW = (W - M * 2 - 8) / 2;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor.apply(doc, GRAY);
+    doc.text(hr2a(label1).toUpperCase(), M, y);
+    doc.text(hr2a(label2).toUpperCase(), M + halfW + 8, y);
+    y += 4.5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor.apply(doc, DARK);
+    doc.text(hr2a(value1) || '—', M, y);
+    doc.text(hr2a(value2) || '—', M + halfW + 8, y);
     y += 7;
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(10);
-  }
-  function addLine(label, value) {
-    var lines = doc.splitTextToSize(label + ': ' + value, maxW);
-    if (y + lines.length * 5 > 285) { doc.addPage(); y = 15; }
-    doc.text(lines, marginX, y);
-    y += lines.length * 5 + 2;
   }
 
-  doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.text('Kaizen Prijedlog Poboljšanja', marginX, y);
+  // ══ HEADER ══
+  drawHeader();
+  y = 26;
+
+  // ══ 1. PODNOSITELJ ══
+  sectionBar('1. Podnositelj prijedloga');
+  fieldRow('Ime i prezime', v('p-ime'), 'Datum prijedloga', v('p-datum'));
+  fieldRow('Odjel / pogon', v('p-odjel'), 'Radno mjesto', v('p-radno'));
+  y += 2;
+
+  // ══ 2. OPIS PROBLEMA ══
+  sectionBar('2. Opis problema ili prilike za poboljsanje');
+  field('Gdje se problem pojavljuje', v('prob-gdje'));
+  field('Opis problema / prilike', v('prob-opis'));
+
+  // Prije / Poslije kao dvije kartice
+  checkY(28);
+  var halfW2 = (W - M * 2 - 6) / 2;
+  var baY = y;
+  doc.setFillColor(254, 226, 226);
+  doc.rect(M, baY, halfW2, 7, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor.apply(doc, RED);
+  doc.text('PRIJE', M + 3, baY + 5);
+  doc.setFillColor(220, 252, 231);
+  doc.rect(M + halfW2 + 6, baY, halfW2, 7, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(22, 163, 74);
+  doc.text('POSLIJE', M + halfW2 + 9, baY + 5);
   y += 10;
-  doc.setFont(undefined, 'normal');
+  var prijeLines = doc.splitTextToSize(hr2a(v('ba-prije')) || '—', halfW2 - 6);
+  var poslijeLines = doc.splitTextToSize(hr2a(v('ba-poslije')) || '—', halfW2 - 6);
+  var baLines = Math.max(prijeLines.length, poslijeLines.length);
+  checkY(baLines * 4.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor.apply(doc, DARK);
+  doc.text(prijeLines, M + 3, y);
+  doc.text(poslijeLines, M + halfW2 + 9, y);
+  doc.setDrawColor.apply(doc, BORDER); doc.setLineWidth(0.2);
+  doc.rect(M, baY, halfW2, baLines * 4.5 + 10, 'S');
+  doc.rect(M + halfW2 + 6, baY, halfW2, baLines * 4.5 + 10, 'S');
+  y += baLines * 4.5 + 8;
 
-  addTitle('1. Podnositelj prijedloga');
-  addLine('Ime i prezime', val('p-ime'));
-  addLine('Datum prijedloga', val('p-datum'));
-  addLine('Odjel / pogon', val('p-odjel'));
-  addLine('Radno mjesto', val('p-radno'));
-  y += 3;
+  // ══ 3. PRIJEDLOG RJEŠENJA ══
+  sectionBar('3. Prijedlog rjesenja');
+  field('Predlozeno rjesenje', v('rjes-opis'));
+  fieldRow('Potrebno za implementaciju', v('rjes-potrebno'), 'Procijenjeni trosak', v('rjes-trosak'));
+  y += 2;
 
-  addTitle('2. Opis problema ili prilike za poboljšanje');
-  addLine('Gdje se problem pojavljuje', val('prob-gdje'));
-  addLine('Opis problema / prilike', val('prob-opis'));
-  addLine('Trenutno stanje (PRIJE)', val('ba-prije'));
-  addLine('Željeno stanje (POSLIJE)', val('ba-poslije'));
-  y += 3;
+  // ══ 4. UTJECAJ I PRIORITET ══
+  sectionBar('4. Utjecaj i prioritet');
+  checkY(14);
+  var impactVal = v('selected-impact') || '—';
+  var priorityVal = v('selected-priority') || '—';
+  var impactColors = { 'Sigurnost': RED, 'Kvaliteta': [22,163,74], 'Produktivnost': [234,88,12], 'Troškovi': [202,138,4], 'Ergonomija': [124,58,237], 'Okoliš': [22,163,74] };
+  var priorityColors = { 'Kritično': RED, 'Visoki': [220,38,38], 'Srednji': [202,138,4], 'Nizak': [22,163,74] };
+  function badge(label, value, x, colorMap) {
+    var col = colorMap[value] || GRAY;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor.apply(doc, GRAY);
+    doc.text(hr2a(label).toUpperCase(), x, y);
+    doc.setFontSize(9.5);
+    var bw = doc.getTextWidth(hr2a(value)) + 8;
+    doc.setFillColor(col[0]+ (255-col[0])*0.85, col[1]+(255-col[1])*0.85, col[2]+(255-col[2])*0.85);
+    doc.roundedRect(x, y + 2.5, bw, 7, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor.apply(doc, col);
+    doc.text(hr2a(value), x + 4, y + 7.5);
+  }
+  badge('Kategorija poboljsanja', impactVal, M, impactColors);
+  badge('Prioritet', priorityVal, M + 95, priorityColors);
+  y += 16;
 
-  addTitle('3. Prijedlog rješenja');
-  addLine('Predloženo rješenje', val('rjes-opis'));
-  addLine('Potrebno za implementaciju', val('rjes-potrebno'));
-  addLine('Procijenjeni trošak', val('rjes-trosak'));
-  y += 3;
-
-  addTitle('4. Utjecaj i prioritet');
-  addLine('Kategorija poboljšanja', val('selected-impact'));
-  addLine('Prioritet', val('selected-priority'));
-  y += 5;
-
-  // --- 5. Odluka voditelja: prazan obrazac za ručno popunjavanje ---
-  if (y + 70 > 285) { doc.addPage(); y = 15; }
-
-  doc.setFontSize(13);
-  doc.setFont(undefined, 'bold');
-  doc.text('5. Odluka voditelja / Lean koordinatora', marginX, y);
-  y += 5;
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'italic');
-  doc.setTextColor(120,120,120);
-  doc.text('Popunjava se ručno nakon predaje obrasca.', marginX, y);
-  doc.setTextColor(0,0,0);
-  doc.setFont(undefined, 'normal');
+  // ══ 5. ODLUKA VODITELJA — prazan obrazac ══
+  checkY(75);
+  sectionBar('5. Odluka voditelja / Lean koordinatora');
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor.apply(doc, GRAY);
+  doc.text('Popunjava se rucno nakon predaje obrasca.', M, y);
+  doc.setFont('helvetica', 'normal'); doc.setTextColor.apply(doc, DARK);
   y += 8;
 
-  // Status prijedloga — checkboxes
-  doc.setFontSize(10);
-  doc.setFont(undefined, 'bold');
-  doc.text('Status prijedloga:', marginX, y);
-  doc.setFont(undefined, 'normal');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor.apply(doc, DARK);
+  doc.text('Status prijedloga:', M, y);
+  doc.setFont('helvetica', 'normal');
   y += 7;
 
   var statusi = ['Zaprimljeno', 'Odobreno', 'U tijeku', 'Implementirano'];
-  var boxSize = 4.5;
-  var colW = maxW / statusi.length;
-  statusi.forEach(function(label, i) {
-    var x = marginX + i * colW;
+  var boxSize = 4.2;
+  var statColW = (W - M * 2) / statusi.length;
+  doc.setDrawColor.apply(doc, DARK); doc.setLineWidth(0.3);
+  statusi.forEach(function (label, i) {
+    var x = M + i * statColW;
     doc.rect(x, y - boxSize + 1, boxSize, boxSize);
-    doc.text(label, x + boxSize + 2, y);
+    doc.setFontSize(8.5);
+    doc.text(hr2a(label), x + boxSize + 2, y);
   });
   y += 12;
 
-  // Odgovorna osoba / Rok — linije za upis
-  var halfW = maxW / 2 - 4;
-  doc.setFont(undefined, 'bold');
-  doc.text('Odgovorna osoba za implementaciju:', marginX, y);
-  doc.text('Rok implementacije:', marginX + halfW + 8, y);
-  doc.setFont(undefined, 'normal');
+  var halfW3 = (W - M * 2 - 8) / 2;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+  doc.text('Odgovorna osoba za implementaciju:', M, y);
+  doc.text('Rok implementacije:', M + halfW3 + 8, y);
+  doc.setFont('helvetica', 'normal');
   y += 6;
-  doc.line(marginX, y, marginX + halfW, y);
-  doc.line(marginX + halfW + 8, y, marginX + maxW, y);
+  doc.setDrawColor.apply(doc, BORDER);
+  doc.line(M, y, M + halfW3, y);
+  doc.line(M + halfW3 + 8, y, M + halfW3 * 2 + 8, y);
   y += 10;
 
-  // Komentar voditelja — prazne linije
-  doc.setFont(undefined, 'bold');
-  doc.text('Komentar voditelja:', marginX, y);
-  doc.setFont(undefined, 'normal');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+  doc.text('Komentar voditelja:', M, y);
+  doc.setFont('helvetica', 'normal');
   y += 6;
   for (var i = 0; i < 3; i++) {
-    doc.line(marginX, y, marginX + maxW, y);
+    doc.line(M, y, W - M, y);
     y += 7;
   }
   y += 3;
 
-  // Potpis i datum
-  doc.line(marginX, y, marginX + halfW, y);
-  doc.line(marginX + halfW + 8, y, marginX + maxW, y);
+  doc.line(M, y, M + halfW3, y);
+  doc.line(M + halfW3 + 8, y, M + halfW3 * 2 + 8, y);
   y += 5;
-  doc.setFontSize(9);
-  doc.setTextColor(120,120,120);
-  doc.text('Potpis voditelja / koordinatora', marginX, y);
-  doc.text('Datum odluke', marginX + halfW + 8, y);
-  doc.setTextColor(0,0,0);
-  y += 12;
+  doc.setFontSize(7.5); doc.setTextColor.apply(doc, GRAY);
+  doc.text('Potpis voditelja / koordinatora', M, y);
+  doc.text('Datum odluke', M + halfW3 + 8, y);
+  doc.setTextColor.apply(doc, DARK);
+  y += 10;
 
-  // Napomena o predaji obrasca
-  if (y + 14 > 285) { doc.addPage(); y = 15; }
-  doc.setFillColor(232, 245, 240);
-  doc.rect(marginX, y - 5, maxW, 12, 'F');
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'italic');
-  doc.text('Nakon popunjavanja, obrazac predajte ili poslati nadređenom / Lean koordinatoru na odobrenje.', marginX + 3, y + 2);
-  doc.setFont(undefined, 'normal');
+  // Napomena o predaji
+  checkY(14);
+  doc.setFillColor.apply(doc, GREEN_L);
+  doc.roundedRect(M, y, W - M * 2, 10, 2, 2, 'F');
+  doc.setDrawColor.apply(doc, GREEN); doc.setLineWidth(0.8);
+  doc.line(M, y, M, y + 10);
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor.apply(doc, GREEN_D);
+  doc.text('Nakon popunjavanja, obrazac predajte ili posaljite nadredenom / Lean koordinatoru na odobrenje.', M + 4, y + 6);
+  doc.setFont('helvetica', 'normal'); doc.setTextColor.apply(doc, DARK);
 
-  doc.save('kaizen-prijedlog.pdf');
+  // ══ FOOTER SVAKE STRANICE ══
+  var total = doc.internal.getNumberOfPages();
+  for (var p = 1; p <= total; p++) {
+    doc.setPage(p);
+    doc.setFillColor.apply(doc, GREEN_D);
+    doc.rect(0, H - 7, W, 7, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(180, 225, 210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H - 2.5);
+    doc.setTextColor.apply(doc, WHITE);
+    doc.text('Stranica ' + p + ' / ' + total, W - M, H - 2.5, { align: 'right' });
+  }
+
+  doc.save('kaizen-prijedlog-' + new Date().toISOString().slice(0, 10) + '.pdf');
 }
 </script>
 <meta name="robots" content="index, follow">
