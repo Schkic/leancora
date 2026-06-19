@@ -178,7 +178,8 @@ a{color:inherit;text-decoration:none}
 .acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
 .acc-body.open { display: block; }
 </style>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
+<script>
 // Mobile menu
 function toggleMobileMenu() {
   var m = document.getElementById('mobile-menu');
@@ -211,6 +212,104 @@ function scrollToNapojnica() {
 var API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
 function trackClick(method) {
   try { fetch(API + '/track?method=' + method, { method: 'POST' }); } catch(e) {}
+}
+
+// Odabir kategorije utjecaja
+function selectImpact(el, value) {
+  document.querySelectorAll('.impact-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('selected-impact').value = value;
+}
+
+// Odabir prioriteta
+function selectPriority(el, value) {
+  var grid = el.closest('.priority-grid');
+  grid.querySelectorAll('.priority-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('selected-priority').value = value;
+}
+
+// Odabir statusa prijedloga
+function selectStatus(el, value) {
+  var grid = el.closest('.priority-grid');
+  grid.querySelectorAll('.priority-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('selected-status').value = value;
+}
+
+// Reset obrasca
+function resetForm() {
+  if (!confirm('Obrisati sve podatke i započeti novi prijedlog?')) return;
+  document.querySelectorAll('.main-wrap input[type="text"], .main-wrap input[type="date"], .main-wrap textarea').forEach(function(f) { f.value = ''; });
+  document.querySelectorAll('.impact-card, .priority-card').forEach(function(c) { c.classList.remove('selected'); });
+  document.getElementById('selected-impact').value = '';
+  document.getElementById('selected-priority').value = '';
+  document.getElementById('selected-status').value = '';
+}
+
+// Izvoz u PDF
+function exportPDF() {
+  var val = function(id) { return document.getElementById(id).value || '-'; };
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF();
+  var y = 15;
+  var pageW = doc.internal.pageSize.getWidth();
+  var marginX = 14;
+  var maxW = pageW - marginX * 2;
+
+  function addTitle(text) {
+    doc.setFontSize(13);
+    doc.setFont(undefined, 'bold');
+    doc.text(text, marginX, y);
+    y += 7;
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(10);
+  }
+  function addLine(label, value) {
+    var lines = doc.splitTextToSize(label + ': ' + value, maxW);
+    if (y + lines.length * 5 > 285) { doc.addPage(); y = 15; }
+    doc.text(lines, marginX, y);
+    y += lines.length * 5 + 2;
+  }
+
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text('Kaizen Prijedlog Poboljšanja', marginX, y);
+  y += 10;
+  doc.setFont(undefined, 'normal');
+
+  addTitle('1. Podnositelj prijedloga');
+  addLine('Ime i prezime', val('p-ime'));
+  addLine('Datum prijedloga', val('p-datum'));
+  addLine('Odjel / pogon', val('p-odjel'));
+  addLine('Radno mjesto', val('p-radno'));
+  y += 3;
+
+  addTitle('2. Opis problema ili prilike za poboljšanje');
+  addLine('Gdje se problem pojavljuje', val('prob-gdje'));
+  addLine('Opis problema / prilike', val('prob-opis'));
+  addLine('Trenutno stanje (PRIJE)', val('ba-prije'));
+  addLine('Željeno stanje (POSLIJE)', val('ba-poslije'));
+  y += 3;
+
+  addTitle('3. Prijedlog rješenja');
+  addLine('Predloženo rješenje', val('rjes-opis'));
+  addLine('Potrebno za implementaciju', val('rjes-potrebno'));
+  addLine('Procijenjeni trošak', val('rjes-trosak'));
+  y += 3;
+
+  addTitle('4. Utjecaj i prioritet');
+  addLine('Kategorija poboljšanja', val('selected-impact'));
+  addLine('Prioritet', val('selected-priority'));
+  y += 3;
+
+  addTitle('5. Odluka voditelja / Lean koordinatora');
+  addLine('Status prijedloga', val('selected-status'));
+  addLine('Odgovorna osoba', val('vod-odgovorni'));
+  addLine('Rok implementacije', val('vod-rok'));
+  addLine('Komentar voditelja', val('vod-komentar'));
+
+  doc.save('kaizen-prijedlog.pdf');
 }
 </script>
 <meta name="robots" content="index, follow">
