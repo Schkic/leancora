@@ -171,6 +171,21 @@ a{color:inherit;text-decoration:none}
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.2); }
+  }
+@keyframes float-bob {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+.zahvali-bubble {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s !important;
+  }
+.zahvali-bubble:hover {
+    transform: translateY(-2px) scale(1.04) !important;
+    box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
+  }
 </style>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script>
 <meta name="keywords" content="Kaizen event planer, Kaizen radionica, Kaizen agenda, kontinuirano poboljšanje, Lean alati">
@@ -191,6 +206,8 @@ a{color:inherit;text-decoration:none}
           <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
           <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
           <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Agenda, tim, ciljevi i akcije</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedloge poboljšanja</span></a>
+          <a href="a3-obrazac.html">📄 A3 obrazac <span>Strukturirano rješavanje problema</span></a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -202,6 +219,8 @@ a{color:inherit;text-decoration:none}
           <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
           <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
           <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+          <a href="vodic-a3.html">📄 A3 metoda — rješavanje problema <span>7 min čitanja</span></a>
+          <a href="vodic-vizualni-management.html">🎨 Vizualni management <span>6 min čitanja</span></a>
         </div>
       </div>
       <a href="zajednica.html">Zajednica</a>
@@ -427,270 +446,20 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
+    ❤️ Zahvali se
+  </div>
+  <div class="support-bubble" onclick="window.location='o-nama.html'">
+    <div class="support-dot"></div>
+    Stručna podrška — dostupni smo
+  </div>
+</div>
+
 <footer class="page-footer">
   <div class="page-footer-inner">
     <span>© Leanopedija — <a href="index.html">lean.opticora.hr</a></span>
     <span>Obrazac je besplatan za korištenje.</span>
-  </div>
-</footer>
-
-<script>
-document.getElementById('meta-datum').valueAsDate = new Date();
-
-const whyHints = [
-  'Opišite problem jasno i konkretno — što se točno dogodilo, kada, gdje?',
-  'Zašto je do toga došlo? Što je neposredni uzrok?',
-  'Zašto je nastao taj uzrok? Idite dublje...',
-  'Zašto se to nije spriječilo? Tražite sistemski uzrok...',
-  'Zašto postoji taj sistemski problem? Ovo je obično korijenski uzrok.',
-];
-const whyLabels = ['Problem (što se dogodilo)', 'Zašto? (1. razina)', 'Zašto? (2. razina)', 'Zašto? (3. razina)', 'Zašto? (4. razina)', 'Zašto? — Korijenski uzrok (5. razina)'];
-const whyColors = ['#e8612a','#d97706','#ca8a04','#4d7c0f','#1a7a5e','#1a7a5e'];
-
-let analysisCount = 0;
-
-function addAnalysis() {
-  analysisCount++;
-  const id = analysisCount;
-  const div = document.createElement('div');
-  div.className = 'analysis-block';
-  div.id = 'analysis-' + id;
-
-  let whyRows = '';
-  for (let i = 0; i < 5; i++) {
-    whyRows += `
-      <div class="why-item">
-        <div class="why-number why-n${i+1}" style="background:${whyColors[i]}">${i+1}</div>
-        <div class="why-label">${whyLabels[i+1]}</div>
-        <textarea class="why-input" id="why-${id}-${i+1}" placeholder="${whyHints[i]}" rows="2"></textarea>
-        ${i < 4 ? '<div class="why-arrow">↓</div>' : ''}
-      </div>`;
-  }
-
-  div.innerHTML = `
-    <div class="analysis-header">
-      <span class="analysis-num">🔍 Analiza #${id}</span>
-      ${id > 1 ? `<button class="del-analysis-btn" onclick="document.getElementById('analysis-${id}').remove()">✕ Ukloni</button>` : ''}
-    </div>
-    <div class="analysis-body">
-      <div class="problem-box">
-        <label>🔴 Problem / Simptom</label>
-        <textarea id="problem-${id}" placeholder="Što se točno dogodilo? Budite specifični — kada, gdje, koliko često, koliki je utjecaj?" rows="2"></textarea>
-      </div>
-      <div class="why-chain">
-        ${whyRows}
-      </div>
-      <div class="root-cause-box">
-        <label>✅ Korijenski uzrok (zaključak)</label>
-        <textarea id="root-${id}" placeholder="Sažmite korijenski uzrok u jednu-dvije rečenice. Ovo je uzrok koji treba eliminirati." rows="2"></textarea>
-      </div>
-      <div class="tip-box">
-        <strong>💡 Savjet:</strong>
-        Kada pronađete korijenski uzrok, zapitajte se: "Da uklonimo ovaj uzrok, hoće li se problem ponoviti?" Ako je odgovor NE — pronašli ste pravi korijenski uzrok.
-      </div>
-    </div>`;
-  document.getElementById('analyses-container').appendChild(div);
-}
-
-let actionCount = 0;
-function addAction() {
-  actionCount++;
-  const div = document.createElement('div');
-  div.className = 'action-row';
-  div.innerHTML = `
-    <input type="text" placeholder="Opis korektivne / preventivne akcije...">
-    <input type="text" placeholder="Ime i prezime">
-    <input type="date">
-    <select><option>📋 Otvoreno</option><option>🔄 U tijeku</option><option>✅ Završeno</option><option>⏸️ Na čekanju</option></select>
-    <button class="del-btn" onclick="this.closest('.action-row').remove()">✕</button>`;
-  document.getElementById('actions-body').appendChild(div);
-}
-
-// Init with one analysis and two actions
-addAnalysis();
-addAction(); addAction();
-
-function exportPDF() {
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const M=14, W=210;
-  doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
-  doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('5x Zašto — Analiza korijenskog uzroka',M,18);
-  doc.setFontSize(9); doc.text('lean.opticora.hr',160,10);
-  doc.text(new Date().toLocaleDateString('hr-HR'),160,17);
-  let y=30;
-  const mflds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Odjel:',document.getElementById('meta-odjel').value||'—'],['Kategorija:',document.getElementById('meta-kategorija').value||'—'],['Broj:',document.getElementById('meta-broj').value||'—'],['Tim:',document.getElementById('meta-tim').value||'—']];
-  doc.setTextColor(0,0,0); doc.setFontSize(9);
-  mflds.forEach(([l,v],i)=>{const x=M+(i%2)*90;if(i%2===0&&i>0)y+=7;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,40),x+24,y);});
-  y+=12;
-
-  // Each analysis
-  for(let id=1;id<=analysisCount;id++){
-    const block=document.getElementById('analysis-'+id);
-    if(!block)continue;
-    const problem=document.getElementById('problem-'+id)?.value||'';
-    const root=document.getElementById('root-'+id)?.value||'';
-    if(!problem&&!root)continue;
-
-    doc.setFillColor(232,97,42); doc.rect(M,y-4,W-M*2,8,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('ANALIZA #'+id,M+2,y+1); y+=10;
-
-    doc.setTextColor(0,0,0); doc.setFontSize(9);
-    if(problem){doc.setFillColor(255,247,237);doc.rect(M,y-4,W-M*2,problem.length>80?14:9,'F');doc.setFont('helvetica','bold');doc.text('PROBLEM:',M+2,y);doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(problem,W-M*2-22);doc.text(lines,M+26,y);y+=lines.length*4+4;}
-
-    for(let i=1;i<=5;i++){
-      const val=document.getElementById('why-'+id+'-'+i)?.value||'';
-      if(!val)continue;
-      doc.setFont('helvetica','bold'); doc.text('Zašto '+i+':',M+2,y);
-      doc.setFont('helvetica','normal');
-      const lines=doc.splitTextToSize(val,W-M*2-26);
-      doc.text(lines,M+26,y);
-      y+=lines.length*4+4;
-      if(y>270){doc.addPage();y=20;}
-    }
-
-    if(root){
-      doc.setFillColor(232,245,240);doc.rect(M,y-4,W-M*2,root.length>80?14:9,'F');
-      doc.setFont('helvetica','bold');doc.text('KORIJENSKI UZROK:',M+2,y);
-      doc.setFont('helvetica','normal');const lines=doc.splitTextToSize(root,W-M*2-40);doc.text(lines,M+44,y);y+=lines.length*4+8;
-    }
-    if(y>250){doc.addPage();y=20;}
-  }
-
-  // Actions
-  const actRows=document.querySelectorAll('.action-row');
-  if(actRows.length>0){
-    doc.setFillColor(26,122,94);doc.rect(M,y-4,W-M*2,8,'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
-    doc.text('KOREKTIVNE AKCIJE',M+2,y+1);y+=10;
-    const hdr=['Akcija','Odgovorna osoba','Rok','Status'];
-    const cw=[80,40,30,30]; let x=M;
-    doc.setFillColor(240,240,240);doc.rect(M,y-4,W-M*2,6,'F');
-    doc.setTextColor(0,0,0);doc.setFontSize(8);doc.setFont('helvetica','bold');
-    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];});y+=4;
-    doc.setFont('helvetica','normal');
-    actRows.forEach((row,idx)=>{
-      const inp=row.querySelectorAll('input,select');
-      const vals=[inp[0]?.value||'',inp[1]?.value||'',inp[2]?.value||'',inp[3]?.value||''];
-      x=M;if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
-      vals.forEach((v,i)=>{doc.text(String(v).substring(0,cw[i]/2),x+1,y);x+=cw[i];});y+=6;
-    });y+=6;
-  }
-
-  // Summary
-  const uz=document.getElementById('sum-uzroci').value;
-  const oc=document.getElementById('sum-ocekivano').value;
-  const pot=document.getElementById('sum-potpis').value;
-  if(uz||oc){
-    doc.setTextColor(0,0,0);doc.setFontSize(9);
-    if(uz){doc.setFont('helvetica','bold');doc.text('Sažetak uzroka:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(uz,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
-    if(oc){doc.setFont('helvetica','bold');doc.text('Očekivani rezultat:',M,y);y+=5;doc.setFont('helvetica','normal');const l=doc.splitTextToSize(oc,W-M*2);doc.text(l,M,y);y+=l.length*4+4;}
-  }
-  if(pot){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(pot,M+16,y);}
-
-  doc.setFontSize(7);doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr',M,290);
-  doc.save('5x-Zasto-'+new Date().toISOString().slice(0,10)+'.pdf');
-}
-</script>
-
-<!-- Floating support -->
-<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
-  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
-    ❤️ Zahvali se
-  </div>
-  <div class="support-bubble" onclick="window.location='o-nama.html'">
-    <div class="support-dot"></div>
-    Stručna podrška — dostupni smo
-  </div>
-</div>
-
-
-<script>
-// ── Scroll to napojnica ──
-function scrollToNapojnica() {
-  const el = document.getElementById('napojnica');
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ── Click tracking ──
-const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
-async function trackClick(method) {
-  try {
-    await fetch(`${API}/track?method=${method}`, { method: 'POST' });
-  } catch(e) {}
-}
-
-// ── Accordion ──
-function toggleAcc(btn) {
-  const body = btn.nextElementSibling;
-  const isOpen = body.classList.contains('open');
-  document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
-  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
-  if (!isOpen) {
-    body.classList.add('open');
-    btn.classList.add('open');
-  }
-}
-</script>
-<script>
-// Dropdown - hover on desktop, click on mobile
-document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-  let timer;
-  dropdown.addEventListener('mouseenter', function() {
-    clearTimeout(timer);
-    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-    this.classList.add('open');
-  });
-  dropdown.addEventListener('mouseleave', function() {
-    const self = this;
-    timer = setTimeout(function() { self.classList.remove('open'); }, 200);
-  });
-  const menu = dropdown.querySelector('.dropdown-menu');
-  if (menu) {
-    menu.addEventListener('mouseenter', function() { clearTimeout(timer); });
-    menu.addEventListener('mouseleave', function() {
-      timer = setTimeout(function() { dropdown.classList.remove('open'); }, 100);
-    });
-  }
-  const link = dropdown.querySelector('a');
-  if (link) {
-    link.addEventListener('click', function(e) {
-      if (window.innerWidth < 768) { e.preventDefault(); dropdown.classList.toggle('open'); }
-    });
-  }
-});
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-dropdown')) {
-    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-  }
-});
-</script>
-</body>
-</html>
-
-<!-- Floating support -->
-<div class="support-float" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
-  <div class="support-bubble zahvali-bubble" id="zahvali-bubble" onclick="scrollToNapojnica()" style="background:var(--white);color:var(--green);border:1.5px solid var(--green);box-shadow:0 4px 20px rgba(26,122,94,0.2);animation:float-bob 3s ease-in-out infinite;">
-    ❤️ Zahvali se
-  </div>
-  <div class="support-bubble" onclick="window.location='o-nama.html'">
-    <div class="support-dot"></div>
-    Stručna podrška — dostupni smo
-  </div>
-</div>
-
-<footer class="page-footer">
-  <div class="page-footer-inner">
-    <div class="footer-links">
-      <a href="index.html">Početna</a>
-      <a href="uvjeti-koristenja.html">Uvjeti korištenja</a>
-      <a href="politika-privatnosti.html">Politika privatnosti</a>
-    </div>
-    <span>© Leanopedija · OptiCora, obrt · leanopedija.opticora.hr</span>
   </div>
 </footer>
 
@@ -983,3 +752,5 @@ function toggleAcc(btn) {
   if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
 }
 </script>
+</body>
+</html>
