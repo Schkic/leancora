@@ -200,6 +200,32 @@ document.addEventListener('click', function(e) {
   }
 });
 
+// Dropdown
+document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
+  var timer;
+  dropdown.addEventListener('mouseenter', function() {
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
+    this.classList.add('open');
+  });
+  dropdown.addEventListener('mouseleave', function() {
+    var self = this;
+    timer = setTimeout(function(){ self.classList.remove('open'); }, 200);
+  });
+  var menu = dropdown.querySelector('.dropdown-menu');
+  if (menu) {
+    menu.addEventListener('mouseenter', function(){ clearTimeout(timer); });
+    menu.addEventListener('mouseleave', function(){
+      timer = setTimeout(function(){ dropdown.classList.remove('open'); }, 100);
+    });
+  }
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
+  }
+});
+
 function toggleAcc(btn) {
   var body = btn.nextElementSibling;
   var isOpen = body.classList.contains('open');
