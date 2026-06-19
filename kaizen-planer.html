@@ -607,89 +607,316 @@ function resetAll() {
 // ── PDF Export ──
 function exportPDF() {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const W = 297, M = 14;
+  const W = 297, H = 210, M = 12;
+  let y = 0;
 
-  // Header
-  doc.setFillColor(26,122,94);
-  doc.rect(0,0,W,22,'F');
-  doc.setTextColor(255,255,255);
-  doc.setFontSize(16); doc.setFont('helvetica','bold');
-  doc.text('Leanopedija', M, 10);
-  doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('Kaizen Event Planer — Izvještaj', M, 18);
-  doc.setFontSize(9);
-  doc.text(new Date().toLocaleDateString('hr-HR'), 250, 14);
+  const GREEN   = [26, 122, 94];
+  const GREEN_D = [14, 95, 70];
+  const GREEN_L = [232, 245, 240];
+  const GRAY    = [130, 130, 130];
+  const DARK    = [26, 26, 26];
+  const WHITE   = [255, 255, 255];
+  const BORDER  = [225, 225, 225];
+  const ROW_ALT = [248, 252, 250];
 
-  let y = 30;
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D');
+  }
+  function drawHeader() {
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, 0, W, 20, 'F');
+    doc.setFillColor(60, 150, 115);
+    doc.roundedRect(M, 4, 12, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+    doc.text('L', M + 3.5, 11.5);
+    doc.setFontSize(6); doc.text('o', M + 7.5, 9.5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('Leanopedija', M + 16, 10);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(180, 225, 210);
+    doc.text('Kaizen Event Planer  |  Izvjestaj o radionici', M + 16, 15.5);
+    const d = new Date();
+    const dateStr = `${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(180, 225, 210);
+    doc.text(dateStr, W - M, 10, { align: 'right' });
+    doc.setTextColor(140, 200, 175);
+    doc.text('leanopedija.opticora.hr', W - M, 15.5, { align: 'right' });
+  }
+  function newPage() { doc.addPage(); drawHeader(); y = 26; }
+  function checkY(need) { if (y + need > H - 12) newPage(); }
+  function sectionBar(title) {
+    checkY(13);
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(M, y, W - M * 2, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...WHITE);
+    doc.text(hr2a(title), M + 4, y + 5.5);
+    y += 12;
+  }
+  function val(id) { const el = document.getElementById(id); return el ? (el.value || '') : ''; }
 
-  // Basic info
-  const naziv = document.getElementById('kz-naziv').value || '—';
-  const proces = document.getElementById('kz-proces').value || '—';
-  const voditelj = document.getElementById('kz-voditelj').value || '—';
-  const sponzor = document.getElementById('kz-sponzor').value || '—';
-  const datumOd = document.getElementById('kz-datum-od').value || '—';
-  const datumDo = document.getElementById('kz-datum-do').value || '—';
+  // ══ ZAGLAVLJE ══
+  drawHeader();
+  y = 26;
 
-  doc.setTextColor(0,0,0); doc.setFontSize(9);
-  doc.setFont('helvetica','bold'); doc.text('Kaizen event:', M, y);
-  doc.setFont('helvetica','normal'); doc.text(naziv, M+28, y); y += 6;
-  doc.setFont('helvetica','bold'); doc.text('Proces:', M, y);
-  doc.setFont('helvetica','normal'); doc.text(proces, M+20, y);
-  doc.setFont('helvetica','bold'); doc.text('Voditelj:', 120, y);
-  doc.setFont('helvetica','normal'); doc.text(voditelj, 140, y);
-  doc.setFont('helvetica','bold'); doc.text('Period:', 200, y);
-  doc.setFont('helvetica','normal'); doc.text(`${datumOd} — ${datumDo}`, 216, y); y += 10;
+  // ══ OPĆI PODACI ══
+  const naziv    = hr2a(val('kz-naziv')) || '—';
+  const proces   = hr2a(val('kz-proces')) || '—';
+  const voditelj = hr2a(val('kz-voditelj')) || '—';
+  const sponzor  = hr2a(val('kz-sponzor')) || '—';
+  const datumOd  = val('kz-datum-od') || '—';
+  const datumDo  = val('kz-datum-do') || '—';
+  const trajanje = val('kz-trajanje') || '—';
+  const opis     = hr2a(val('kz-opis'));
 
-  // KPIs
-  doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8,'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
-  doc.text('CILJEVI I KPI', M+2, y+1); y += 10;
+  doc.setFillColor(...GREEN_L);
+  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'F');
+  doc.setDrawColor(...GREEN); doc.setLineWidth(0.4);
+  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'S');
+  const metaCol = (W - M * 2) / 4;
+  [['NAZIV KAIZEN EVENTA', naziv], ['PROCES / PODRUČJE', proces], ['VODITELJ', voditelj], ['SPONZOR', sponzor]].forEach(([lbl, v], i) => {
+    const x = M + 4 + i * metaCol;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    doc.text(lbl, x, y + 5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(doc.splitTextToSize(v, metaCol - 6), x, y + 10);
+  });
+  y += 13;
+  doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+  doc.line(M, y, W - M, y); y += 5;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+  doc.text('PERIOD: ', M, y);
+  doc.setFont('helvetica', 'bold'); doc.setTextColor(...DARK);
+  doc.text(`${datumOd}  —  ${datumDo}   (${trajanje} dana)`, M + 16, y);
+  y += 9;
 
+  if (opis) {
+    checkY(14);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+    doc.text('OPIS PROBLEMA / RAZLOG POKRETANJA', M, y);
+    y += 4.5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    const opisLines = doc.splitTextToSize(opis, W - M * 2);
+    doc.text(opisLines, M, y);
+    y += opisLines.length * 4.2 + 6;
+  }
+
+  // ══ KAIZEN TIM ══
+  const teamRows = document.querySelectorAll('#team-body .team-row');
+  if (teamRows.length > 0) {
+    sectionBar('Kaizen tim');
+    checkY(7);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, W - M * 2, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, W - M * 2, 6, 'S');
+    const teamColW = [70, 70, 70, (W - M * 2) - 210];
+    let tx = M;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    ['Ime i prezime', 'Odjel', 'Uloga', 'Angažman'].forEach((h, i) => { doc.text(h, tx + 1.5, y + 4); tx += teamColW[i]; });
+    y += 6;
+    teamRows.forEach((row, ri) => {
+      checkY(6.5);
+      const inputs = row.querySelectorAll('input');
+      const selects = row.querySelectorAll('select');
+      if (ri % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W - M * 2, 6.5, 'F'); }
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      doc.line(M, y + 6.5, W - M, y + 6.5);
+      const rowVals = [hr2a(inputs[0]?.value) || '—', hr2a(inputs[1]?.value) || '—', hr2a(selects[0]?.value) || '—', hr2a(selects[1]?.value) || '—'];
+      tx = M;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+      rowVals.forEach((v, i) => { doc.text(String(v).substring(0, 32), tx + 1.5, y + 4.2); tx += teamColW[i]; });
+      y += 6.5;
+    });
+    y += 8;
+  }
+
+  // ══ CILJEVI I KPI ══
   const kpiRows = document.querySelectorAll('#kpi-body .kpi-row');
   if (kpiRows.length > 0) {
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text('KPI / Mjera', M, y); doc.text('Trenutno', 140, y); doc.text('Cilj', 180, y); doc.text('Postignuto', 220, y); y += 5;
-    kpiRows.forEach(row => {
+    sectionBar('Ciljevi i KPI mjere');
+    checkY(7);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, W - M * 2, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, W - M * 2, 6, 'S');
+    const kpiColW = [110, 55, 55, (W - M * 2) - 220];
+    let kx = M;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    ['KPI / Mjera', 'Trenutno', 'Cilj', 'Postignuto'].forEach((h, i) => { doc.text(h, kx + 1.5, y + 4); kx += kpiColW[i]; });
+    y += 6;
+    kpiRows.forEach((row, ri) => {
+      checkY(6.5);
       const inputs = row.querySelectorAll('input');
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(0,0,0);
-      doc.text(inputs[0]?.value || '—', M, y);
-      doc.text(inputs[1]?.value || '—', 140, y);
-      doc.text(inputs[2]?.value || '—', 180, y);
-      doc.text(inputs[3]?.value || '—', 220, y); y += 6;
+      if (ri % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W - M * 2, 6.5, 'F'); }
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      doc.line(M, y + 6.5, W - M, y + 6.5);
+      const rowVals = [hr2a(inputs[0]?.value) || '—', hr2a(inputs[1]?.value) || '—', hr2a(inputs[2]?.value) || '—', hr2a(inputs[3]?.value) || '—'];
+      kx = M;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+      rowVals.forEach((v, i) => { doc.text(String(v).substring(0, 45), kx + 1.5, y + 4.2); kx += kpiColW[i]; });
+      y += 6.5;
     });
+    y += 8;
   }
-  y += 4;
 
-  // Action plan
-  if (y > 160) { doc.addPage(); y = 20; }
-  doc.setFillColor(232,245,240); doc.rect(M, y-4, W-M*2, 8,'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
-  doc.text('AKCIJSKI PLAN', M+2, y+1); y += 10;
+  // ══ STANJE PRIJE / POSLIJE ══
+  const baPrije = hr2a(val('ba-prije'));
+  const baPoslije = hr2a(val('ba-poslije'));
+  if (baPrije || baPoslije) {
+    sectionBar('Stanje prije i poslije');
+    checkY(10);
+    const halfW = (W - M * 2 - 6) / 2;
+    const baY = y;
+    doc.setFillColor(254, 226, 226);
+    doc.rect(M, baY, halfW, 7, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(200, 40, 40);
+    doc.text('PRIJE', M + 3, baY + 5);
+    doc.setFillColor(220, 252, 231);
+    doc.rect(M + halfW + 6, baY, halfW, 7, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(22, 163, 74);
+    doc.text('POSLIJE', M + halfW + 9, baY + 5);
+    y += 10;
+    const prijeLines = doc.splitTextToSize(baPrije || '—', halfW - 6);
+    const poslijeLines = doc.splitTextToSize(baPoslije || '—', halfW - 6);
+    const baLines = Math.max(prijeLines.length, poslijeLines.length);
+    checkY(baLines * 4.2 + 4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+    doc.text(prijeLines, M + 3, y);
+    doc.text(poslijeLines, M + halfW + 9, y);
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, baY, halfW, baLines * 4.2 + 9, 'S');
+    doc.rect(M + halfW + 6, baY, halfW, baLines * 4.2 + 9, 'S');
+    y += baLines * 4.2 + 12;
+  }
 
+  // ══ AGENDA ══
+  const agendaDays = document.querySelectorAll('.agenda-day');
+  if (agendaDays.length > 0) {
+    sectionBar('Agenda Kaizen eventa');
+    agendaDays.forEach(day => {
+      checkY(12);
+      const title = hr2a(day.querySelector('.agenda-day-title')?.textContent || '');
+      doc.setFillColor(...GREEN_L);
+      doc.rect(M, y, W - M * 2, 6, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...GREEN_D);
+      doc.text(title, M + 2, y + 4.2);
+      y += 8;
+      const items = day.querySelectorAll('.agenda-item');
+      items.forEach((item, ri) => {
+        checkY(6);
+        const inputs = item.querySelectorAll('input');
+        const time = inputs[0]?.value || '—';
+        const activity = hr2a(inputs[1]?.value) || '—';
+        const responsible = hr2a(inputs[2]?.value) || '—';
+        if (ri % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W - M * 2, 6, 'F'); }
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...GREEN);
+        doc.text(time, M + 2, y + 4.2);
+        doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+        doc.text(String(activity).substring(0, 90), M + 22, y + 4.2);
+        doc.setTextColor(...GRAY);
+        doc.text(String(responsible).substring(0, 30), W - M - 2, y + 4.2, { align: 'right' });
+        y += 6;
+      });
+      y += 5;
+    });
+    y += 3;
+  }
+
+  // ══ AKCIJSKI PLAN ══
   const actionRows = document.querySelectorAll('.action-row');
   if (actionRows.length > 0) {
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text('#', M, y); doc.text('Akcija', M+8, y); doc.text('Odgovorna osoba', 170, y); doc.text('Rok', 215, y); doc.text('Status', 245, y); y += 5;
-    actionRows.forEach((row, i) => {
+    sectionBar('Akcijski plan (30-60-90 dana)');
+    checkY(7);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, W - M * 2, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, W - M * 2, 6, 'S');
+    const actColW = [10, 130, 55, 35, (W - M * 2) - 230];
+    let ax = M;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    ['#', 'Akcija', 'Odgovorna osoba', 'Rok', 'Status'].forEach((h, i) => { doc.text(h, ax + 1.5, y + 4); ax += actColW[i]; });
+    y += 6;
+    const statusMap = { open: 'Otvoreno', progress: 'U tijeku', done: 'Zavrseno' };
+    const statusColors = { open: [130,130,130], progress: [202,138,4], done: [22,163,74] };
+    actionRows.forEach((row, ri) => {
       const inputs = row.querySelectorAll('input');
       const sel = row.querySelector('select');
-      const statusMap = {open:'Otvoreno', progress:'U tijeku', done:'Završeno'};
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
-      doc.text(String(i+1), M, y);
-      const actionText = doc.splitTextToSize(inputs[0]?.value || '—', 120);
-      doc.text(actionText, M+8, y);
-      doc.text(inputs[1]?.value || '—', 170, y);
-      doc.text(inputs[2]?.value || '—', 215, y);
-      doc.text(statusMap[sel?.value] || '—', 245, y);
-      y += Math.max(actionText.length * 4, 6);
-      if (y > 185) { doc.addPage(); y = 20; }
+      const actionLines = doc.splitTextToSize(hr2a(inputs[0]?.value) || '—', actColW[1] - 3);
+      const rowH = Math.max(actionLines.length * 4, 6.5);
+      checkY(rowH);
+      if (ri % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, W - M * 2, rowH, 'F'); }
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      doc.line(M, y + rowH, W - M, y + rowH);
+      ax = M;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+      doc.text(String(ri + 1), ax + 1.5, y + 4.2); ax += actColW[0];
+      doc.text(actionLines, ax + 1.5, y + 4.2); ax += actColW[1];
+      doc.text(hr2a(inputs[1]?.value).substring(0,28) || '—', ax + 1.5, y + 4.2); ax += actColW[2];
+      doc.text(inputs[2]?.value || '—', ax + 1.5, y + 4.2); ax += actColW[3];
+      const statusVal = sel?.value || 'open';
+      doc.setFont('helvetica', 'bold'); doc.setTextColor(...(statusColors[statusVal] || GRAY));
+      doc.text(statusMap[statusVal] || '—', ax + 1.5, y + 4.2);
+      y += rowH;
     });
+    y += 8;
   }
 
-  doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.opticora.hr', M, 198);
-  doc.save(`Kaizen-event-${naziv.replace(/\s+/g,'-').toLowerCase() || 'planer'}-${new Date().toISOString().slice(0,10)}.pdf`);
+  // ══ ZAKLJUČCI ══
+  const zaklGood = hr2a(val('zakl-good'));
+  const zaklImprove = hr2a(val('zakl-improve'));
+  const zaklGeneral = hr2a(val('zakl-general'));
+  if (zaklGood || zaklImprove || zaklGeneral) {
+    sectionBar('Zakljucci i naucene lekcije');
+    if (zaklGood || zaklImprove) {
+      checkY(10);
+      const halfW2 = (W - M * 2 - 6) / 2;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...GREEN);
+      doc.text('STO JE PROSLO DOBRO (KEEP)', M, y);
+      doc.text('STO BI NAPRAVILI DRUGACIJE (IMPROVE)', M + halfW2 + 6, y);
+      y += 5;
+      const goodLines = doc.splitTextToSize(zaklGood || '—', halfW2);
+      const impLines = doc.splitTextToSize(zaklImprove || '—', halfW2);
+      const maxLines = Math.max(goodLines.length, impLines.length);
+      checkY(maxLines * 4.2);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+      doc.text(goodLines, M, y);
+      doc.text(impLines, M + halfW2 + 6, y);
+      y += maxLines * 4.2 + 7;
+    }
+    if (zaklGeneral) {
+      checkY(14);
+      doc.setFillColor(...GREEN_L);
+      const genLines = doc.splitTextToSize(zaklGeneral, W - M * 2 - 8);
+      const boxH = genLines.length * 4.2 + 8;
+      doc.roundedRect(M, y, W - M * 2, boxH, 2, 2, 'F');
+      doc.setDrawColor(...GREEN); doc.setLineWidth(0.8);
+      doc.line(M, y, M, y + boxH);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...GREEN_D);
+      doc.text('GENERALNI ZAKLJUCAK I PREPORUKE', M + 4, y + 5);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+      doc.text(genLines, M + 4, y + 10);
+      y += boxH + 4;
+    }
+  }
+
+  // ══ FOOTER SVAKE STRANICE ══
+  const total = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, H - 7, W, 7, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(180, 225, 210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H - 2.5);
+    doc.setTextColor(...WHITE);
+    doc.text(`Stranica ${i} / ${total}`, W - M, H - 2.5, { align: 'right' });
+  }
+
+  doc.save(`Kaizen-event-${(naziv.replace(/\s+/g,'-').toLowerCase() || 'planer')}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
+
 
 // ── Dropdown nav ──
 document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
