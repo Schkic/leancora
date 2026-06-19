@@ -246,6 +246,20 @@
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.2); }
   }
+  @keyframes float-bob {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+  .zahvali-bubble {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s !important;
+  }
+  .zahvali-bubble:hover {
+    transform: translateY(-2px) scale(1.04) !important;
+    box-shadow: 0 6px 24px rgba(26,122,94,0.3) !important;
+  }
 
 
   /* ACCORDION */
