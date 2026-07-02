@@ -354,11 +354,11 @@
   <meta name="keywords" content="5S audit, 5S obrazac, 5S checklist, 5S metodologija, Seiri Seiton Seiso Seiketsu Shitsuke, Lean audit">
   <meta name="author" content="Marko Škiljan — OptiCora">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://leanopedija.opticora.hr/5s-audit.html">
+  <link rel="canonical" href="https://leanopedija.hr/5s-audit.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="5S Audit Obrazac — Besplatni digitalni checklist | Leanopedija">
   <meta property="og:description" content="Besplatni digitalni 5S audit obrazac s automatskim izračunom rezultata. Ispunite online i preuzmite kao PDF. 25 kriterija, ocjene A-F, akcijski plan.">
-  <meta property="og:url" content="https://leanopedija.opticora.hr/5s-audit.html">
+  <meta property="og:url" content="https://leanopedija.hr/5s-audit.html">
   <meta property="og:locale" content="hr_HR">
   <meta property="og:site_name" content="Leanopedija">
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
@@ -1017,7 +1017,7 @@ function exportPDF() {
     doc.setFillColor(...GREEN_D);
     doc.rect(0, H-8, W, 8, 'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
-    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-3);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.hr', M, H-3);
     doc.setTextColor(...WHITE);
     doc.text('Obrazac je besplatan za koristenje', W-M, H-3, { align:'right' });
   }
@@ -1048,7 +1048,7 @@ function exportPDF() {
   doc.setFontSize(7.5); doc.setTextColor(180,225,210);
   doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 11, { align:'right' });
   doc.setTextColor(140,200,175);
-  doc.text('leanopedija.opticora.hr', W-M, 17, { align:'right' });
+  doc.text('leanopedija.hr', W-M, 17, { align:'right' });
   y = 28;
 
   // ══ META PODACI ════════════════════════════════════
@@ -1299,7 +1299,7 @@ function exportPDF() {
     doc.setFillColor(...GREEN_D);
     doc.rect(0, H-8, W, 8, 'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
-    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-3);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.hr', M, H-3);
     doc.setTextColor(...WHITE);
     doc.text(`Stranica ${i} / ${total2}`, W-M, H-3, { align:'right' });
   }

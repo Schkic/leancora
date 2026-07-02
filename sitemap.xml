@@ -3,7 +3,7 @@
 
   <!-- Početna -->
   <url>
-    <loc>https://leanopedija.opticora.hr/</loc>
+    <loc>https://leanopedija.hr/</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,43 +11,43 @@
 
   <!-- Alati -->
   <url>
-    <loc>https://leanopedija.opticora.hr/oee-kalkulator.html</loc>
+    <loc>https://leanopedija.hr/oee-kalkulator.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/5s-audit.html</loc>
+    <loc>https://leanopedija.hr/5s-audit.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/gemba-walk.html</loc>
+    <loc>https://leanopedija.hr/gemba-walk.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/5-zasto.html</loc>
+    <loc>https://leanopedija.hr/5-zasto.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/kaizen-planer.html</loc>
+    <loc>https://leanopedija.hr/kaizen-planer.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/kaizen-prijedlog.html</loc>
+    <loc>https://leanopedija.hr/kaizen-prijedlog.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/a3-obrazac.html</loc>
+    <loc>https://leanopedija.hr/a3-obrazac.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -56,7 +56,7 @@
 
   <!-- Lean osnove vodič -->
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-lean-osnove.html</loc>
+    <loc>https://leanopedija.hr/vodic-lean-osnove.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -64,37 +64,37 @@
 
   <!-- Vodiči -->
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-oee.html</loc>
+    <loc>https://leanopedija.hr/vodic-oee.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-5s.html</loc>
+    <loc>https://leanopedija.hr/vodic-5s.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-gemba-walk.html</loc>
+    <loc>https://leanopedija.hr/vodic-gemba-walk.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-5-zasto.html</loc>
+    <loc>https://leanopedija.hr/vodic-5-zasto.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-kaizen.html</loc>
+    <loc>https://leanopedija.hr/vodic-kaizen.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/vodic-a3.html</loc>
+    <loc>https://leanopedija.hr/vodic-a3.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -103,25 +103,25 @@
 
   <!-- Ostale stranice -->
   <url>
-    <loc>https://leanopedija.opticora.hr/zajednica.html</loc>
+    <loc>https://leanopedija.hr/zajednica.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/o-nama.html</loc>
+    <loc>https://leanopedija.hr/o-nama.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/uvjeti-koristenja.html</loc>
+    <loc>https://leanopedija.hr/uvjeti-koristenja.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://leanopedija.opticora.hr/politika-privatnosti.html</loc>
+    <loc>https://leanopedija.hr/politika-privatnosti.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

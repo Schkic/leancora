@@ -540,7 +540,7 @@ a{color:inherit;text-decoration:none}
 
 <footer class="page-footer">
   <div class="page-footer-inner">
-    <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.opticora.hr</a></span>
+    <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.hr</a></span>
     <span>Obrazac je besplatan za korištenje.</span>
   </div>
 </footer>
@@ -939,7 +939,7 @@ function exportPDF() {
   const dateStr = `${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`;
   doc.text(dateStr, W-M, 10, { align:'right' });
   doc.setTextColor(140,200,175);
-  doc.text('leanopedija.opticora.hr', W-M, 15.5, { align:'right' });
+  doc.text('leanopedija.hr', W-M, 15.5, { align:'right' });
   y = 26;
 
   // ══ META PODACI ══════════════════════════════════════════
@@ -1139,7 +1139,7 @@ function exportPDF() {
     doc.setFillColor(...GREEN_D);
     doc.rect(0, H-7, W, 7, 'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
-    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.opticora.hr', M, H-2.5);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.hr', M, H-2.5);
     doc.setTextColor(...WHITE);
     doc.text(`Stranica ${i} / ${total}`, W-M, H-2.5, { align:'right' });
   }
