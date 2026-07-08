@@ -81,12 +81,13 @@ a{color:inherit;text-decoration:none}
 .tool-cta a:hover{transform:translateY(-1px)}
 
 /* RELATED */
-.related-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
-.related-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .15s}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 40px}
+.related-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .15s}
 .related-card:hover{border-color:var(--green)}
-.related-card-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);margin-bottom:6px}
-.related-card h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
-.related-card p{font-size:12px;color:var(--text-muted);margin:0}
+.related-card-icon{font-size:18px;margin-bottom:6px}
+.related-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.related-card-desc{font-size:11px;color:var(--text-faint)}
+@media(max-width:600px){.related-grid{grid-template-columns:1fr}}
 
 /* NAPOJNICA */
 .tip-section{background:#fffdf5;border-top:1px solid #f0e8c0;border-bottom:1px solid #f0e8c0}
@@ -381,24 +382,24 @@ a{color:inherit;text-decoration:none}
     <h2>Povezani alati i vodiči</h2>
     <div class="related-grid">
       <a href="vodic-5-zasto.html" class="related-card">
-        <div class="related-card-label">Vodič</div>
-        <h4>🔍 5x Zašto — analiza uzroka</h4>
-        <p>Detaljni vodič o metodi koja je srce A3 analize</p>
+        <div class="related-card-icon">🔍</div>
+        <div class="related-card-title">5x Zašto — analiza uzroka</div>
+        <div class="related-card-desc">Metoda koja je srce A3 analize</div>
       </a>
       <a href="5-zasto.html" class="related-card">
-        <div class="related-card-label">Alat</div>
-        <h4>🔍 5x Zašto obrazac</h4>
-        <p>Digitalni obrazac za brzu analizu korijenskog uzroka</p>
+        <div class="related-card-icon">🔍</div>
+        <div class="related-card-title">5x Zašto obrazac</div>
+        <div class="related-card-desc">Digitalni obrazac za analizu uzroka</div>
       </a>
       <a href="vodic-kaizen.html" class="related-card">
-        <div class="related-card-label">Vodič</div>
-        <h4>♾️ Kaizen — kontinuirano poboljšanje</h4>
-        <p>Kako organizirati Kaizen event za trajne promjene</p>
+        <div class="related-card-icon">♾️</div>
+        <div class="related-card-title">Kaizen — kontinuirano poboljšanje</div>
+        <div class="related-card-desc">Organizacija Kaizen eventa za trajne promjene</div>
       </a>
       <a href="gemba-walk.html" class="related-card">
-        <div class="related-card-label">Alat</div>
-        <h4>🚶 Gemba Walk obrazac</h4>
-        <p>Idite na mjesto problema i dokumentirajte što vidite</p>
+        <div class="related-card-icon">🚶</div>
+        <div class="related-card-title">Gemba Walk obrazac</div>
+        <div class="related-card-desc">Idi na mjesto problema i dokumentiraj</div>
       </a>
     </div>
 
