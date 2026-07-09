@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leanopedija — Praktični vodiči i alati za Lean u hrvatskoj proizvodnji</title>
-<meta name="description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i stručna podrška od OptiCora tima.">
+<meta name="description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i besplatni Lean alati za svakodnevni rad.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -241,7 +241,44 @@
     margin-top: 4px;
   }
 
-  /* ── AD BLOCK (right side) ── */
+  /* ── VALUE STRIP (top trust bar) ── */
+  .value-strip {
+    background: var(--green-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .value-strip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 28px;
+  }
+  .value-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--green);
+    white-space: nowrap;
+  }
+  .value-checks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .value-checks span { white-space: nowrap; }
+  .value-checks strong { color: var(--text); font-weight: 600; }
+  @media (max-width: 768px) {
+    .value-strip-inner { flex-direction: column; text-align: center; gap: 8px; padding: 12px 16px; }
+    .value-headline { font-size: 14px; white-space: normal; }
+    .value-checks { gap: 6px 14px; font-size: 12px; }
+  }
+
+
   .ad-block {
     background: var(--white);
     border: 1px solid var(--border);
@@ -653,6 +690,25 @@
     line-height: 1.7;
   }
 
+  .who-block ul {
+    list-style: none;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .who-block ul li a {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .who-block ul li a:hover { text-decoration: underline; }
+
   /* ── TIP / NAPOJNICA ── */
   .tip-section {
     background: #fffdf5;
@@ -1014,7 +1070,7 @@
   <!-- Open Graph (dijeljenje na društvenim mrežama) -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Leanopedija — Praktični vodiči i alati za Lean u hrvatskoj proizvodnji">
-  <meta property="og:description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i stručna podrška od OptiCora tima.">
+  <meta property="og:description" content="Sve o Lean metodologiji za hrvatske proizvodne firme. Besplatni vodiči, 5S audit obrazac, Gemba Walk, 5x Zašto analiza i besplatni Lean alati za svakodnevni rad.">
   <meta property="og:url" content="https://leanopedija.hr/">
   <meta property="og:locale" content="hr_HR">
   <meta property="og:site_name" content="Leanopedija">
@@ -1115,28 +1171,37 @@
   <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
   <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
 </div>
- 
+
+<!-- Value strip -->
+<div class="value-strip">
+  <div class="value-strip-inner">
+    <span class="value-headline">🏆 Najveća hrvatska baza znanja o Lean metodologiji</span>
+    <span class="value-checks">
+      <span>✓ detaljni vodiči</span>
+      <span>✓ obrasci za preuzimanje</span>
+      <span>✓ Lean alati</span>
+      <span>✓ praktični primjeri iz proizvodnje</span>
+    </span>
+  </div>
+</div>
+
 <!-- Hero -->
 <section style="background: var(--white); border-bottom: 1px solid var(--border);">
   <div class="hero">
     <div class="hero-content">
-      <p class="hero-eyebrow">Za hrvatske proizvodne firme</p>
-      <h1>Sve o <em>Lean metodologiji</em> na jednom mjestu</h1>
+      <h1>Jedino mjesto za <em>unapređenje proizvodnje</em></h1>
       <p class="hero-desc">
-        Enciklopedija za proizvodnog managera!<br>
-        <strong>Vodiči + Alati + Stručna podrška + Zajednica</strong><br>
-        Trebate pomoć pri uvođenju Lean-a, 5S-a, Kaizena, mjerenju OEE-a ili pripremi VSM radionice? Sve na jednom mjestu — pisano od <strong>osobe</strong> koja godinama implementira Lean u stvarnim hrvatskim pogonima.<br>
-        Bez teorije iz udžbenika. Samo ono što stvarno radi.
+        Leanopedija je centralno mjesto za sve koji rade na unapređenju proizvodnih procesa.<br>
+        <strong>Vodiči • Alati • Predlošci • Zajednica • Iskustva iz prakse</strong><br>
+        Tražiš kako uvesti 5S, izmjeriti OEE, napraviti VSM, pokrenuti Kaizen, TPM ili razvijati Operational Excellence? Ovdje su praktični vodiči, gotovi alati i iskustva ljudi koji svakodnevno rade u proizvodnim pogonima.<br>
+        Bez prazne teorije. Bez marketinških priča. Samo provjerene metode koje pomažu proizvodnji.
       </p>
       <div class="hero-tags">
-        <span class="hero-tag">Lean Production</span>
-        <span class="hero-tag">5S metodologija</span>
-        <span class="hero-tag">Kaizen</span>
-        <span class="hero-tag">OEE mjerenje</span>
-        <span class="hero-tag">VSM</span>
-        <span class="hero-tag">TPM</span>
+        <span class="hero-tag">Lean</span>
+        <span class="hero-tag">World Class Manufacturing</span>
+        <span class="hero-tag">Continuous Improvement</span>
+        <span class="hero-tag">Operational Excellence</span>
       </div>
-      <p class="hero-note">Od OptiCora tima — iz prve ruke. Bez skrivene prodaje, bez sponzorstva.</p>
     </div>
 
   </div>
@@ -1328,15 +1393,24 @@
   <div class="who-inner">
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Tko?</div>
-      <p>Sadržaj i upute piše tim koji je više od 10 godina implementirao Lean u stvarnim hrvatskim proizvodnim pogonima. Sve upute su napisane na temelju stvarnih projekata i problema klijenata. Iza LeanCore stoji stvaran tim — ne botovi, ne studenti, ne AI tekstovi.</p>
+      <p>Sadržaj i upute piše osoba koja radi u industrijskom inženjeringu i svakodnevno se bavi Lean metodologijom u stvarnoj proizvodnji — ne agencija, ne studenti, ne umjetna inteligencija. Vodiči i alati nastaju iz stvarnih situacija i problema s kojima se susrećemo u pogonu, ne iz teorije prepisane iz udžbenika.</p>
     </div>
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Što nas <span>izdvaja</span>?</div>
-      <p>Jedino mjesto u Hrvatskoj gdje razgovarate s Lean stručnjakom koji je osobno proveo stotine 5S audita, OEE implementacija i Kaizen radionica — a ne zaposlenicima korisničke podrške ili konzultantima iz udžbenika. Sav sadržaj je ručno napisan i temelji se na godinama praktičnog rada.</p>
+      <p>Iza Leanopedije stoji stvarna osoba — bez botova, bez automatski generiranih tekstova, bez pomodarstva. Nema prikrivene prodaje ni sponzorstva. Samo znanje skupljeno kroz praktični rad, koje želimo podijeliti.</p>
     </div>
     <div class="who-block">
       <div class="who-title">—&nbsp;&nbsp;Kako vam možemo <span>pomoći</span>?</div>
-      <p>Ova stranica sadrži vodiče i upute za uvođenje Lean-a, 5S-a, mjerenje OEE-a, organizaciju Kaizen radionica, mapiranje toka vrijednosti i još mnogo toga. I besplatne alate koji stvarno pomažu. Uz sadržaj nudimo i stručno savjetovanje — od OptiCora tima.</p>
+      <p>Ova stranica sadrži vodiče i upute za uvođenje Lean-a, 5S-a, mjerenje OEE-a, organizaciju Kaizen radionica, mapiranje toka vrijednosti i još mnogo toga. Uz to, nudimo i konkretne besplatne alate koji stvarno pomažu:</p>
+      <ul>
+        <li><a href="oee-kalkulator.html">🧮 OEE kalkulator</a></li>
+        <li><a href="5s-audit.html">📋 5S audit obrazac</a></li>
+        <li><a href="gemba-walk.html">🚶 Gemba Walk obrazac</a></li>
+        <li><a href="5-zasto.html">🔍 5x Zašto obrazac</a></li>
+        <li><a href="kaizen-planer.html">♾️ Kaizen event planer</a></li>
+        <li><a href="a3-obrazac.html">📄 A3 obrazac</a></li>
+        <li><a href="index.html#alati">… i još</a></li>
+      </ul>
     </div>
   </div>
 </section>
