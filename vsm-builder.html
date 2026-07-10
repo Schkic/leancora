@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSM Builder — Leanopedija</title>
+<meta name="description" content="Interaktivni VSM builder — nacrtaj mapu toka vrijednosti (trenutno/buduće stanje) izravno u browseru. Standardni simboli, tokovi materijala i informacija, automatski izračun takta i ciklusa proizvodnje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a7a5e;--green-light:#e8f5f0;--green-mid:#2d9e7a;
+  --text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;
+  --border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;
+  --red:#dc2626;--orange:#ea580c;--yellow:#ca8a04;--blue:#2563eb;
+  --amber:#c9822a;--amber-light:#faf1e4;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* HEADER */
+.site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
+.back-link{font-size:13px;color:var(--text-muted);transition:color .12s}
+.back-link:hover{color:var(--green)}
+.header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
+.main-nav{display:flex;align-items:center;gap:4px;flex:1}
+.main-nav a{font-size:14px;color:var(--text-muted);padding:6px 12px;border-radius:6px;transition:background .15s,color .15s}
+.main-nav a:hover{background:var(--green-light);color:var(--green)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{display:flex;align-items:center;gap:4px}
+.nav-dropdown>a::after{content:"▾";font-size:10px}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:8px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:200}
+.dropdown-menu::before{content:"";position:absolute;top:-10px;left:0;right:0;height:10px}
+.nav-dropdown.open .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:8px 12px;font-size:13px;color:var(--text);border-radius:6px;line-height:1.4}
+.dropdown-menu a:hover{background:var(--green-light);color:var(--green)}
+.dropdown-menu a span{display:block;font-size:11px;color:var(--text-faint);margin-top:1px}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:54px;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border);padding:16px 24px 32px;z-index:99;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:12px 0;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);font-weight:500}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a:hover{color:var(--green)}
+.mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
+@media(max-width:768px){.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
+
+/* PAGE HEADER */
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
+.page-header-inner{max-width:1100px;margin:0 auto}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:6px}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:640px;line-height:1.7}
+
+/* TOOLBAR */
+.toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
+.toolbar-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#155f49}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.btn-add{background:transparent;color:var(--green);border:1px dashed var(--green)}
+.btn-add:hover{background:var(--green-light)}
+
+/* LAYOUT */
+.main-wrap{max-width:1100px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#fafaf8}
+.card-header-left{display:flex;align-items:center;gap:10px}
+.card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.card-header h3{font-size:14px;font-weight:600}
+.card-header p{font-size:12px;color:var(--text-faint);margin-top:1px}
+.card-body{padding:18px}
+
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px}
+.field input,.field select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);transition:border-color .15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--green)}
+
+/* SIDEBAR */
+.sidebar-block{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.sidebar-block-title{font-size:13px;font-weight:600;padding:12px 16px;border-bottom:1px solid var(--border);background:#fafaf8}
+.sidebar-block-body{padding:14px 16px}
+.takt-out{background:var(--green-light);color:var(--green);padding:8px 12px;border-radius:8px;font-weight:600;font-size:13px;text-align:center}
+
+/* CONNECTION TYPE BUTTONS (sidebar) */
+.conn-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--border);background:var(--white);font-size:12.5px;color:var(--text);font-family:inherit;margin-bottom:6px;text-align:left}
+.conn-btn:last-of-type{margin-bottom:0}
+.conn-btn .swatch{width:18px;height:2px;background:var(--text);display:inline-block;flex-shrink:0}
+.conn-btn[data-type="material"] .swatch{background:var(--green);height:3px}
+.conn-btn[data-type="info-manual"] .swatch{background:var(--text);height:1px}
+.conn-btn[data-type="info-electronic"] .swatch{background:none;height:1px;border-top:1px dashed var(--text)}
+.conn-btn[data-type="kanban"] .swatch{background:none;height:2px;border-top:2px dashed var(--amber)}
+.conn-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.conn-btn.active .swatch{background:#fff;border-color:#fff}
+.conn-cancel{display:none;font-size:12px;color:var(--text-muted);text-decoration:underline;background:none;border:none;font-family:inherit;margin-top:8px;cursor:pointer}
+.conn-cancel.show{display:inline-block}
+
+/* PALETTE (horizontal chips) */
+.palette{display:flex;flex-wrap:wrap;gap:8px}
+.pal-item{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:500;color:var(--text);cursor:grab;user-select:none;transition:background .15s,border-color .15s}
+.pal-item:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+
+/* CANVAS */
+.canvas-wrap{position:relative;overflow:auto;height:560px;background:
+  linear-gradient(var(--border) 1px, transparent 1px) 0 0/24px 24px,
+  linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0/24px 24px,
+  var(--bg);
+}
+#canvas{position:relative;width:1600px;height:900px}
+svg#connLayer{position:absolute;top:0;left:0;width:1600px;height:900px;pointer-events:none}
+
+.el{position:absolute;background:var(--white);border:2px solid var(--text);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;text-align:center;font-size:11.5px;font-weight:600;cursor:grab;user-select:none;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.el.selected{border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
+.el.conn-target{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-light)}
+.el .el-icon{margin-bottom:3px}
+.el .el-name{line-height:1.2}
+.el .el-stat{font-weight:400;color:var(--text-faint);font-size:10px;margin-top:2px}
+.el .el-del{position:absolute;top:-9px;right:-9px;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;border:2px solid var(--bg);font-size:11px;line-height:14px;text-align:center;display:none;cursor:pointer}
+.el:hover .el-del,.el.selected .el-del{display:block}
+.el.type-inventory{background:var(--amber-light);border-color:var(--amber);clip-path:polygon(50% 0,100% 100%,0 100%);padding-top:22px}
+.el.type-company{background:var(--green-light)}
+.el.type-control{background:#f3f0ea;border-style:dashed}
+.el.type-kaizen{background:#fff3e0;border-color:#e08a1f;border-radius:50%}
+
+/* TIMELINE */
+.tl-stats{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.tl-stats b{color:var(--green)}
+.ladder{display:flex;align-items:flex-end;gap:0;overflow-x:auto;min-height:70px;padding-bottom:4px}
+.tl-step{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:78px;padding:4px 8px;font-size:11px;color:var(--text-faint);border-bottom:3px solid var(--text);position:relative}
+.tl-step .tl-name{font-size:10px;color:var(--text);font-weight:600;margin-bottom:3px;text-align:center}
+.tl-step.nvat{border-bottom-color:var(--amber)}
+.tl-step.nvat .tl-val{color:var(--amber);font-weight:700;transform:translateY(-14px)}
+.tl-step.vat{border-bottom-color:var(--green)}
+.tl-step.vat .tl-val{color:var(--green);font-weight:700}
+.ladder-empty{font-size:12.5px;color:var(--text-faint);padding:10px 0}
+.props-empty{font-size:12.5px;color:var(--text-faint);line-height:1.6}
+
+/* SHARE */
+.share-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--border);margin-top:8px}
+.share-label{font-size:13px;font-weight:500;color:var(--text-muted)}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.share-btn:hover{opacity:.85}
+.share-linkedin{background:#0a66c2;color:#fff}
+.share-whatsapp{background:#25d366;color:#fff}
+.share-copy{background:var(--green-light);color:var(--green)}
+
+/* FOOTER */
+.page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
+.page-footer-inner{max-width:1100px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between}
+
+@media(max-width:900px){.main-wrap{grid-template-columns:1fr}}
+
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+
+@media print{
+  .site-header,.mobile-menu,.toolbar,.share-row,.page-footer{display:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-mark">L°</div>Leanopedija</a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <a href="index.html#alati">Alati</a>
+        <div class="dropdown-menu">
+          <a href="vsm-builder.html">🗺️ VSM Builder <span>Mapiranje toka vrijednosti — beta</span></a>
+          <a href="oee-kalkulator.html">🧮 OEE kalkulator <span>Ukupna učinkovitost opreme</span></a>
+          <a href="5s-audit.html">📋 5S audit obrazac <span>Digitalni checklist, preuzmi kao PDF</span></a>
+          <a href="gemba-walk.html">🚶 Gemba Walk obrazac <span>Zapažanja s terena i akcijski plan</span></a>
+          <a href="5-zasto.html">🔍 5x Zašto obrazac <span>Analiza korijenskog uzroka problema</span></a>
+          <a href="kaizen-planer.html">♾️ Kaizen event planer <span>Planiranje i praćenje Kaizen eventa</span></a>
+          <a href="kaizen-prijedlog.html">💡 Kaizen prijedlog <span>Obrazac za prijedlog poboljšanja</span></a>
+          <a href="a3-obrazac.html">📄 A3 obrazac <span>Strukturirano rješavanje problema</span></a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="index.html#vodici">Vodiči</a>
+        <div class="dropdown-menu">
+          <a href="vodic-lean-osnove.html">🌱 Što je Lean? — osnove i principi <span>8 min čitanja</span></a>
+          <a href="vodic-oee.html">📊 OEE — što je i kako mjeriti <span>8 min čitanja</span></a>
+          <a href="vodic-5s.html">5️⃣ 5S metodologija — uvod <span>7 min čitanja</span></a>
+          <a href="vodic-gemba-walk.html">🚶 Gemba Walk — kako organizirati <span>6 min čitanja</span></a>
+          <a href="vodic-5-zasto.html">🔍 5x Zašto — analiza uzroka <span>5 min čitanja</span></a>
+          <a href="vodic-kaizen.html">♾️ Kaizen — što je i kako provesti <span>9 min čitanja</span></a>
+          <a href="vodic-a3.html">📄 A3 metoda — rješavanje problema <span>7 min čitanja</span></a>
+        </div>
+      </div>
+      <a href="zajednica.html">Zajednica</a>
+      <a href="o-nama.html">O nama</a>
+    </nav>
+    <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Izbornik">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-section">Alati</div>
+  <a href="vsm-builder.html" onclick="closeMobileMenu()">🗺️ VSM Builder</a>
+  <a href="oee-kalkulator.html" onclick="closeMobileMenu()">🧮 OEE kalkulator</a>
+  <a href="5s-audit.html" onclick="closeMobileMenu()">📋 5S audit obrazac</a>
+  <a href="gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk obrazac</a>
+  <a href="5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto obrazac</a>
+  <a href="kaizen-planer.html" onclick="closeMobileMenu()">♾️ Kaizen event planer</a>
+  <a href="kaizen-prijedlog.html" onclick="closeMobileMenu()">💡 Kaizen prijedlog</a>
+  <a href="a3-obrazac.html" onclick="closeMobileMenu()">📄 A3 obrazac</a>
+  <div class="mobile-menu-section">Vodiči</div>
+  <a href="vodic-lean-osnove.html" onclick="closeMobileMenu()">🌱 Što je Lean? — osnove i principi</a>
+  <a href="vodic-oee.html" onclick="closeMobileMenu()">📊 Što je OEE i kako ga mjeriti</a>
+  <a href="vodic-5s.html" onclick="closeMobileMenu()">5️⃣ 5S metodologija — uvod</a>
+  <a href="vodic-gemba-walk.html" onclick="closeMobileMenu()">🚶 Gemba Walk — kako organizirati</a>
+  <a href="vodic-5-zasto.html" onclick="closeMobileMenu()">🔍 5x Zašto — analiza uzroka</a>
+  <a href="vodic-kaizen.html" onclick="closeMobileMenu()">♾️ Kaizen — što je i kako provesti</a>
+  <a href="vodic-a3.html" onclick="closeMobileMenu()">📄 A3 metoda — rješavanje problema</a>
+  <div class="mobile-menu-section">Ostalo</div>
+  <a href="zajednica.html" onclick="closeMobileMenu()">💬 Zajednica</a>
+  <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
+  <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
+</div>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="tool-badge">🗺️ Alat u razvoju · beta</div>
+    <h1>VSM Builder</h1>
+    <p>Nacrtaj mapu toka vrijednosti izravno u browseru. Dodaj standardne VSM simbole na platno, poveži ih tokovima materijala i informacija, unesi C/T i C/O podatke po procesu — alat automatski izračunava Takt, VAT/NVAT i ciklus proizvodnje.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <button class="btn btn-outline" id="btnClear">🗑️ Isprazni platno</button>
+    <button class="btn btn-outline" id="btnLoad">📂 Učitaj JSON</button>
+    <input type="file" id="fileInput" accept="application/json" style="display:none">
+    <button class="btn btn-outline" id="btnSave">💾 Spremi JSON</button>
+    <button class="btn btn-primary" id="btnExport">⬇️ Export PNG</button>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- LEFT: PALETTE + CANVAS + TIMELINE -->
+  <div id="left-col">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:var(--green-light)">🧩</div>
+          <div><h3>Simboli</h3><p>Povuci na platno ili klikni za dodavanje</p></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="palette" id="palette"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:#eff6ff">🗺️</div>
+          <div><h3>Platno</h3><p>Klikni element za uređivanje podataka desno</p></div>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="canvas-wrap" id="canvasWrap">
+          <div id="canvas">
+            <svg id="connLayer">
+              <defs>
+                <marker id="arrow-material" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#1a7a5e"></path>
+                </marker>
+                <marker id="arrow-info" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#1a1a1a"></path>
+                </marker>
+                <marker id="arrow-kanban" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#c9822a"></path>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon" style="background:#fef9c3">📏</div>
+          <div><h3>Vremenska linija (VAT / NVAT)</h3><p>Automatski izračun iz procesa i zaliha na platnu</p></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tl-stats">
+          <span>Ukupno VAT: <b id="statVat">0 s</b></span>
+          <span>Ukupno NVAT: <b id="statNvat">0 d</b></span>
+          <span>Ciklus proizvodnje: <b id="statLead">0 d</b></span>
+          <span>Efikasnost (Ec): <b id="statEc">0%</b></span>
+        </div>
+        <div class="ladder" id="ladder"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="sidebar-block">
+      <div class="sidebar-block-title">⏱️ Postavke takta</div>
+      <div class="sidebar-block-body">
+        <div class="field"><label>Raspoloživo vrijeme (sek/smjena)</label><input type="number" id="metaAvail" value="27600"></div>
+        <div class="field"><label>Dnevna potražnja (kom/dan)</label><input type="number" id="metaDemand" value="500"></div>
+        <div class="takt-out" id="taktOut">Takt: — sek/kom</div>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-block-title">🔗 Vrsta veze</div>
+      <div class="sidebar-block-body">
+        <button class="conn-btn" data-type="material"><span class="swatch"></span>Materijal</button>
+        <button class="conn-btn" data-type="info-manual"><span class="swatch"></span>Info ručno</button>
+        <button class="conn-btn" data-type="info-electronic"><span class="swatch"></span>Info elektronički</button>
+        <button class="conn-btn" data-type="kanban"><span class="swatch"></span>Kanban</button>
+        <button class="conn-cancel" id="connCancel">Odustani (Esc)</button>
+      </div>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-block-title">⚙️ Svojstva elementa</div>
+      <div class="sidebar-block-body">
+        <div class="props-empty" id="propsEmpty">Klikni element na platnu da urediš njegove podatke (naziv, C/T, C/O, zalihe...).</div>
+        <div id="propsForm"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SHARE -->
+<div style="max-width:1100px;margin:0 auto;padding:0 24px;">
+  <div class="share-row">
+    <span class="share-label">Podijelite alat:</span>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://leanopedija.hr/vsm-builder.html" target="_blank" rel="noopener" class="share-btn share-linkedin">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://wa.me/?text=Isprobajte%20besplatni%20VSM%20Builder%3A%20https://leanopedija.hr/vsm-builder.html" target="_blank" rel="noopener" class="share-btn share-whatsapp">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      WhatsApp
+    </a>
+    <button onclick="copyLink()" class="share-btn share-copy" id="copy-btn">🔗 Kopiraj link</button>
+  </div>
+</div>
+
+<footer class="page-footer">
+  <div class="page-footer-inner">
+    <span>© Leanopedija — <a href="index.html" style="color:var(--green)">leanopedija.hr</a></span>
+    <span>Alat je besplatan za korištenje. Trenutno u beta fazi.</span>
+  </div>
+</footer>
+
+<script>
+/* ---------- Diakritika helper (za buduci PDF export, hr2a princip) ---------- */
+function hr2a(s){
+  return String(s||'').replace(/č/g,'c').replace(/ć/g,'c').replace(/š/g,'s').replace(/ž/g,'z').replace(/đ/g,'dj')
+    .replace(/Č/g,'C').replace(/Ć/g,'C').replace(/Š/g,'S').replace(/Ž/g,'Z').replace(/Đ/g,'Dj');
+}
+
+/* ---------- Definicije tipova simbola ---------- */
+const TYPES = {
+  company:{ label:'Dobavljač / Kupac', w:120, h:74, icon:iconFactory,
+    fields:[{k:'name',l:'Naziv',t:'text',d:'Naziv poduzeća'},{k:'freq',l:'Učestalost dostave',t:'text',d:'npr. tjedno'},{k:'qty',l:'Količina',t:'text',d:'npr. 3000 kom'}] },
+  process:{ label:'Proces', w:140, h:96, icon:iconProcess,
+    fields:[{k:'name',l:'Naziv procesa',t:'text',d:'Proces'},{k:'ct',l:'C/T (sek)',t:'number',d:''},{k:'co',l:'C/O (min)',t:'number',d:''},
+      {k:'avail',l:'Raspoloživost (sek)',t:'number',d:''},{k:'rel',l:'Pouzdanost (%)',t:'number',d:''},
+      {k:'shifts',l:'Broj smjena',t:'number',d:'1'},{k:'operators',l:'Broj radnika',t:'number',d:'1'}] },
+  control:{ label:'Kontrola proizvodnje', w:140, h:60, icon:iconControl,
+    fields:[{k:'name',l:'Naziv',t:'text',d:'Kontrola proizvodnje'}] },
+  inventory:{ label:'Zaliha', w:80, h:80, icon:null,
+    fields:[{k:'name',l:'Naziv',t:'text',d:'Zaliha'},{k:'qty',l:'Količina (kom)',t:'number',d:''},{k:'days',l:'Dana zaliha (NVAT)',t:'number',d:''}] },
+  truck:{ label:'Transport kamionom', w:100, h:64, icon:iconTruck,
+    fields:[{k:'name',l:'Naziv',t:'text',d:'Transport'},{k:'freq',l:'Učestalost',t:'text',d:'npr. dnevno'}] },
+  supermarket:{ label:'Samoposluga', w:100, h:74, icon:iconSuper,
+    fields:[{k:'name',l:'Naziv',t:'text',d:'Samoposluga'},{k:'cap',l:'Kapacitet',t:'number',d:''}] },
+  kanbanProd:{ label:'Proizvodni kanban', w:80, h:54, icon:iconKanban,
+    fields:[{k:'note',l:'Napomena',t:'text',d:''}] },
+  kanbanSignal:{ label:'Signalni kanban', w:80, h:54, icon:iconKanbanSignal,
+    fields:[{k:'note',l:'Napomena',t:'text',d:''}] },
+  kaizen:{ label:'Kaizen blic', w:84, h:84, icon:iconKaizen,
+    fields:[{k:'note',l:'Ideja poboljšanja',t:'text',d:''}] },
+  worker:{ label:'Radnik', w:56, h:56, icon:iconWorker,
+    fields:[{k:'note',l:'Napomena',t:'text',d:''}] }
+};
+
+function iconFactory(){return `<svg width="26" height="18" viewBox="0 0 26 18"><path d="M1 17V6l5 4V6l5 4V6l5 4V6l5 4v7z" fill="none" stroke="#1a7a5e" stroke-width="1.6" stroke-linejoin="round"/></svg>`;}
+function iconProcess(){return `<svg width="22" height="16" viewBox="0 0 22 16"><rect x="1" y="1" width="20" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.6"/></svg>`;}
+function iconControl(){return `<svg width="22" height="14" viewBox="0 0 22 14"><rect x="1" y="1" width="20" height="12" fill="none" stroke="#5a5a5a" stroke-width="1.4" stroke-dasharray="3 2"/></svg>`;}
+function iconTruck(){return `<svg width="24" height="16" viewBox="0 0 24 16"><rect x="1" y="3" width="13" height="9" fill="none" stroke="#1a1a1a" stroke-width="1.5"/><path d="M14 6h5l3 3v3h-8z" fill="none" stroke="#1a1a1a" stroke-width="1.5"/><circle cx="6" cy="13" r="2" fill="none" stroke="#1a1a1a" stroke-width="1.3"/><circle cx="18" cy="13" r="2" fill="none" stroke="#1a1a1a" stroke-width="1.3"/></svg>`;}
+function iconSuper(){return `<svg width="22" height="18" viewBox="0 0 22 18"><line x1="3" y1="1" x2="3" y2="17" stroke="#1a7a5e" stroke-width="1.6"/><line x1="10" y1="1" x2="10" y2="17" stroke="#1a7a5e" stroke-width="1.6"/><line x1="17" y1="1" x2="17" y2="17" stroke="#1a7a5e" stroke-width="1.6"/></svg>`;}
+function iconKanban(){return `<svg width="20" height="16" viewBox="0 0 20 16"><rect x="1" y="1" width="18" height="14" fill="none" stroke="#c9822a" stroke-width="1.6"/></svg>`;}
+function iconKanbanSignal(){return `<svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 1 L19 17 L1 17 Z" fill="none" stroke="#c9822a" stroke-width="1.6"/></svg>`;}
+function iconKaizen(){return `<svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 1l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="none" stroke="#e08a1f" stroke-width="1.4" stroke-linejoin="round"/></svg>`;}
+function iconWorker(){return `<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="5" r="3.4" fill="none" stroke="#1a1a1a" stroke-width="1.4"/><path d="M2 17c0-4 3-6 7-6s7 2 7 6" fill="none" stroke="#1a1a1a" stroke-width="1.4"/></svg>`;}
+
+/* ---------- Stanje aplikacije ---------- */
+let state = { elements: [], connections: [] };
+let nextId = 1;
+let selectedId = null;
+let connMode = null;
+let connFrom = null;
+let dragging = null;
+
+const canvas = document.getElementById('canvas');
+const connLayer = document.getElementById('connLayer');
+const palette = document.getElementById('palette');
+
+/* ---------- Izgradi paletu ---------- */
+Object.keys(TYPES).forEach(type=>{
+  const def = TYPES[type];
+  const item = document.createElement('div');
+  item.className = 'pal-item';
+  item.draggable = true;
+  item.dataset.type = type;
+  item.innerHTML = (def.icon ? def.icon() : '<svg width="18" height="18"><polygon points="9,1 17,17 1,17" fill="none" stroke="#c9822a" stroke-width="1.6"/></svg>') + `<span>${def.label}</span>`;
+  item.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', type); });
+  item.addEventListener('click', ()=> addElement(type, 60 + Math.random()*400, 60 + Math.random()*300));
+  palette.appendChild(item);
+});
+
+document.getElementById('canvasWrap').addEventListener('dragover', e=> e.preventDefault());
+document.getElementById('canvasWrap').addEventListener('drop', e=>{
+  e.preventDefault();
+  const type = e.dataTransfer.getData('text/plain');
+  if(!TYPES[type]) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left - TYPES[type].w/2;
+  const y = e.clientY - rect.top - TYPES[type].h/2;
+  addElement(type, Math.max(0,x), Math.max(0,y));
+});
+
+/* ---------- Elementi ---------- */
+function addElement(type, x, y){
+  const def = TYPES[type];
+  const el = { id:'e'+(nextId++), type, x, y, w:def.w, h:def.h, data:{} };
+  def.fields.forEach(f=>{ el.data[f.k] = f.d || ''; });
+  if(type==='process'){ el.data.avail = el.data.avail || document.getElementById('metaAvail').value; el.data.rel = el.data.rel || 100; }
+  state.elements.push(el);
+  renderAll();
+  selectElement(el.id);
+}
+
+function renderAll(){
+  canvas.querySelectorAll('.el').forEach(n=>n.remove());
+  state.elements.forEach(el=>{
+    const def = TYPES[el.type];
+    const div = document.createElement('div');
+    div.className = 'el type-'+el.type + (el.id===selectedId?' selected':'');
+    div.style.left = el.x+'px'; div.style.top = el.y+'px';
+    div.style.width = el.w+'px'; div.style.height = el.h+'px';
+    div.dataset.id = el.id;
+    const stat = statLine(el);
+    div.innerHTML = `<span class="el-del" data-del="${el.id}">×</span>
+      <span class="el-icon">${def.icon?def.icon():''}</span>
+      <span class="el-name">${escapeHtml(el.data.name||el.data.note||def.label)}</span>
+      ${stat?`<span class="el-stat">${stat}</span>`:''}`;
+    div.addEventListener('mousedown', onElMouseDown);
+    canvas.appendChild(div);
+  });
+  drawConnections();
+  updateTimeline();
+}
+
+function statLine(el){
+  if(el.type==='process') return `C/T ${el.data.ct||0}s · C/O ${el.data.co||0}min`;
+  if(el.type==='inventory') return `${el.data.qty||0} kom · ${el.data.days||0} d`;
+  if(el.type==='company') return el.data.freq||'';
+  return '';
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* ---------- Drag elemenata ---------- */
+function onElMouseDown(e){
+  if(e.target.dataset.del){ deleteElement(e.target.dataset.del); return; }
+  const id = e.currentTarget.dataset.id;
+
+  if(connMode){ handleConnectClick(id); return; }
+
+  const el = state.elements.find(x=>x.id===id);
+  const rect = canvas.getBoundingClientRect();
+  dragging = { id, offX: e.clientX - rect.left - el.x, offY: e.clientY - rect.top - el.y, moved:false };
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('mouseup', onDragUp);
+}
+function onDragMove(e){
+  if(!dragging) return;
+  dragging.moved = true;
+  const rect = canvas.getBoundingClientRect();
+  const el = state.elements.find(x=>x.id===dragging.id);
+  el.x = Math.max(0, e.clientX - rect.left - dragging.offX);
+  el.y = Math.max(0, e.clientY - rect.top - dragging.offY);
+  const node = canvas.querySelector(`.el[data-id="${el.id}"]`);
+  node.style.left = el.x+'px'; node.style.top = el.y+'px';
+  drawConnections();
+}
+function onDragUp(e){
+  if(dragging && !dragging.moved){ selectElement(dragging.id); }
+  if(dragging && dragging.moved){ updateTimeline(); }
+  dragging = null;
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragUp);
+}
+function deleteElement(id){
+  state.elements = state.elements.filter(e=>e.id!==id);
+  state.connections = state.connections.filter(c=>c.from!==id && c.to!==id);
+  if(selectedId===id) selectElement(null);
+  renderAll();
+}
+
+/* ---------- Veze ---------- */
+document.querySelectorAll('.conn-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const type = btn.dataset.type;
+    if(connMode===type){ setConnMode(null); return; }
+    setConnMode(type);
+  });
+});
+document.getElementById('connCancel').addEventListener('click', ()=> setConnMode(null));
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') setConnMode(null); });
+
+function setConnMode(type){
+  connMode = type; connFrom = null;
+  document.querySelectorAll('.conn-btn').forEach(b=> b.classList.toggle('active', b.dataset.type===type));
+  document.getElementById('connCancel').classList.toggle('show', !!type);
+  canvas.querySelectorAll('.el').forEach(n=> n.classList.remove('conn-target'));
+}
+function handleConnectClick(id){
+  if(!connFrom){
+    connFrom = id;
+    canvas.querySelector(`.el[data-id="${id}"]`).classList.add('conn-target');
+    return;
+  }
+  if(connFrom===id){ return; }
+  state.connections.push({ id:'c'+(nextId++), from:connFrom, to:id, type:connMode });
+  canvas.querySelectorAll('.el').forEach(n=> n.classList.remove('conn-target'));
+  connFrom = null;
+  drawConnections();
+}
+
+function anchorPoint(el, side){
+  const cx = el.x + el.w/2, cy = el.y + el.h/2;
+  if(side==='right') return {x: el.x+el.w, y: cy};
+  if(side==='left') return {x: el.x, y: cy};
+  if(side==='top') return {x: cx, y: el.y};
+  return {x: cx, y: el.y+el.h};
+}
+function connEndpoints(a,b){
+  const dx = (b.x+b.w/2) - (a.x+a.w/2), dy = (b.y+b.h/2) - (a.y+a.h/2);
+  if(Math.abs(dx) >= Math.abs(dy)){
+    return dx>=0 ? [anchorPoint(a,'right'), anchorPoint(b,'left')] : [anchorPoint(a,'left'), anchorPoint(b,'right')];
+  }else{
+    return dy>=0 ? [anchorPoint(a,'bottom'), anchorPoint(b,'top')] : [anchorPoint(a,'top'), anchorPoint(b,'bottom')];
+  }
+}
+function drawConnections(){
+  connLayer.querySelectorAll('line').forEach(n=>n.remove());
+  state.connections.forEach(c=>{
+    const a = state.elements.find(e=>e.id===c.from), b = state.elements.find(e=>e.id===c.to);
+    if(!a||!b) return;
+    const [p1,p2] = connEndpoints(a,b);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',p1.x); line.setAttribute('y1',p1.y);
+    line.setAttribute('x2',p2.x); line.setAttribute('y2',p2.y);
+    line.setAttribute('stroke-width', c.type==='material' ? 3 : 1.6);
+    if(c.type==='material'){ line.setAttribute('stroke','#1a7a5e'); line.setAttribute('marker-end','url(#arrow-material)'); }
+    else if(c.type==='info-manual'){ line.setAttribute('stroke','#1a1a1a'); line.setAttribute('marker-end','url(#arrow-info)'); }
+    else if(c.type==='info-electronic'){ line.setAttribute('stroke','#1a1a1a'); line.setAttribute('stroke-dasharray','2 3'); line.setAttribute('marker-end','url(#arrow-info)'); }
+    else if(c.type==='kanban'){ line.setAttribute('stroke','#c9822a'); line.setAttribute('stroke-dasharray','6 4'); line.setAttribute('marker-end','url(#arrow-kanban)'); }
+    connLayer.appendChild(line);
+  });
+}
+
+/* ---------- Svojstva (desni panel) ---------- */
+function selectElement(id){
+  selectedId = id;
+  canvas.querySelectorAll('.el').forEach(n=> n.classList.toggle('selected', n.dataset.id===id));
+  const form = document.getElementById('propsForm');
+  const empty = document.getElementById('propsEmpty');
+  form.innerHTML = '';
+  if(!id){ empty.style.display='block'; return; }
+  empty.style.display='none';
+  const el = state.elements.find(e=>e.id===id);
+  const def = TYPES[el.type];
+  def.fields.forEach(f=>{
+    const wrap = document.createElement('div'); wrap.className='field';
+    wrap.innerHTML = `<label>${f.l}</label><input type="${f.t}" value="${escapeHtml(el.data[f.k]||'')}">`;
+    const input = wrap.querySelector('input');
+    input.addEventListener('input', ()=>{ el.data[f.k] = input.value; renderAll(); selectElement(id); });
+    form.appendChild(wrap);
+  });
+}
+document.getElementById('canvasWrap').addEventListener('mousedown', e=>{
+  if(e.target.id==='canvasWrap' || e.target.id==='canvas'){ selectElement(null); }
+});
+
+/* ---------- Vremenska linija VAT / NVAT ---------- */
+function updateTimeline(){
+  const ladder = document.getElementById('ladder');
+  ladder.innerHTML = '';
+  const items = state.elements.filter(e=> e.type==='process' || e.type==='inventory').sort((a,b)=> a.x-b.x);
+  if(items.length===0){ ladder.innerHTML = '<div class="ladder-empty">Dodaj procese i zalihe na platno da se izračuna vremenska linija.</div>'; }
+
+  let totalVat = 0, totalNvat = 0;
+  items.forEach(el=>{
+    const step = document.createElement('div');
+    if(el.type==='process'){
+      const ct = parseFloat(el.data.ct)||0;
+      totalVat += ct;
+      step.className = 'tl-step vat';
+      step.innerHTML = `<span class="tl-val">${ct} s</span><span class="tl-name">${escapeHtml(el.data.name||'Proces')}</span>`;
+    }else{
+      const d = parseFloat(el.data.days)||0;
+      totalNvat += d;
+      step.className = 'tl-step nvat';
+      step.innerHTML = `<span class="tl-val">${d} d</span><span class="tl-name">${escapeHtml(el.data.name||'Zaliha')}</span>`;
+    }
+    ladder.appendChild(step);
+  });
+
+  const availSec = parseFloat(document.getElementById('metaAvail').value)||27600;
+  const demand = parseFloat(document.getElementById('metaDemand').value)||1;
+  const takt = demand>0 ? (availSec/demand).toFixed(1) : '—';
+  document.getElementById('taktOut').textContent = `Takt: ${takt} sek/kom`;
+
+  const vatDays = totalVat / availSec;
+  const leadDays = totalNvat + vatDays;
+  const ec = leadDays>0 ? (vatDays/leadDays*100).toFixed(1) : '0';
+
+  document.getElementById('statVat').textContent = totalVat.toFixed(0)+' s';
+  document.getElementById('statNvat').textContent = totalNvat.toFixed(1)+' d';
+  document.getElementById('statLead').textContent = leadDays.toFixed(1)+' d';
+  document.getElementById('statEc').textContent = ec+'%';
+}
+document.getElementById('metaAvail').addEventListener('input', updateTimeline);
+document.getElementById('metaDemand').addEventListener('input', updateTimeline);
+
+/* ---------- Spremi / Učitaj / Export ---------- */
+document.getElementById('btnSave').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'vsm-mapa.json'; a.click();
+});
+document.getElementById('btnLoad').addEventListener('click', ()=> document.getElementById('fileInput').click());
+document.getElementById('fileInput').addEventListener('change', e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const loaded = JSON.parse(reader.result);
+      state = loaded;
+      nextId = 1 + Math.max(0, ...state.elements.map(e=>parseInt(e.id.slice(1))||0), ...state.connections.map(c=>parseInt(c.id.slice(1))||0));
+      selectedId = null;
+      renderAll(); selectElement(null);
+    }catch(err){ alert('Neispravna JSON datoteka.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+document.getElementById('btnClear').addEventListener('click', ()=>{
+  if(!confirm('Isprazniti cijelo platno?')) return;
+  state = { elements:[], connections:[] };
+  selectElement(null); renderAll();
+});
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  html2canvas(document.getElementById('canvas'), {backgroundColor:'#fafaf8', scale:2}).then(canvasImg=>{
+    const a = document.createElement('a');
+    a.href = canvasImg.toDataURL('image/png'); a.download = 'vsm-mapa.png'; a.click();
+  });
+});
+
+/* ---------- Share: copy link ---------- */
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href).then(function(){
+    var btn = document.getElementById('copy-btn');
+    btn.textContent = '✅ Kopirano!';
+    setTimeout(function(){ btn.textContent = '🔗 Kopiraj link'; }, 2000);
+  });
+}
+
+/* ---------- Nav dropdown / mobile menu (isto kao ostatak Leanopedije) ---------- */
+document.querySelectorAll('.nav-dropdown').forEach(function(dropdown){
+  var timer;
+  dropdown.addEventListener('mouseenter', function(){
+    clearTimeout(timer);
+    document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
+    this.classList.add('open');
+  });
+  dropdown.addEventListener('mouseleave', function(){
+    var self = this;
+    timer = setTimeout(function(){ self.classList.remove('open'); }, 200);
+  });
+  var menu = dropdown.querySelector('.dropdown-menu');
+  if(menu){
+    menu.addEventListener('mouseenter', function(){ clearTimeout(timer); });
+    menu.addEventListener('mouseleave', function(){
+      timer = setTimeout(function(){ dropdown.classList.remove('open'); }, 100);
+    });
+  }
+});
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.nav-dropdown')){
+    document.querySelectorAll('.nav-dropdown').forEach(function(d){d.classList.remove('open');});
+  }
+});
+function toggleMobileMenu(){
+  var m = document.getElementById('mobile-menu');
+  var b = document.getElementById('hamburger');
+  m.classList.toggle('open');
+  b.classList.toggle('open');
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  var m = document.getElementById('mobile-menu');
+  if(m && m.classList.contains('open') && !e.target.closest('#mobile-menu') && !e.target.closest('#hamburger')){
+    closeMobileMenu();
+  }
+});
+
+/* ---------- Demo mapa pri učitavanju ---------- */
+function loadDemo(){
+  addElement('company', 20, 40);
+  state.elements[0].data = {name:'ABC Inc. (Dobavljač)', freq:'Tjedno', qty:'3000 kom'};
+  addElement('control', 620, 20);
+  state.elements[1].data = {name:'Kontrola proizvodnje'};
+  addElement('company', 1350, 40);
+  state.elements[2].data = {name:'Cord Inc. (Kupac)', freq:'Dnevno', qty:'504 kom/dan'};
+
+  addElement('process', 60, 420);
+  state.elements[3].data = {name:'Strojna obrada', ct:45, co:60, avail:27600, rel:87, shifts:1, operators:1};
+  addElement('inventory', 300, 430);
+  state.elements[4].data = {name:'Zaliha SO/SS', qty:3360, days:5};
+  addElement('process', 420, 420);
+  state.elements[5].data = {name:'Prešanje', ct:40, co:5, avail:27600, rel:99, shifts:1, operators:1};
+  addElement('inventory', 660, 430);
+  state.elements[6].data = {name:'Zaliha PR/TT', qty:2000, days:4};
+  addElement('process', 780, 420);
+  state.elements[7].data = {name:'Testiranje', ct:30, co:5, avail:27600, rel:99, shifts:1, operators:1};
+  addElement('inventory', 1020, 430);
+  state.elements[8].data = {name:'Zaliha TT/OZ', qty:2000, days:4};
+  addElement('process', 1140, 420);
+  state.elements[9].data = {name:'Označavanje', ct:50, co:5, avail:27600, rel:99, shifts:1, operators:1};
+
+  const ids = state.elements.map(e=>e.id);
+  state.connections.push(
+    {id:'c'+(nextId++), from:ids[0], to:ids[3], type:'material'},
+    {id:'c'+(nextId++), from:ids[3], to:ids[4], type:'material'},
+    {id:'c'+(nextId++), from:ids[4], to:ids[5], type:'material'},
+    {id:'c'+(nextId++), from:ids[5], to:ids[6], type:'material'},
+    {id:'c'+(nextId++), from:ids[6], to:ids[7], type:'material'},
+    {id:'c'+(nextId++), from:ids[7], to:ids[8], type:'material'},
+    {id:'c'+(nextId++), from:ids[8], to:ids[9], type:'material'},
+    {id:'c'+(nextId++), from:ids[9], to:ids[2], type:'material'},
+    {id:'c'+(nextId++), from:ids[1], to:ids[0], type:'info-electronic'},
+    {id:'c'+(nextId++), from:ids[2], to:ids[1], type:'info-electronic'}
+  );
+  selectedId = null;
+  renderAll();
+}
+loadDemo();
+</script>
+</body>
+</html>
