@@ -512,7 +512,8 @@ async function loadPosts() {
     const isLiked = likedPosts.includes(post.id);
     const views = post.views || 0;
     const isLong = post.text.length > 280;
-    const shortText = isLong ? escHtml(post.text.substring(0, 280)) + '...' : escHtml(post.text);
+    const fullText = escHtml(post.text);
+    const shortText = isLong ? escHtml(post.text.substring(0, 280)) : fullText;
     const commentLabel = commentCount > 0
       ? (commentCount === 1 ? '💬 1 komentar' : `💬 ${commentCount} komentara`)
       : '💬 Nema komentara još';
@@ -535,8 +536,8 @@ async function loadPosts() {
         </div>
       </div>
       <div class="post-body">
-        <div class="post-text" id="post-text-${post.id}" onclick="trackView('${post.id}')">${shortText}</div>
-        ${isLong ? `<button class="post-more" onclick="expandPost('${post.id}')">Više...</button>` : ''}
+        <div class="post-text" id="post-text-${post.id}" onclick="trackView('${post.id}')" data-short="${shortText}" data-full="${fullText}" data-expanded="false">${shortText}${isLong ? '...' : ''}</div>
+        ${isLong ? `<button class="post-more" id="more-btn-${post.id}" onclick="expandPost('${post.id}')">Više...</button>` : ''}
         ${post.image_url ? `<div class="post-image"><img src="${post.image_url}" alt="Slika uz objavu" onclick="openImgModal('${post.image_url}')"></div>` : ''}
       </div>
       <div class="post-footer">
@@ -689,10 +690,13 @@ function trackView(postId) {
 // ── Expand post ──
 function expandPost(postId) {
   const el = document.getElementById('post-text-' + postId);
-  el.style.webkitLineClamp = 'unset';
-  el.style.overflow = 'visible';
-  const btn = el.nextElementSibling;
-  if (btn && btn.classList.contains('post-more')) btn.style.display = 'none';
+  const btn = document.getElementById('more-btn-' + postId);
+  const expanded = el.dataset.expanded === 'true';
+  if (!expanded) {
+    el.innerHTML = el.dataset.full;
+    el.dataset.expanded = 'true';
+    if (btn) btn.style.display = 'none';
+  }
 }
 
 // ── Share post ──
