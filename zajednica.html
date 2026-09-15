@@ -76,6 +76,8 @@ a{color:inherit;text-decoration:none}
 .post-author{font-size:13px;font-weight:500}
 .post-time{font-size:11px;color:var(--text-faint)}
 .post-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--green-light);color:var(--green)}
+.post-badge-vizitka{background:#eff6ff;color:#2563eb;cursor:pointer;transition:background .12s}
+.post-badge-vizitka:hover{background:#dbeafe}
 .post-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);white-space:nowrap}
 .post-pill-share{cursor:pointer;font-family:inherit;transition:background .12s,color .12s}
 .post-pill-share:hover,.post-pill-share.copied{background:var(--green-light);color:var(--green);border-color:var(--green)}
@@ -287,6 +289,11 @@ a{color:inherit;text-decoration:none}
             </select>
           </div>
         </div>
+        <div class="field">
+          <label>🪪 Link na vašu digitalnu vizitku (opcionalno)</label>
+          <input type="url" id="new-post-vizitka" placeholder="npr. https://app.leanopedija.hr/v/marko-skiljan">
+          <div class="field-hint">Ako imate Leanopedija App vizitku, prikazat će se kao značka uz vašu objavu.</div>
+        </div>
 
         <!-- Image upload -->
         <div class="field">
@@ -457,6 +464,8 @@ async function submitPost() {
   let author = document.getElementById('new-post-author').value.trim();
   if (!author) author = 'Čitatelj-' + Math.floor(1000 + Math.random() * 9000);
   const category = document.getElementById('new-post-category').value;
+  let vizitka_url = document.getElementById('new-post-vizitka').value.trim() || null;
+  if (vizitka_url && !/^https?:\/\//i.test(vizitka_url)) vizitka_url = 'https://' + vizitka_url;
 
   try {
     let image_url = null;
@@ -465,12 +474,13 @@ async function submitPost() {
       catch(e) { showToast('Greška pri uploadu slike — objava bez slike'); }
     }
 
-    const { error } = await sb.from('community_posts').insert({ author, text, category, image_url });
+    const { error } = await sb.from('community_posts').insert({ author, text, category, image_url, vizitka_url });
     if (error) throw error;
 
     document.getElementById('new-post-text').value = '';
     document.getElementById('new-post-author').value = '';
     document.getElementById('new-post-category').value = '';
+    document.getElementById('new-post-vizitka').value = '';
     removeImage();
     showToast('✅ Objava uspješno objavljena!');
     await loadPosts();
@@ -525,6 +535,7 @@ async function loadPosts() {
           <div class="post-meta-left">
             <div class="post-avatar" style="background:${avatarColor(post.author)}">${avatarInitials(post.author)}</div>
             <span class="post-author">${escHtml(post.author)}</span>
+            ${post.vizitka_url ? `<a class="post-badge post-badge-vizitka" href="${escHtml(post.vizitka_url)}" target="_blank" rel="noopener noreferrer">🪪 Vizitka</a>` : ''}
             <span class="post-time">${timeAgo(post.created_at)}</span>
             ${post.category ? `<span class="post-badge">${escHtml(post.category)}</span>` : ''}
           </div>
