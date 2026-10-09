@@ -2,27 +2,25 @@
 <html lang="hr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gemba Walk Obrazac — Besplatni digitalni obrazac | Leanopedija</title>
+<title>Standardizirani rad (SWCT) — Besplatni alat | Leanopedija</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc3545;--yellow:#f5c842;--blue:#3b82f6}
+:root{--green:#1a7a5e;--green-light:#e8f5f0;--text:#1a1a1a;--text-muted:#5a5a5a;--text-faint:#9a9a9a;--border:#e2e2e2;--bg:#fafaf8;--white:#ffffff;--red:#dc3545;--yellow:#f5c842;--blue:#3b82f6;--indigo:#4338ca;--indigo-light:#eef2ff}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
 a{color:inherit;text-decoration:none}
 .site-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .header-inner{max-width:1000px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
 .logo{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:18px}
 .logo-mark{width:28px;height:28px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif}
-.back-link{font-size:13px;color:var(--text-muted)}
-.back-link:hover{color:var(--green)}
 .header-cta{margin-left:auto;background:var(--green);color:white;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500}
 .page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px}
 .page-header-inner{max-width:1000px;margin:0 auto}
-.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:#eff6ff;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.tool-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--indigo);background:var(--indigo-light);padding:3px 10px;border-radius:20px;margin-bottom:12px}
 .page-header h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:6px}
-.page-header p{font-size:14px;color:var(--text-muted);max-width:600px;line-height:1.7}
+.page-header p{font-size:14px;color:var(--text-muted);max-width:640px;line-height:1.7}
 .toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 24px}
 .toolbar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:background .15s}
@@ -30,9 +28,12 @@ a{color:inherit;text-decoration:none}
 .btn-primary:hover{background:#155f49}
 .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 .btn-outline:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.score-display{margin-left:auto;display:flex;align-items:center;gap:10px}
+.score-label{font-size:12px;color:var(--text-faint)}
+.score-pill{font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;white-space:nowrap}
 .form-wrap{max-width:1000px;margin:0 auto;padding:24px}
 .card{background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
-.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fafaf8}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fafaf8;flex-wrap:wrap}
 .card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .card-header h3{font-size:14px;font-weight:600}
 .card-header p{font-size:12px;color:var(--text-faint);margin-top:1px}
@@ -44,31 +45,25 @@ a{color:inherit;text-decoration:none}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
 .field textarea{resize:vertical;min-height:70px}
 .obs-table{width:100%;border-collapse:collapse}
-.obs-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;padding:8px 8px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
-.obs-row td{padding:6px 5px;border-bottom:1px solid var(--border);vertical-align:top}
-.obs-row:last-child td{border-bottom:none}
-.obs-row td input,.obs-row td select,.obs-row td textarea{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg);resize:none}
-.obs-row td input:focus,.obs-row td select:focus,.obs-row td textarea:focus{outline:none;border-color:var(--green)}
-.row-num{font-size:11px;color:var(--text-faint);text-align:center;padding:6px 4px;width:22px}
+.obs-table th{font-size:11px;font-weight:500;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;padding:8px 6px;border-bottom:1px solid var(--border);text-align:left;background:#fafaf8}
+.obs-table tbody tr td,.obs-table tfoot tr td{padding:7px 5px;border-bottom:1px solid var(--border);vertical-align:top}
+.obs-table tbody tr:last-child td{border-bottom:none}
+.obs-table tbody input[type=text],.obs-table tbody select{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-family:inherit;font-size:12px;background:var(--bg)}
+.obs-table tbody input:focus,.obs-table tbody select:focus{outline:none;border-color:var(--green)}
+.obs-table tfoot td{font-weight:600;background:#fafaf8;font-size:12px}
+.row-num{font-size:11px;color:var(--text-faint);text-align:center;padding:7px 4px;width:22px}
 .add-row-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:none;border:1px dashed var(--green);border-radius:6px;padding:7px 14px;cursor:pointer;margin-top:10px;font-family:inherit;transition:background .15s}
 .add-row-btn:hover{background:var(--green-light)}
 .del-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:3px}
 .del-btn:hover{color:var(--red);background:#fee2e2}
-.checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.check-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:background .12s}
-.check-item:hover{background:var(--green-light)}
-.check-item input[type=checkbox]{margin-top:2px;accent-color:var(--green);flex-shrink:0}
-.check-item-text{font-size:13px;color:var(--text)}
-.check-item-sub{font-size:11px;color:var(--text-faint);margin-top:1px}
-.rating-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
-.rating-row:last-child{border-bottom:none}
-.rating-label{flex:1;font-size:13px}
-.star-group{display:flex;gap:3px}
-.star-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#ddd;transition:color .1s;line-height:1;padding:0}
-.star-btn.active{color:var(--yellow)}
+.result-card{text-align:center;padding:16px;border-radius:10px;margin-top:10px}
+.result-num{font-size:34px;font-weight:700;line-height:1}
+.result-label{font-size:12px;font-weight:600;margin-top:4px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+.stat-row:last-child{border-bottom:none}
 .page-footer{background:var(--white);border-top:1px solid var(--border);padding:16px 24px;margin-top:8px}
 .page-footer-inner{max-width:1000px;margin:0 auto;font-size:12px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between}
-@media(max-width:768px){.grid-2,.grid-3,.checklist{grid-template-columns:1fr}.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.main-nav{display:none}.hamburger{display:flex}.header-cta{display:none}.score-display{margin-left:0;width:100%}}
 
   /* ── HEADER NAV (tool pages) ── */
   .main-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -80,7 +75,7 @@ a{color:inherit;text-decoration:none}
   .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 8px; min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); z-index: 200; }
   .nav-dropdown.open .dropdown-menu { display: block; }
   .dropdown-menu::before { content: ""; position: absolute; top: -10px; left: 0; right: 0; height: 10px; }
-  
+
   .dropdown-menu a { display: block; padding: 8px 12px; font-size: 13px; color: var(--text); border-radius: 6px; line-height: 1.4; }
   .dropdown-menu a:hover { background: var(--green-light); color: var(--green); }
   .dropdown-menu a span { display: block; font-size: 11px; color: var(--text-faint); margin-top: 1px; }
@@ -95,155 +90,24 @@ a{color:inherit;text-decoration:none}
   .share-copy { background: var(--green-light); color: var(--green); }
 
   /* ── NAPOJNICA & ACCORDION ── */
-  .tip-section {
-    background: #fffdf5;
-    border-top: 1px solid #f0e8c0;
-    border-bottom: 1px solid #f0e8c0;
-  }
-  .tip-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 24px;
-  }
-  /* ACCORDION */
+  .tip-section { background: #fffdf5; border-top: 1px solid #f0e8c0; border-bottom: 1px solid #f0e8c0; }
+  .tip-inner { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
   .accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
   .acc-item { border-bottom: 1px solid var(--border); }
   .acc-item:last-child { border-bottom: none; }
-  .acc-btn {
-    width: 100%; display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
-    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
-    text-align: left; gap: 12px; transition: background 0.15s;
-  }
-  .acc-btn:hover { background: var(--green-light); }
-  .acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
-  .acc-btn.open .acc-arrow { transform: rotate(180deg); }
-  .acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
-  .acc-body.open { display: block; }
-  .accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-  .acc-item { border-bottom: 1px solid var(--border); }
-  .acc-btn {
-    width: 100%; display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
-    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
-    text-align: left; gap: 12px; transition: background 0.15s;
-  }
-  .acc-btn:hover { background: var(--green-light); }
-  .acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
-  .acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
-  .acc-body.open { display: block; }
-  .support-float {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 500;
-  }
-  .support-bubble {
-    background: var(--green);
-    color: white;
-    border-radius: 50px;
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: 500;
-    box-shadow: 0 4px 20px rgba(26,122,94,0.35);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .support-bubble:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(26,122,94,0.45);
-  }
-  .support-dot {
-    width: 8px;
-    height: 8px;
-    background: #4eff9e;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.2); }
-  }
-
-
-  /* ACCORDION */
-  .accordion { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-  .acc-item { border-bottom: 1px solid var(--border); }
-  .acc-item:last-child { border-bottom: none; }
-  .acc-btn {
-    width: 100%; display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 18px; background: var(--white); border: none; cursor: pointer;
-    font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text);
-    text-align: left; gap: 12px; transition: background 0.15s;
-  }
+  .acc-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--white); border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text); text-align: left; gap: 12px; transition: background 0.15s; }
   .acc-btn:hover { background: var(--green-light); }
   .acc-arrow { width: 12px; height: 12px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s; }
   .acc-btn.open .acc-arrow { transform: rotate(180deg); }
   .acc-body { display: none; padding: 16px 18px 20px; background: #fafaf8; border-top: 1px solid var(--border); }
   .acc-body.open { display: block; }
 
-  /* ── AD SLOTS ── */
-  .ad-slot {
-    border: 1px solid var(--border);
-    border-radius: var(--border-radius-lg, 10px);
-    overflow: hidden;
-    background: var(--white);
-  }
-  .ad-slot-label {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    padding: 6px 12px 4px;
-    border-bottom: 1px solid var(--border);
-  }
-  .ad-slot-inner {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-  .ad-slot-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 20px 16px;
-    background: linear-gradient(135deg, #f0f9f5 0%, #fafaf8 100%);
-    text-align: center;
-    min-height: 120px;
-    transition: background 0.15s;
-  }
-  .ad-slot-inner:hover .ad-slot-placeholder {
-    background: linear-gradient(135deg, #e1f5ee 0%, #f0f9f5 100%);
-  }
-  .ad-slot-icon { font-size: 20px; }
-  .ad-slot-placeholder strong {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    display: block;
-  }
-  .ad-slot-placeholder span {
-    font-size: 11px;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-  .ad-slot-cta {
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    color: var(--green) !important;
-    margin-top: 6px !important;
-  }
-  /* Real ad - when you have actual advertiser */
-  .ad-slot-real img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+  .support-float { position: fixed; bottom: 24px; right: 24px; z-index: 500; }
+  .support-bubble { background: var(--green); color: white; border-radius: 50px; padding: 10px 18px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 20px rgba(26,122,94,0.35); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.15s, box-shadow 0.15s; }
+  .support-bubble:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,122,94,0.45); }
+  .support-dot { width: 8px; height: 8px; background: #4eff9e; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.2); } }
+  @keyframes float-bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
 
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
 .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
@@ -258,20 +122,21 @@ a{color:inherit;text-decoration:none}
 .mobile-menu-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 0 6px}
 </style>
   <!-- SEO -->
-  <meta name="keywords" content="Gemba Walk, Gemba Walk obrazac, Lean obilazak pogona, Muda gubici, Lean proizvodnja, kontinuirano poboljšanje">
+  <meta name="description" content="Besplatni digitalni alat za standardizirani rad (SWCT) — raščlanite operacije po ručnom, strojnom i hodnom vremenu, automatski izračun ciklusa operatera naspram takt vremena, akcijski plan i PDF izvoz.">
+  <meta name="keywords" content="standardizirani rad, standard work, SWCT, tablica kombinacije standardnog rada, takt vrijeme, ciklus operatera, Lean proizvodnja">
   <meta name="author" content="Marko Škiljan — OptiCora">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://leanopedija.hr/gemba-walk.html">
+  <link rel="canonical" href="https://leanopedija.hr/standardizirani-rad.html">
 
-  <!-- Open Graph (dijeljenje na društvenim mrežama) -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Gemba Walk Obrazac — Besplatni digitalni obrazac | Leanopedija">
-  <meta property="og:description" content="Strukturirani Gemba Walk obrazac za obilazak proizvodnog pogona. Dokumentirajte zapažanja, identificirajte gubitke (Muda) i definirajte akcije. PDF izvoz.">
-  <meta property="og:url" content="https://leanopedija.hr/gemba-walk.html">
+  <meta property="og:title" content="Standardizirani rad (SWCT) — Besplatni alat | Leanopedija">
+  <meta property="og:description" content="Besplatni digitalni alat za standardizirani rad (SWCT). Automatski izračun ciklusa operatera naspram takt vremena, akcijski plan i PDF izvoz.">
+  <meta property="og:url" content="https://leanopedija.hr/standardizirani-rad.html">
   <meta property="og:locale" content="hr_HR">
   <meta property="og:site_name" content="Leanopedija">
 
-  <!-- Schema.org strukturirani podaci -->
+  <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -283,10 +148,7 @@ a{color:inherit;text-decoration:none}
       "@type": "Person",
       "name": "Marko Škiljan",
       "jobTitle": "Lean konzultant",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "OptiCora"
-      }
+      "worksFor": { "@type": "Organization", "name": "OptiCora" }
     }
   }
   </script>
@@ -327,6 +189,7 @@ a{color:inherit;text-decoration:none}
           <a href="vodic-tpm.html">🛠️ TPM — autonomno održavanje <span>7 min čitanja</span></a>
         </div>
       </div>
+      <a href="zajednica.html">Zajednica</a>
       <a href="o-nama.html">O nama</a>
     </nav>
     <a href="index.html#napojnica" class="header-cta">Podržite Leanopediju →</a>
@@ -362,102 +225,90 @@ a{color:inherit;text-decoration:none}
   <a href="o-nama.html" onclick="closeMobileMenu()">ℹ️ O nama</a>
   <a href="index.html#napojnica" onclick="closeMobileMenu()">☕ Podržite Leanopediju</a>
 </div>
+
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="tool-badge">🚶 Besplatni alat</div>
-    <h1>Gemba Walk Obrazac</h1>
-    <p>Strukturirani obrazac za Gemba Walk — obilazak mjesta gdje se stvara vrijednost. Dokumentirajte zapažanja, identificirajte gubitke i definirajte akcije za poboljšanje.</p>
+    <div class="tool-badge">📐 Besplatni alat</div>
+    <h1>Standardizirani rad (SWCT)</h1>
+    <p>Tablica kombinacije standardnog rada — raščlanite operacije po koracima, unesite ručno, strojno i hodno vrijeme, i automatski usporedite ciklus operatera s takt vremenom.</p>
   </div>
 </div>
+
 <div class="toolbar">
   <div class="toolbar-inner">
     <button class="btn btn-outline" onclick="resetForm()">🔄 Resetiraj</button>
     <button class="btn btn-outline" onclick="window.print()">🖨️ Ispis</button>
     <button class="btn btn-primary" onclick="exportPDF()">⬇️ Preuzmi PDF</button>
+    <div class="score-display">
+      <span class="score-label">Iskorištenost takta:</span>
+      <span class="score-pill" id="total-score-pill" style="background:var(--green-light);color:var(--green);">— / 100%</span>
+    </div>
   </div>
 </div>
-<div class="form-wrap" id="gemba-form">
-  <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#eff6ff">📋</div><div><h3>Podaci o Gemba Walku</h3><p>Osnovne informacije o obilasku</p></div></div>
-    <div class="card-body">
-      <div class="grid-3" style="margin-bottom:12px">
-        <div class="field"><label>Datum obilaska</label><input type="date" id="meta-datum"></div>
-        <div class="field"><label>Početak</label><input type="time" id="meta-pocetak"></div>
-        <div class="field"><label>Kraj</label><input type="time" id="meta-kraj"></div>
-      </div>
-      <div class="grid-3" style="margin-bottom:12px">
-        <div class="field"><label>Voditelj Gemba Walka</label><input type="text" id="meta-voditelj" placeholder="Ime i prezime"></div>
-        <div class="field"><label>Sudionici</label><input type="text" id="meta-sudionici" placeholder="npr. Voditelj linije, Lean koordinator"></div>
-        <div class="field"><label>Odjel / Pogon / Linija</label><input type="text" id="meta-lokacija" placeholder="npr. Montažna linija B"></div>
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Fokus obilaska</label>
-          <select id="meta-cilj">
-            <option value="">— odaberi fokus —</option>
-            <option>Sigurnost (Safety)</option>
-            <option>Kvaliteta (Quality)</option>
-            <option>Produktivnost i tok (Flow)</option>
-            <option>5S i red na radnom mjestu</option>
-            <option>OEE i učinkovitost strojeva</option>
-            <option>Standardizirani rad</option>
-            <option>Obuka i razvoj radnika</option>
-            <option>Opći pregled (sve kategorije)</option>
-          </select>
+
+<div class="form-wrap" id="sw-form">
+
+  <div class="grid-2" style="align-items:stretch">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header"><div class="card-icon" style="background:#eff6ff">📋</div><div><h3>Opći podaci</h3><p>Proces, operater i takt vrijeme</p></div></div>
+      <div class="card-body">
+        <div class="grid-2" style="margin-bottom:12px">
+          <div class="field"><label>Proces / Linija</label><input type="text" id="meta-proces" placeholder="npr. Montaža kućišta"></div>
+          <div class="field"><label>Datum</label><input type="date" id="meta-datum"></div>
         </div>
-        <div class="field"><label>Napomena / kontekst</label><input type="text" id="meta-napomena" placeholder="npr. Povećan broj reklamacija u zadnja 2 tjedna"></div>
+        <div class="grid-2" style="margin-bottom:12px">
+          <div class="field"><label>Operater</label><input type="text" id="meta-operater" placeholder="Ime i prezime"></div>
+          <div class="field"><label>Takt vrijeme (s)</label><input type="text" inputmode="decimal" id="meta-takt" placeholder="npr. 45" oninput="updateScores()"></div>
+        </div>
+        <div class="field"><label>Odjel / Pogon</label><input type="text" id="meta-odjel" placeholder="npr. Montažna linija B"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header"><div class="card-icon" style="background:var(--indigo-light)">⏱️</div><div><h3>Ciklus vs. Takt</h3></div></div>
+      <div class="card-body">
+        <div class="stat-row"><span>Ciklus operatera</span><strong id="stat-ciklus">0s</strong></div>
+        <div class="stat-row"><span>Strojno (paralelno)</span><strong id="stat-strojno">0s</strong></div>
+        <div class="result-card" id="result-card" style="background:var(--bg);color:var(--text-faint);">
+          <div class="result-num" id="result-num">—</div>
+          <div class="result-label" id="result-label">unesite takt vrijeme</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">✅</div><div><h3>Na što obratiti pažnju</h3><p>Označite što ste pregledali</p></div></div>
-    <div class="card-body">
-      <div class="checklist">
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Sigurnost radnika</div><div class="check-item-sub">PPE oprema, oznake opasnosti, slobodni izlazi</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">5S stanje radnog mjesta</div><div class="check-item-sub">Red, čistoća, označenost, sortiranje</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Tok materijala i WIP</div><div class="check-item-sub">Nedovršena proizvodnja, čekanje, gomilanje</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Standardizirani rad</div><div class="check-item-sub">Rade li radnici prema standardu?</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Kvaliteta i greške</div><div class="check-item-sub">Škart, rework, uzroci grešaka</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Učinkovitost strojeva (OEE)</div><div class="check-item-sub">Zastoji, podešavanja, sporiji rad</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Vizualni management</div><div class="check-item-sub">KPI ploče, andon sustavi, oznake</div></div></label>
-        <label class="check-item"><input type="checkbox"><div><div class="check-item-text">Razgovor s radnicima</div><div class="check-item-sub">"Što vas sprječava u radu?" — bez krivnje</div></div></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#fffbeb">👁️</div><div><h3>Zapažanja i gubici (Muda)</h3><p>Bilježite sve što ste uočili — probleme, gubitke, prilike za poboljšanje</p></div></div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-header"><div class="card-icon" style="background:var(--indigo-light)">🧩</div><div><h3>Operacije (tablica kombinacije standardnog rada)</h3><p>Jedan red = jedan korak procesa</p></div></div>
     <div class="card-body" style="padding:0">
       <table class="obs-table">
         <thead><tr>
           <th style="width:22px">#</th>
-          <th style="width:13%">Lokacija</th>
-          <th style="width:18%">Vrsta gubitka</th>
-          <th style="width:30%">Opis zapažanja</th>
-          <th style="width:22%">Mogući uzrok</th>
-          <th style="width:11%">Prioritet</th>
+          <th style="width:26%">Opis koraka</th>
+          <th style="width:10%">Ručno (s)</th>
+          <th style="width:10%">Strojno (s)</th>
+          <th style="width:9%">Hod (s)</th>
+          <th style="width:10%">Std. WIP</th>
+          <th>Napomena / kritična točka</th>
           <th style="width:22px"></th>
         </tr></thead>
-        <tbody id="obs-body"></tbody>
+        <tbody id="op-body"></tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td>Ukupno</td>
+            <td id="sum-rucno">0</td>
+            <td id="sum-strojno">0</td>
+            <td id="sum-hod">0</td>
+            <td colspan="3"></td>
+          </tr>
+        </tfoot>
       </table>
-      <div style="padding:12px 18px"><button class="add-row-btn" onclick="addObsRow()">+ Dodaj zapažanje</button></div>
+      <div style="padding:12px 18px"><button class="add-row-btn" onclick="addOpRow()">+ Dodaj operaciju</button></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#fdf4ff">⭐</div><div><h3>Ocjena zatečenog stanja</h3><p>Subjektivna ocjena po kategorijama (1=loše → 5=izvrsno)</p></div></div>
-    <div class="card-body">
-      <div class="rating-row"><span class="rating-label">Sigurnost</span><div class="star-group" data-cat="sig"></div></div>
-      <div class="rating-row"><span class="rating-label">5S i red</span><div class="star-group" data-cat="5s"></div></div>
-      <div class="rating-row"><span class="rating-label">Tok i produktivnost</span><div class="star-group" data-cat="tok"></div></div>
-      <div class="rating-row"><span class="rating-label">Kvaliteta</span><div class="star-group" data-cat="kval"></div></div>
-      <div class="rating-row"><span class="rating-label">Standardizirani rad</span><div class="star-group" data-cat="std"></div></div>
-      <div class="rating-row"><span class="rating-label">Angažiranost radnika</span><div class="star-group" data-cat="rad"></div></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">🎯</div><div><h3>Akcijski plan</h3><p>Konkretne akcije s odgovornom osobom i rokom</p></div></div>
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">🎯</div><div><h3>Akcijski plan</h3><p>Akcije za balansiranje procesa ili rješavanje uskih grla</p></div></div>
     <div class="card-body" style="padding:0">
       <table class="obs-table">
         <thead><tr>
@@ -475,20 +326,9 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#e8f5f0">📝</div><div><h3>Sažetak i zaključci</h3></div></div>
+    <div class="card-header"><div class="card-icon" style="background:#e8f5f0">📝</div><div><h3>Napomena / zaključak</h3></div></div>
     <div class="card-body">
-      <div class="grid-2" style="margin-bottom:12px">
-        <div class="field"><label>Ključna pozitivna zapažanja</label><textarea id="sum-poz" placeholder="Što funkcionira dobro? Što treba pohvaliti?"></textarea></div>
-        <div class="field"><label>Ključni problemi / gubici</label><textarea id="sum-prob" placeholder="Najveći problemi uočeni tijekom obilaska..."></textarea></div>
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Preporuke za hitnu akciju</label><textarea id="sum-hitno" placeholder="Što treba napraviti odmah?"></textarea></div>
-        <div class="field">
-          <label>Datum sljedećeg Gemba Walka</label><input type="date" id="sum-sljedeci">
-          <label style="margin-top:10px;display:block">Potpis voditelja</label>
-          <input type="text" id="sum-potpis" placeholder="Ime i prezime" style="margin-top:6px">
-        </div>
-      </div>
+      <div class="field"><label>Napomena</label><textarea id="sum-napomena" placeholder="Opći zaključak, preporuke za balansiranje..."></textarea></div>
     </div>
   </div>
 
@@ -501,18 +341,17 @@ a{color:inherit;text-decoration:none}
 <div style="max-width:900px;margin:0 auto;padding:0 24px;">
   <div class="share-row">
     <span class="share-label">Podijelite alat:</span>
-    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://leanopedija.hr/gemba-walk.html" target="_blank" rel="noopener" class="share-btn share-linkedin">
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://leanopedija.hr/standardizirani-rad.html" target="_blank" rel="noopener" class="share-btn share-linkedin">
       <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       LinkedIn
     </a>
-    <a href="https://wa.me/?text=Odli%C4%8Dan%20besplatni%20Gemba%20Walk%20obrazac%3A%20https://leanopedija.hr/gemba-walk.html" target="_blank" rel="noopener" class="share-btn share-whatsapp">
+    <a href="https://wa.me/?text=Odli%C4%8Dan%20besplatni%20alat%20za%20standardizirani%20rad%3A%20https://leanopedija.hr/standardizirani-rad.html" target="_blank" rel="noopener" class="share-btn share-whatsapp">
       <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
       WhatsApp
     </a>
     <button onclick="copyLink()" class="share-btn share-copy" id="copy-btn">🔗 Kopiraj link</button>
   </div>
 </div>
-
 
 <hr style="border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto;">
 
@@ -528,7 +367,6 @@ a{color:inherit;text-decoration:none}
 
     <div class="accordion" style="max-width:560px;margin:0 auto;text-align:left;">
 
-      <!-- Zaba -->
       <div class="acc-item">
         <button class="acc-btn" onclick="toggleAcc(this);trackClick('zaba')">
           <span>💳 Uplata putem mobilnog bankarstva (Zaba 2D barkod)</span>
@@ -540,7 +378,6 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- KeksPay QR -->
       <div class="acc-item">
         <button class="acc-btn" onclick="toggleAcc(this);trackClick('keks')">
           <span>🟢 KeksPay uplata — skeniraj QR kod</span>
@@ -552,7 +389,6 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- Revolut -->
       <div class="acc-item">
         <button class="acc-btn" onclick="toggleAcc(this);trackClick('revolut')">
           <span>🔵 Revolut uplata — skeniraj QR kod</span>
@@ -564,14 +400,6 @@ a{color:inherit;text-decoration:none}
           <p style="font-size:12px;color:var(--text-faint);text-align:center;margin-top:8px;">Ili klikom na <a href="https://revolut.me/markoschkic" target="_blank" style="color:var(--green);font-weight:500;">link za plaćanje</a></p>
         </div>
       </div>
-
-    <!-- Tracking stats -->
-    
-      <div style="margin-top:16px;">
-        
-        
-      </div>
-    </div>
 
     </div>
   </div>
@@ -587,37 +415,66 @@ a{color:inherit;text-decoration:none}
 <script>
 document.getElementById('meta-datum').valueAsDate = new Date();
 
-document.querySelectorAll('.star-group').forEach(group => {
-  group.innerHTML = [1,2,3,4,5].map(i =>
-    `<button class="star-btn" data-val="${i}" onclick="rateStar(this)">★</button>`
-  ).join('');
-});
+const n = (v) => parseFloat(String(v || '').replace(',', '.')) || 0;
 
-function rateStar(btn) {
-  const group = btn.closest('.star-group');
-  const val = parseInt(btn.dataset.val);
-  group.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('active', i < val));
-}
-
-function getStarRating(cat) {
-  const g = document.querySelector(`[data-cat="${cat}"]`);
-  return g ? g.querySelectorAll('.star-btn.active').length : 0;
-}
-
-let obsCount = 0;
-function addObsRow() {
-  obsCount++;
+let opCount = 0;
+function addOpRow(opis, rucno, strojno, hod, wip, napomena) {
+  opCount++;
   const tr = document.createElement('tr');
-  tr.className = 'obs-row';
   tr.innerHTML = `
-    <td class="row-num">${obsCount}</td>
-    <td><input type="text" placeholder="Linija / zona"></td>
-    <td><select><option value="">— vrsta —</option><option>Prekomjerna proizvodnja</option><option>Čekanje</option><option>Transport</option><option>Prekomjerna obrada</option><option>Zalihe (WIP)</option><option>Nepotrebno kretanje</option><option>Greške / škart</option><option>Neiskorišten talent</option><option>Sigurnost</option><option>Ostalo</option></select></td>
-    <td><textarea rows="2" placeholder="Opis zapažanja..."></textarea></td>
-    <td><input type="text" placeholder="Mogući uzrok..."></td>
-    <td><select><option value="V">🔴 Visoki</option><option value="S" selected>🟡 Srednji</option><option value="N">🟢 Niski</option></select></td>
-    <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
-  document.getElementById('obs-body').appendChild(tr);
+    <td class="row-num">${opCount}</td>
+    <td><input type="text" value="${(opis || '').replace(/"/g,'&quot;')}" placeholder="Opis koraka..." oninput="updateScores()"></td>
+    <td><input type="text" inputmode="decimal" value="${rucno || ''}" placeholder="0" oninput="updateScores()"></td>
+    <td><input type="text" inputmode="decimal" value="${strojno || ''}" placeholder="0" oninput="updateScores()"></td>
+    <td><input type="text" inputmode="decimal" value="${hod || ''}" placeholder="0" oninput="updateScores()"></td>
+    <td><input type="text" inputmode="decimal" value="${wip || ''}" placeholder="0"></td>
+    <td><input type="text" value="${(napomena || '').replace(/"/g,'&quot;')}" placeholder="npr. sigurnosna točka"></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove();updateScores();">✕</button></td>`;
+  document.getElementById('op-body').appendChild(tr);
+}
+
+function getColor(pct) {
+  if (pct > 100) return { bg: '#fef2f2', color: '#dc2626' };
+  if (pct >= 95) return { bg: '#fefce8', color: '#ca8a04' };
+  return { bg: '#e8f5f0', color: '#1a7a5e' };
+}
+
+function updateScores() {
+  const rows = document.querySelectorAll('#op-body tr');
+  let rucno = 0, strojno = 0, hod = 0;
+  rows.forEach(tr => {
+    const inputs = tr.querySelectorAll('input[type="text"]');
+    rucno += n(inputs[1].value);
+    strojno += n(inputs[2].value);
+    hod += n(inputs[3].value);
+  });
+  const ciklus = rucno + hod;
+  document.getElementById('sum-rucno').textContent = rucno;
+  document.getElementById('sum-strojno').textContent = strojno;
+  document.getElementById('sum-hod').textContent = hod;
+  document.getElementById('stat-ciklus').textContent = ciklus + 's';
+  document.getElementById('stat-strojno').textContent = strojno + 's';
+
+  const takt = n(document.getElementById('meta-takt').value);
+  const pill = document.getElementById('total-score-pill');
+  const card = document.getElementById('result-card');
+  const num = document.getElementById('result-num');
+  const label = document.getElementById('result-label');
+
+  if (takt <= 0) {
+    pill.textContent = '— / 100%'; pill.style.background = 'var(--green-light)'; pill.style.color = 'var(--green)';
+    card.style.background = 'var(--bg)'; card.style.color = 'var(--text-faint)';
+    num.textContent = '—'; num.style.color = 'var(--text-faint)';
+    label.textContent = 'unesite takt vrijeme';
+  } else {
+    const pct = Math.round((ciklus / takt) * 100);
+    const c = getColor(pct);
+    pill.textContent = pct + '% takta'; pill.style.background = c.bg; pill.style.color = c.color;
+    card.style.background = c.bg; card.style.color = c.color;
+    num.textContent = pct + '%'; num.style.color = c.color;
+    label.textContent = pct > 100 ? 'preko takta — usko grlo' : pct >= 95 ? 'granično uravnoteženo' : 'iskorištenost takta';
+    label.style.color = c.color;
+  }
 }
 
 let actCount = 0;
@@ -635,88 +492,97 @@ function addActionRow() {
   document.getElementById('action-body').appendChild(tr);
 }
 
-addObsRow(); addObsRow(); addObsRow();
+addOpRow(); addOpRow(); addOpRow();
 addActionRow(); addActionRow();
+updateScores();
 
 function resetForm() {
   if (!confirm('Resetirati cijeli obrazac?')) return;
-  document.querySelectorAll('input,textarea,select').forEach(el => { if(el.type!=='button') el.value=''; });
+  document.querySelectorAll('.form-wrap input[type="text"], .form-wrap input[type="date"], .form-wrap textarea').forEach(el => { el.value = ''; });
   document.getElementById('meta-datum').valueAsDate = new Date();
-  document.querySelectorAll('.star-btn,.check-item input').forEach(b => { b.classList ? b.classList.remove('active') : (b.checked=false); });
-  document.getElementById('obs-body').innerHTML='';
-  document.getElementById('action-body').innerHTML='';
-  obsCount=0; actCount=0;
-  addObsRow(); addObsRow(); addObsRow();
+  document.getElementById('op-body').innerHTML = ''; opCount = 0;
+  document.getElementById('action-body').innerHTML = ''; actCount = 0;
+  addOpRow(); addOpRow(); addOpRow();
   addActionRow(); addActionRow();
+  updateScores();
 }
 
 function exportPDF() {
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-  const W=297, M=14;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const W = 297, M = 14;
   doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
   doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
   doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('Gemba Walk Obrazac',M,18); doc.setFontSize(9);
-  doc.text('lean.opticora.hr',240,10);
-  doc.text(new Date().toLocaleDateString('hr-HR'),240,17);
-  let y=30;
-  const flds=[['Datum:',document.getElementById('meta-datum').value],['Voditelj:',document.getElementById('meta-voditelj').value||'—'],['Lokacija:',document.getElementById('meta-lokacija').value||'—'],['Fokus:',document.getElementById('meta-cilj').value||'—'],['Sudionici:',document.getElementById('meta-sudionici').value||'—'],['Napomena:',document.getElementById('meta-napomena').value||'—']];
+  doc.text('Standardizirani rad (SWCT)',M,18); doc.setFontSize(9);
+  doc.text('lean.opticora.hr',250,10);
+  doc.text(new Date().toLocaleDateString('hr-HR'),250,17);
+  let y = 30;
+  const takt = n(document.getElementById('meta-takt').value);
+  const flds = [
+    ['Proces:', document.getElementById('meta-proces').value || '—'],
+    ['Datum:', document.getElementById('meta-datum').value],
+    ['Operater:', document.getElementById('meta-operater').value || '—'],
+    ['Odjel:', document.getElementById('meta-odjel').value || '—'],
+    ['Takt vrijeme:', takt ? takt + ' s' : '—'],
+  ];
   doc.setTextColor(0,0,0); doc.setFontSize(9);
-  flds.forEach(([l,v],i)=>{const x=M+(i%3)*88;if(i%3===0&&i>0)y+=8;doc.setFont('helvetica','bold');doc.text(l,x,y);doc.setFont('helvetica','normal');doc.text(String(v).substring(0,35),x+24,y);});
-  y+=12;
-  const cats=['sig','5s','tok','kval','std','rad'];
-  const cNames=['Sigurnost','5S i red','Tok','Kvaliteta','Std. rad','Radnici'];
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('OCJENA STANJA',M,y); y+=6;
-  doc.setFontSize(8);
-  cats.forEach((c,i)=>{const r=getStarRating(c);doc.setFont('helvetica','normal');doc.text(cNames[i]+': '+'★'.repeat(r)+'☆'.repeat(5-r),M+i*44,y);});
-  y+=10;
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('ZAPAŽANJA I GUBICI',M,y); y+=6;
-  const obsRows=document.querySelectorAll('#obs-body tr');
-  if(obsRows.length>0){
-    const hdr=['#','Lokacija','Vrsta gubitka','Opis zapažanja','Mogući uzrok','Prioritet'];
-    const cw=[8,28,32,80,60,22]; let x=M;
-    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
-    doc.setFontSize(8); doc.setFont('helvetica','bold');
-    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
+  flds.forEach(([l,v],i) => { const x=M+(i%3)*88; if(i%3===0&&i>0) y+=8; doc.setFont('helvetica','bold'); doc.text(l,x,y); doc.setFont('helvetica','normal'); doc.text(String(v).substring(0,35),x+26,y); });
+  y += 12;
+
+  const ciklus = n(document.getElementById('stat-ciklus').textContent);
+  const strojno = n(document.getElementById('stat-strojno').textContent);
+  doc.setFillColor(232,245,240); doc.roundedRect(M,y,297-M*2,12,3,3,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
+  let rez = 'Ciklus operatera: ' + ciklus + 's · Strojno: ' + strojno + 's';
+  if (takt > 0) rez += ' · ' + Math.round((ciklus/takt)*100) + '% takta';
+  doc.text(rez, M+6, y+8);
+  y += 18;
+
+  const rows = document.querySelectorAll('#op-body tr');
+  const relevant = [];
+  rows.forEach(tr => {
+    const inputs = tr.querySelectorAll('input[type="text"]');
+    if (inputs[0].value.trim()) relevant.push([inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, inputs[4].value, inputs[5].value]);
+  });
+  if (relevant.length > 0) {
+    const hdr = ['#','Opis koraka','Ručno (s)','Strojno (s)','Hod (s)','Std. WIP','Napomena'];
+    const cw = [8,75,20,22,18,20,106]; let x = M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,297-M*2,6,'F');
+    doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+    hdr.forEach((h,i) => { doc.text(h,x+1,y); x+=cw[i]; }); y += 4;
     doc.setFont('helvetica','normal');
-    obsRows.forEach((row,idx)=>{
-      const tds=row.querySelectorAll('td');if(tds.length<6)return;
-      const vals=[String(idx+1),tds[1].querySelector('input')?.value||'',tds[2].querySelector('select')?.value||'',tds[3].querySelector('textarea')?.value||'',tds[4].querySelector('input')?.value||'',tds[5].querySelector('select')?.value||''];
-      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
-      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
-      if(y>185){doc.addPage();y=20;}
+    relevant.forEach((r,idx) => {
+      const vals = [String(idx+1), r[0], r[1]||'—', r[2]||'—', r[3]||'—', r[4]||'—', r[5]||''];
+      x = M; if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M,y-3,297-M*2,6,'F'); }
+      vals.forEach((v,i) => { doc.text(String(v).substring(0, Math.floor(cw[i]/1.7)), x+1, y); x += cw[i]; }); y += 6;
+      if (y > 185) { doc.addPage(); y = 20; }
     });
   }
-  y+=6;
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('AKCIJSKI PLAN',M,y); y+=6;
-  const actRows=document.querySelectorAll('#action-body tr');
-  if(actRows.length>0){
-    const hdr=['#','Akcija','Odgovorna osoba','Rok','Status'];
-    const cw=[8,110,50,32,35]; let x=M;
-    doc.setFillColor(240,240,240); doc.rect(M,y-4,W-M*2,6,'F');
+  y += 6;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('AKCIJSKI PLAN',M,y); y += 6;
+  const actRows = document.querySelectorAll('#action-body tr');
+  if (actRows.length > 0) {
+    const hdr = ['#','Akcija','Odgovorna osoba','Rok','Status'];
+    const cw = [8,110,50,32,35]; let x = M;
+    doc.setFillColor(240,240,240); doc.rect(M,y-4,297-M*2,6,'F');
     doc.setFontSize(8); doc.setFont('helvetica','bold');
-    hdr.forEach((h,i)=>{doc.text(h,x+1,y);x+=cw[i];}); y+=4;
+    hdr.forEach((h,i) => { doc.text(h,x+1,y); x+=cw[i]; }); y += 4;
     doc.setFont('helvetica','normal');
-    actRows.forEach((row,idx)=>{
-      const tds=row.querySelectorAll('td');if(tds.length<5)return;
-      const vals=[String(idx+1),tds[1].querySelector('textarea')?.value||'',tds[2].querySelector('input')?.value||'',tds[3].querySelector('input')?.value||'',tds[4].querySelector('select')?.value||''];
-      x=M; if(idx%2===0){doc.setFillColor(250,250,248);doc.rect(M,y-3,W-M*2,6,'F');}
-      vals.forEach((v,i)=>{doc.text(String(v).substring(0,Math.floor(cw[i]*1.5)),x+1,y);x+=cw[i];}); y+=6;
+    actRows.forEach((row,idx) => {
+      const tds = row.querySelectorAll('td'); if (tds.length<5) return;
+      const vals = [String(idx+1), tds[1].querySelector('textarea')?.value||'', tds[2].querySelector('input')?.value||'', tds[3].querySelector('input')?.value||'', tds[4].querySelector('select')?.value||''];
+      x = M; if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M,y-3,297-M*2,6,'F'); }
+      vals.forEach((v,i) => { doc.text(String(v).substring(0, Math.floor(cw[i]/1.8)), x+1, y); x += cw[i]; }); y += 6;
+      if (y > 185) { doc.addPage(); y = 20; }
     });
   }
-  const poz=document.getElementById('sum-poz').value;
-  const prob=document.getElementById('sum-prob').value;
-  const hitno=document.getElementById('sum-hitno').value;
-  const potpis=document.getElementById('sum-potpis').value;
-  if(poz||prob||hitno){y+=6;doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SAŽETAK',M,y);y+=6;doc.setFontSize(8);}
-  if(poz){doc.setFont('helvetica','bold');doc.text('Pozitivno:',M,y);doc.setFont('helvetica','normal');doc.text(poz.substring(0,150),M+22,y);y+=6;}
-  if(prob){doc.setFont('helvetica','bold');doc.text('Problemi:',M,y);doc.setFont('helvetica','normal');doc.text(prob.substring(0,150),M+22,y);y+=6;}
-  if(hitno){doc.setFont('helvetica','bold');doc.text('Hitno:',M,y);doc.setFont('helvetica','normal');doc.text(hitno.substring(0,150),M+14,y);y+=6;}
-  if(potpis){y+=4;doc.setFont('helvetica','bold');doc.text('Potpis:',M,y);doc.setFont('helvetica','normal');doc.text(potpis,M+16,y);}
-  doc.setFontSize(7);doc.setTextColor(150,150,150);
+  const napomena = document.getElementById('sum-napomena').value;
+  if (napomena) { y += 6; doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('Napomena:',M,y); doc.setFont('helvetica','normal'); doc.text(napomena.substring(0,160),M+22,y); }
+  doc.setFontSize(7); doc.setTextColor(150,150,150);
   doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr',M,198);
-  doc.save('Gemba-Walk-'+new Date().toISOString().slice(0,10)+'.pdf');
+  doc.save('Standardizirani-rad-'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 </script>
 
@@ -731,36 +597,26 @@ function exportPDF() {
   </div>
 </div>
 
-
 <script>
-// ── Scroll to napojnica ──
 function scrollToNapojnica() {
   const el = document.getElementById('napojnica');
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Click tracking ──
 const API = 'https://leanopedija-api.marko-skiljan1.workers.dev';
 async function trackClick(method) {
-  try {
-    await fetch(`${API}/track?method=${method}`, { method: 'POST' });
-  } catch(e) {}
+  try { await fetch(`${API}/track?method=${method}`, { method: 'POST' }); } catch(e) {}
 }
 
-// ── Accordion ──
 function toggleAcc(btn) {
   const body = btn.nextElementSibling;
   const isOpen = body.classList.contains('open');
   document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
   document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
-  if (!isOpen) {
-    body.classList.add('open');
-    btn.classList.add('open');
-  }
+  if (!isOpen) { body.classList.add('open'); btn.classList.add('open'); }
 }
 </script>
 <script>
-// Share: copy link
 function copyLink() {
   navigator.clipboard.writeText(window.location.href).then(function() {
     var btn = document.getElementById('copy-btn');
@@ -769,7 +625,6 @@ function copyLink() {
   });
 }
 
-// Dropdown - hover on desktop, click on mobile
 document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
   let timer;
   dropdown.addEventListener('mouseenter', function() {
@@ -801,7 +656,6 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Mobile menu
 function toggleMobileMenu() {
   var m = document.getElementById('mobile-menu');
   var b = document.getElementById('hamburger');
