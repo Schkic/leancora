@@ -121,14 +121,14 @@ a{color:inherit;text-decoration:none}
 .pal-item:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
 
 /* CANVAS */
-.canvas-wrap{position:relative;overflow:auto;height:560px;background:
+.canvas-wrap{position:relative;overflow:auto;height:640px;background:
   linear-gradient(var(--border) 1px, transparent 1px) 0 0/24px 24px,
   linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0/24px 24px,
   var(--bg);
 }
 #canvasScaler{position:relative}
-#canvas{position:relative;width:1600px;height:900px;transform-origin:0 0}
-svg#connLayer{position:absolute;top:0;left:0;width:1600px;height:900px;pointer-events:none}
+#canvas{position:relative;width:2400px;height:1400px;transform-origin:0 0}
+svg#connLayer{position:absolute;top:0;left:0;width:2400px;height:1400px;pointer-events:none}
 
 .el{position:absolute;background:var(--white);border:2px solid var(--text);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;text-align:center;font-size:11.5px;font-weight:600;cursor:grab;user-select:none;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .el.selected{border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
@@ -737,25 +737,27 @@ document.getElementById('btnExportPdf').addEventListener('click', ()=>{
 
 /* ---------- Zoom i Uklopi u prikaz ---------- */
 let zoom = 1;
+const CANVAS_W = 2400, CANVAS_H = 1400;
 function applyZoom(){
   document.getElementById('canvas').style.transform = `scale(${zoom})`;
-  document.getElementById('canvasScaler').style.width = (1600*zoom)+'px';
-  document.getElementById('canvasScaler').style.height = (900*zoom)+'px';
+  document.getElementById('canvasScaler').style.width = (CANVAS_W*zoom)+'px';
+  document.getElementById('canvasScaler').style.height = (CANVAS_H*zoom)+'px';
   document.getElementById('zoomLabel').textContent = Math.round(zoom*100)+'%';
 }
-document.getElementById('zoomIn').addEventListener('click', ()=>{ zoom = Math.min(2, +(zoom+0.1).toFixed(2)); applyZoom(); });
-document.getElementById('zoomOut').addEventListener('click', ()=>{ zoom = Math.max(0.25, +(zoom-0.1).toFixed(2)); applyZoom(); });
-document.getElementById('zoomReset').addEventListener('click', ()=>{ zoom = 1; applyZoom(); });
-document.getElementById('btnFit').addEventListener('click', ()=>{
+function zoomToFit(){
   if(state.elements.length===0){ zoom=1; applyZoom(); return; }
   const b = diagramBounds();
   const wrap = document.getElementById('canvasWrap');
-  const scale = Math.min(wrap.clientWidth/b.w, wrap.clientHeight/b.h, 2);
+  const scale = Math.min(wrap.clientWidth/b.w, wrap.clientHeight/b.h, 2.5);
   zoom = Math.max(0.25, +scale.toFixed(2));
   applyZoom();
   wrap.scrollLeft = b.minX*zoom;
   wrap.scrollTop = Math.max(0, b.minY*zoom);
-});
+}
+document.getElementById('zoomIn').addEventListener('click', ()=>{ zoom = Math.min(2.5, +(zoom+0.25).toFixed(2)); applyZoom(); });
+document.getElementById('zoomOut').addEventListener('click', ()=>{ zoom = Math.max(0.25, +(zoom-0.25).toFixed(2)); applyZoom(); });
+document.getElementById('zoomReset').addEventListener('click', ()=>{ zoom = 1; applyZoom(); });
+document.getElementById('btnFit').addEventListener('click', zoomToFit);
 applyZoom();
 
 /* ---------- Share: copy link ---------- */
@@ -850,6 +852,7 @@ function loadDemo(){
   renderAll();
 }
 loadDemo();
+setTimeout(zoomToFit, 0);
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a1a429b5448845c88cdfd2b3052a063b"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
