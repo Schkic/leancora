@@ -513,78 +513,253 @@ function resetForm() {
 function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const W = 297, M = 14;
-  doc.setFillColor(26,122,94); doc.rect(0,0,W,22,'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
-  doc.text('Leanopedija',M,10); doc.setFontSize(11); doc.setFont('helvetica','normal');
-  doc.text('Standardizirani rad (SWCT)',M,18); doc.setFontSize(9);
-  doc.text('lean.opticora.hr',250,10);
-  doc.text(new Date().toLocaleDateString('hr-HR'),250,17);
-  let y = 30;
-  const takt = n(document.getElementById('meta-takt').value);
-  const flds = [
-    ['Proces:', document.getElementById('meta-proces').value || '—'],
-    ['Datum:', document.getElementById('meta-datum').value],
-    ['Operater:', document.getElementById('meta-operater').value || '—'],
-    ['Odjel:', document.getElementById('meta-odjel').value || '—'],
-    ['Takt vrijeme:', takt ? takt + ' s' : '—'],
-  ];
-  doc.setTextColor(0,0,0); doc.setFontSize(9);
-  flds.forEach(([l,v],i) => { const x=M+(i%3)*88; if(i%3===0&&i>0) y+=8; doc.setFont('helvetica','bold'); doc.text(l,x,y); doc.setFont('helvetica','normal'); doc.text(String(v).substring(0,35),x+26,y); });
-  y += 12;
+  const W = 297, H = 210, M = 14, CW = W - M * 2;
+  let y = 0;
 
+  const GREEN   = [26, 122, 94];
+  const GREEN_D = [14, 95, 70];
+  const GREEN_L = [232, 245, 240];
+  const GRAY    = [130, 130, 130];
+  const DARK    = [26, 26, 26];
+  const WHITE   = [255, 255, 255];
+  const BORDER  = [225, 225, 225];
+  const ROW_ALT = [248, 252, 250];
+  const RED     = [200, 40, 40];
+  const AMBER   = [200, 160, 0];
+  const BLUE    = [37, 99, 235];
+
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[^\u0000-ÿ]/g,'').trim();
+  }
+  function fmtDate(iso) { return iso ? iso.split('-').reverse().join('.') + '.' : '—'; }
+
+  function drawHeader() {
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, 0, W, 20, 'F');
+    doc.setFillColor(60, 150, 115);
+    doc.roundedRect(M, 4, 12, 12, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+    doc.text('L', M+3.5, 11.5);
+    doc.setFontSize(6); doc.text('o', M+7.5, 9.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('Leanopedija', M+16, 10);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,225,210);
+    doc.text('Standardizirani rad (SWCT)', M+16, 15.5);
+    const d = new Date();
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(180,225,210);
+    doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 10, { align:'right' });
+    doc.setTextColor(140,200,175);
+    doc.text('leanopedija.hr', W-M, 15.5, { align:'right' });
+  }
+  function newPage() { doc.addPage(); drawHeader(); y = 26; }
+  function checkY(need) { if (y + need > H - 12) newPage(); }
+  function sectionBar(title) {
+    checkY(13);
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(M, y, CW, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+    doc.text(hr2a(title), M+3, y+5.5);
+    y += 12;
+  }
+
+  // ══ ZAGLAVLJE ══
+  drawHeader();
+  y = 26;
+
+  // ══ META PODACI ══
+  const takt = n(document.getElementById('meta-takt').value);
+  const proces = hr2a(document.getElementById('meta-proces').value) || '—';
+  const datum = fmtDate(document.getElementById('meta-datum').value);
+  const operater = hr2a(document.getElementById('meta-operater').value) || '—';
+  const odjel = hr2a(document.getElementById('meta-odjel').value) || '—';
+  const taktTxt = takt ? takt + ' s' : '—';
+
+  doc.setFillColor(...GREEN_L);
+  doc.roundedRect(M, y, CW, 18, 2, 2, 'F');
+  doc.setDrawColor(...GREEN); doc.setLineWidth(0.4);
+  doc.roundedRect(M, y, CW, 18, 2, 2, 'S');
+  const col3 = CW / 3;
+  const metaFields = [[proces,'PROCES / LINIJA'], [datum,'DATUM'], [operater,'OPERATER'], [odjel,'ODJEL / POGON'], [taktTxt,'TAKT VRIJEME'], ['','']];
+  metaFields.forEach(([val,lbl], i) => {
+    if (!lbl) return;
+    const col = i % 3, row = Math.floor(i / 3);
+    const x = M + 4 + col*col3, fy = y + 4.5 + row*8.5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
+    doc.text(lbl, x, fy);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(String(val).substring(0,34), x, fy+4);
+  });
+  y += 23;
+
+  // ══ REZULTAT: CIKLUS VS TAKT ══
   const ciklus = n(document.getElementById('stat-ciklus').textContent);
   const strojno = n(document.getElementById('stat-strojno').textContent);
-  doc.setFillColor(232,245,240); doc.roundedRect(M,y,297-M*2,12,3,3,'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,122,94);
-  let rez = 'Ciklus operatera: ' + ciklus + 's · Strojno: ' + strojno + 's';
-  if (takt > 0) rez += ' · ' + Math.round((ciklus/takt)*100) + '% takta';
-  doc.text(rez, M+6, y+8);
-  y += 18;
+  const pct = takt > 0 ? Math.round((ciklus/takt)*100) : null;
+  const pctColor = pct === null ? GRAY : pct > 100 ? RED : pct >= 95 ? AMBER : GREEN;
+  checkY(16);
+  doc.setFillColor(...GREEN_L);
+  doc.roundedRect(M, y, CW, 14, 2, 2, 'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.text('CIKLUS OPERATERA', M+6, y+5.5);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...DARK);
+  doc.text(ciklus + ' s', M+6, y+11);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.text('STROJNO (PARALELNO)', M+60, y+5.5);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...DARK);
+  doc.text(strojno + ' s', M+60, y+11);
+  if (pct !== null) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+    doc.text('ISKORISTENOST TAKTA', M+115, y+5.5);
+    const badgeBg = pctColor.map(c => Math.min(255, c+185));
+    doc.setFillColor(...badgeBg);
+    doc.roundedRect(M+115, y+7.5, 26, 6, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...pctColor);
+    doc.text(pct + '%', M+128, y+11.8, { align:'center' });
+  }
+  y += 19;
 
-  const rows = document.querySelectorAll('#op-body tr');
-  const relevant = [];
-  rows.forEach(tr => {
+  // ══ TABLICA OPERACIJA ══
+  const opRows = Array.from(document.querySelectorAll('#op-body tr')).map(tr => {
     const inputs = tr.querySelectorAll('input[type="text"]');
-    if (inputs[0].value.trim()) relevant.push([inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, inputs[4].value, inputs[5].value]);
-  });
-  if (relevant.length > 0) {
-    const hdr = ['#','Opis koraka','Ručno (s)','Strojno (s)','Hod (s)','Std. WIP','Napomena'];
-    const cw = [8,75,20,22,18,20,106]; let x = M;
-    doc.setFillColor(240,240,240); doc.rect(M,y-4,297-M*2,6,'F');
-    doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-    hdr.forEach((h,i) => { doc.text(h,x+1,y); x+=cw[i]; }); y += 4;
-    doc.setFont('helvetica','normal');
-    relevant.forEach((r,idx) => {
-      const vals = [String(idx+1), r[0], r[1]||'—', r[2]||'—', r[3]||'—', r[4]||'—', r[5]||''];
-      x = M; if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M,y-3,297-M*2,6,'F'); }
-      vals.forEach((v,i) => { doc.text(String(v).substring(0, Math.floor(cw[i]/1.7)), x+1, y); x += cw[i]; }); y += 6;
-      if (y > 185) { doc.addPage(); y = 20; }
-    });
-  }
-  y += 6;
+    return { opis: hr2a(inputs[0].value), rucno: inputs[1].value, strojno: inputs[2].value, hod: inputs[3].value, wip: inputs[4].value, napomena: hr2a(inputs[5].value) };
+  }).filter(r => r.opis.trim());
 
-  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('AKCIJSKI PLAN',M,y); y += 6;
-  const actRows = document.querySelectorAll('#action-body tr');
-  if (actRows.length > 0) {
-    const hdr = ['#','Akcija','Odgovorna osoba','Rok','Status'];
-    const cw = [8,110,50,32,35]; let x = M;
-    doc.setFillColor(240,240,240); doc.rect(M,y-4,297-M*2,6,'F');
-    doc.setFontSize(8); doc.setFont('helvetica','bold');
-    hdr.forEach((h,i) => { doc.text(h,x+1,y); x+=cw[i]; }); y += 4;
-    doc.setFont('helvetica','normal');
-    actRows.forEach((row,idx) => {
-      const tds = row.querySelectorAll('td'); if (tds.length<5) return;
-      const vals = [String(idx+1), tds[1].querySelector('textarea')?.value||'', tds[2].querySelector('input')?.value||'', tds[3].querySelector('input')?.value||'', tds[4].querySelector('select')?.value||''];
-      x = M; if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M,y-3,297-M*2,6,'F'); }
-      vals.forEach((v,i) => { doc.text(String(v).substring(0, Math.floor(cw[i]/1.8)), x+1, y); x += cw[i]; }); y += 6;
-      if (y > 185) { doc.addPage(); y = 20; }
+  if (opRows.length > 0) {
+    sectionBar('TABLICA KOMBINACIJE STANDARDNOG RADA');
+    const colW = [8, 72, 18, 20, 16, 18, 117];
+    checkY(8);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, CW, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, CW, 6, 'S');
+    let x = M;
+    doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...GRAY);
+    ['#','OPIS KORAKA','RUCNO (S)','STROJNO (S)','HOD (S)','STD. WIP','NAPOMENA'].forEach((h,i) => { doc.text(h, x+1.5, y+4); x += colW[i]; });
+    y += 6;
+
+    let sumR = 0, sumS = 0, sumH = 0;
+    opRows.forEach((r, idx) => {
+      sumR += n(r.rucno); sumS += n(r.strojno); sumH += n(r.hod);
+      const opisLines = doc.splitTextToSize(r.opis || '—', colW[1]-3);
+      const napLines = doc.splitTextToSize(r.napomena || '—', colW[6]-3);
+      const maxLines = Math.max(1, opisLines.length, napLines.length);
+      const rh = maxLines * 4 + 2.5;
+      checkY(rh + 1);
+      if (idx % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, CW, rh, 'F'); }
+      x = M;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...DARK);
+      doc.text(String(idx+1), x+1.5, y+4.2); x += colW[0];
+      opisLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4)); x += colW[1];
+      doc.text(r.rucno || '—', x+1.5, y+4.2); x += colW[2];
+      doc.text(r.strojno || '—', x+1.5, y+4.2); x += colW[3];
+      doc.text(r.hod || '—', x+1.5, y+4.2); x += colW[4];
+      doc.text(r.wip || '—', x+1.5, y+4.2); x += colW[5];
+      napLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4));
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      y += rh;
+      doc.line(M, y, W-M, y);
     });
+
+    checkY(7);
+    doc.setFillColor(...GREEN_L);
+    doc.rect(M, y, CW, 6.5, 'F');
+    x = M;
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...GREEN_D);
+    doc.text('UKUPNO', x+1.5, y+4.5); x += colW[0]+colW[1];
+    doc.text(String(sumR), x+1.5, y+4.5); x += colW[2];
+    doc.text(String(sumS), x+1.5, y+4.5); x += colW[3];
+    doc.text(String(sumH), x+1.5, y+4.5);
+    y += 10;
   }
+
+  // ══ AKCIJSKI PLAN ══
+  function statusInfo(raw) {
+    const t = hr2a(raw);
+    if (t.includes('tijeku')) return { label:'U tijeku', col: BLUE };
+    if (t.includes('Zavrseno')) return { label:'Zavrseno', col: GREEN };
+    if (t.includes('cekanju')) return { label:'Na cekanju', col: AMBER };
+    return { label:'Otvoreno', col: GRAY };
+  }
+  const actRows = Array.from(document.querySelectorAll('#action-body tr')).map(row => {
+    const tds = row.querySelectorAll('td');
+    return {
+      akcija: hr2a(tds[1]?.querySelector('textarea')?.value),
+      osoba: hr2a(tds[2]?.querySelector('input')?.value),
+      rok: fmtDate(tds[3]?.querySelector('input')?.value),
+      badge: statusInfo(tds[4]?.querySelector('select')?.value || ''),
+    };
+  }).filter(r => r.akcija || r.osoba);
+
+  if (actRows.length > 0) {
+    sectionBar('AKCIJSKI PLAN');
+    const colW = [9, 130, 48, 28, 28];
+    checkY(8);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, CW, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, CW, 6, 'S');
+    let x = M;
+    doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...GRAY);
+    ['#','AKCIJA','OSOBA','ROK','STATUS'].forEach((h,i) => { doc.text(h, x+1.5, y+4); x += colW[i]; });
+    y += 6;
+
+    actRows.forEach((r, idx) => {
+      const akcijaLines = doc.splitTextToSize(r.akcija || '—', colW[1]-3);
+      const osobaLines = doc.splitTextToSize(r.osoba || '—', colW[2]-3);
+      const maxLines = Math.max(1, akcijaLines.length, osobaLines.length);
+      const rh = maxLines * 4 + 2.5;
+      checkY(rh + 1);
+      if (idx % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, CW, rh, 'F'); }
+      x = M;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...DARK);
+      doc.text(String(idx+1), x+1.5, y+4.2); x += colW[0];
+      akcijaLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4)); x += colW[1];
+      osobaLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4)); x += colW[2];
+      doc.text(r.rok, x+1.5, y+4.2); x += colW[3];
+      const badgeBg = r.badge.col.map(n => Math.min(255, n+185));
+      doc.setFillColor(...badgeBg);
+      doc.roundedRect(x+1, y+1.2, colW[4]-2, 4.3, 1, 1, 'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...r.badge.col);
+      doc.text(r.badge.label, x+colW[4]/2, y+4, { align:'center' });
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      y += rh;
+      doc.line(M, y, W-M, y);
+    });
+    y += 7;
+  }
+
+  // ══ NAPOMENA ══
   const napomena = document.getElementById('sum-napomena').value;
-  if (napomena) { y += 6; doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('Napomena:',M,y); doc.setFont('helvetica','normal'); doc.text(napomena.substring(0,160),M+22,y); }
-  doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — lean.opticora.hr',M,198);
+  if (napomena) {
+    const lines = doc.splitTextToSize(hr2a(napomena), CW - 6);
+    const h = lines.length*4.2 + 9;
+    checkY(h+2);
+    doc.setFillColor(...GREEN_L);
+    doc.roundedRect(M, y, CW, h, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GREEN_D);
+    doc.text('NAPOMENA', M+3, y+5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(lines, M+3, y+10);
+    y += h + 5;
+  }
+
+  // ══ FOOTER SVAKE STRANICE ══
+  const total = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, H-7, W, 7, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(180,225,210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.hr', M, H-2.5);
+    doc.setTextColor(...WHITE);
+    doc.text(`Stranica ${i} / ${total}`, W-M, H-2.5, { align:'right' });
+  }
+
   doc.save('Standardizirani-rad-'+new Date().toISOString().slice(0,10)+'.pdf');
 }
 </script>
