@@ -632,144 +632,254 @@ function resetForm() {
 
 // PDF
 function exportPDF() {
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-  const W = 210, M = 14, CW = W - M*2;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, M = 14, CW = W - M * 2;
   let y = 0;
 
-  function header() {
-    doc.setFillColor(26,122,94); doc.rect(0,0,W,20,'F');
-    doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
-    doc.text('Leanopedija', M, 9);
-    doc.setFontSize(10); doc.setFont('helvetica','normal');
-    doc.text('A3 Obrazac za rješavanje problema', M, 16);
-    doc.setFontSize(8); doc.text('leanopedija.hr', W-M, 9, {align:'right'});
-    doc.text(new Date().toLocaleDateString('hr-HR'), W-M, 16, {align:'right'});
-    y = 26;
-  }
+  const GREEN   = [26, 122, 94];
+  const GREEN_D = [14, 95, 70];
+  const GREEN_L = [232, 245, 240];
+  const GRAY    = [130, 130, 130];
+  const DARK    = [26, 26, 26];
+  const WHITE   = [255, 255, 255];
+  const BORDER  = [225, 225, 225];
+  const ROW_ALT = [248, 252, 250];
+  const RED     = [200, 40, 40];
+  const AMBER   = [200, 160, 0];
+  const BLUE    = [37, 99, 235];
+  const whyDots = [[232,97,42],[217,119,6],[202,138,4],[77,124,15],[26,122,94]];
 
-  function checkPage(needed=15) {
-    if (y + needed > 280) { doc.addPage(); header(); }
+  function hr2a(s) {
+    if (!s) return '';
+    return String(s)
+      .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
+      .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[^\u0000-ÿ]/g,'').trim();
   }
+  function val(id) { const el = document.getElementById(id); return el ? (el.value || '') : ''; }
+  function fmtDate(iso) { return iso ? iso.split('-').reverse().join('.') + '.' : '—'; }
 
-  function sectionTitle(title) {
-    checkPage(12);
-    doc.setFillColor(232,245,240); doc.rect(M, y-4, CW, 8, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,122,94);
-    doc.text(title, M+2, y);
-    doc.setTextColor(0,0,0); y += 6;
+  function drawHeader() {
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, 0, W, 20, 'F');
+    doc.setFillColor(60, 150, 115);
+    doc.roundedRect(M, 4, 12, 12, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+    doc.text('L', M+3.5, 11.5);
+    doc.setFontSize(6); doc.text('o', M+7.5, 9.5);
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...WHITE);
+    doc.text('Leanopedija', M+16, 10);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(180,225,210);
+    doc.text('A3 Obrazac za rjesavanje problema', M+16, 15.5);
+    const d = new Date();
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(180,225,210);
+    doc.text(`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}.`, W-M, 10, { align:'right' });
+    doc.setTextColor(140,200,175);
+    doc.text('leanopedija.hr', W-M, 15.5, { align:'right' });
   }
+  function newPage() { doc.addPage(); drawHeader(); y = 26; }
+  function checkY(need) { if (y + need > H - 12) newPage(); }
 
-  function fieldRow(label, value, fullWidth=true) {
-    checkPage(12);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text(label, M, y);
-    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-    const lines = doc.splitTextToSize(value || '—', CW);
-    doc.text(lines, M, y+5);
-    y += 5 + lines.length * 4 + 3;
-  }
-
-  function twoFields(l1, v1, l2, v2) {
-    checkPage(16);
-    const hw = (CW - 6) / 2;
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text(l1, M, y); doc.text(l2, M+hw+6, y);
-    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-    doc.text(String(v1||'—').substring(0,40), M, y+5);
-    doc.text(String(v2||'—').substring(0,40), M+hw+6, y+5);
+  function sectionBar(title) {
+    checkY(13);
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(M, y, CW, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+    doc.text(hr2a(title), M+3, y+5.5);
     y += 12;
   }
 
-  header();
+  function field(label, value) {
+    const text = hr2a(value) || '—';
+    const lines = doc.splitTextToSize(text, CW);
+    checkY(5 + lines.length * 4.2 + 3);
+    if (label) {
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      doc.text(hr2a(label).toUpperCase(), M, y);
+      y += 4.5;
+    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(lines, M, y);
+    y += lines.length * 4.2 + 4;
+  }
 
-  // 1. Osnovni podaci
-  sectionTitle('1. OSNOVNI PODACI');
-  fieldRow('Naziv problema:', document.getElementById('naslov').value);
-  twoFields('Vlasnik A3:', document.getElementById('vlasnik').value, 'Odjel / Linija:', document.getElementById('odjel').value);
-  twoFields('Datum otvaranja:', document.getElementById('datum-otvaranja').value, 'Ciljni datum:', document.getElementById('datum-ciljni').value);
-  twoFields('Broj A3:', document.getElementById('broj-a3').value, 'Tim:', document.getElementById('tim').value);
+  function twoFields(l1, v1, l2, v2) {
+    const hw = (CW - 8) / 2;
+    const lines1 = doc.splitTextToSize(hr2a(v1) || '—', hw);
+    const lines2 = doc.splitTextToSize(hr2a(v2) || '—', hw);
+    const maxLines = Math.max(lines1.length, lines2.length);
+    checkY(5 + maxLines * 4.2 + 3);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+    doc.text(hr2a(l1).toUpperCase(), M, y);
+    doc.text(hr2a(l2).toUpperCase(), M + hw + 8, y);
+    y += 4.5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(lines1, M, y);
+    doc.text(lines2, M + hw + 8, y);
+    y += maxLines * 4.2 + 4;
+  }
 
-  // 2. Pozadina
-  sectionTitle('2. POZADINA I KONTEKST');
-  fieldRow('', document.getElementById('pozadina').value);
+  function box(title, text, bg, titleCol) {
+    const lines = doc.splitTextToSize(hr2a(text) || '—', CW - 6);
+    const h = lines.length * 4.2 + 9;
+    checkY(h + 2);
+    doc.setFillColor(...bg);
+    doc.roundedRect(M, y, CW, h, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...titleCol);
+    doc.text(hr2a(title), M+3, y+5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+    doc.text(lines, M+3, y+10);
+    y += h + 5;
+  }
 
-  // 3. Trenutno stanje
-  sectionTitle('3. TRENUTNO STANJE');
-  twoFields('Što:', document.getElementById('sto').value, 'Gdje:', document.getElementById('gdje').value);
-  twoFields('Kada:', document.getElementById('kada').value, 'Koliko:', document.getElementById('koliko').value);
-  fieldRow('Vizualni prikaz:', document.getElementById('vizual').value);
+  // ══ ZAGLAVLJE ══
+  drawHeader();
+  y = 26;
 
-  // 4. Analiza uzroka
-  sectionTitle('4. ANALIZA UZROKA — 5x ZAŠTO');
-  checkPage(10);
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-  doc.text('Simptom:', M, y); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-  doc.text(document.getElementById('simptom').value||'—', M+20, y); y+=7;
-  ['z1','z2','z3','z4','z5'].forEach((id,i) => {
-    checkPage(8);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(26,122,94);
-    doc.text(`Zašto ${i+1}:`, M+i*2, y);
-    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-    doc.text(document.getElementById(id).value||'—', M+i*2+18, y); y+=7;
+  // ══ 1. OSNOVNI PODACI ══
+  sectionBar('1. OSNOVNI PODACI');
+  field('Naziv problema', val('naslov'));
+  twoFields('Vlasnik A3', val('vlasnik'), 'Odjel / Linija', val('odjel'));
+  twoFields('Datum otvaranja', fmtDate(val('datum-otvaranja')), 'Ciljni datum', fmtDate(val('datum-ciljni')));
+  twoFields('Broj A3', val('broj-a3'), 'Tim', val('tim'));
+  y += 2;
+
+  // ══ 2. POZADINA ══
+  sectionBar('2. POZADINA I KONTEKST');
+  field('', val('pozadina'));
+
+  // ══ 3. TRENUTNO STANJE ══
+  sectionBar('3. TRENUTNO STANJE');
+  twoFields('Sto', val('sto'), 'Gdje', val('gdje'));
+  twoFields('Kada', val('kada'), 'Koliko', val('koliko'));
+  field('Vizualni prikaz', val('vizual'));
+
+  // ══ 4. ANALIZA UZROKA — 5x ZAŠTO ══
+  sectionBar('4. ANALIZA UZROKA — 5x ZASTO');
+  field('Simptom', val('simptom'));
+  ['z1','z2','z3','z4','z5'].forEach((id, i) => {
+    const v = val(id);
+    if (!v) return;
+    const lines = doc.splitTextToSize(hr2a(v), CW - 14);
+    const h = Math.max(lines.length * 4, 5) + 2;
+    checkY(h + 2);
+    doc.setFillColor(...whyDots[i]);
+    doc.circle(M+3, y+2.3, 2.6, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...WHITE);
+    doc.text(String(i+1), M+3, y+3.2, { align:'center' });
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.3); doc.setTextColor(...DARK);
+    doc.text(lines, M+10, y+3.2);
+    y += h + 4;
+    if (i < 4) { doc.setDrawColor(...BORDER); doc.setLineWidth(0.3); doc.line(M+3, y-4, M+3, y-1); }
   });
-  fieldRow('Korijenski uzrok:', document.getElementById('korijen').value);
+  if (val('korijen')) box('KORIJENSKI UZROK', val('korijen'), GREEN_L, GREEN);
+  y += 1;
 
-  // 5. Ciljno stanje
-  sectionTitle('5. CILJNO STANJE');
-  fieldRow('', document.getElementById('ciljno').value);
-  const kpiN = document.getElementById('kpi-naziv').value;
-  const kpiT = document.getElementById('kpi-trenutno').value;
-  const kpiC = document.getElementById('kpi-ciljano').value;
+  // ══ 5. CILJNO STANJE ══
+  sectionBar('5. CILJNO STANJE');
+  field('', val('ciljno'));
+  const kpiN = val('kpi-naziv'), kpiT = val('kpi-trenutno'), kpiC = val('kpi-ciljano');
   if (kpiN) {
-    checkPage(8);
-    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text(`KPI: ${kpiN}`, M, y);
-    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-    doc.text(`Trenutno: ${kpiT||'—'}   →   Ciljano: ${kpiC||'—'}`, M+50, y); y+=8;
+    checkY(10);
+    doc.setFillColor(...GREEN_L);
+    doc.roundedRect(M, y, CW, 8, 1.5, 1.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...GREEN_D);
+    doc.text('KPI: ' + hr2a(kpiN), M+3, y+5.2);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
+    doc.text(`Trenutno: ${hr2a(kpiT)||'—'}   →   Ciljano: ${hr2a(kpiC)||'—'}`, M+90, y+5.2);
+    y += 12;
   }
 
-  // 6. Plan akcija
-  sectionTitle('6. PLAN AKCIJA');
-  const rows = document.querySelectorAll('#action-body tr');
-  if (rows.length > 0) {
-    checkPage(12);
-    const cols = [8,80,38,28,28,20];
-    const hdrs = ['#','Akcija','Odgovorna osoba','Rok','Status','Prioritet'];
-    doc.setFillColor(240,240,240); doc.rect(M, y-4, CW, 6, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(80,80,80);
+  // ══ 6. PLAN AKCIJA ══
+  const STATUS = { open: { label:'Otvoreno', col: GRAY }, progress: { label:'U tijeku', col: BLUE }, done: { label:'Zavrseno', col: GREEN }, hold: { label:'Na cekanju', col: AMBER } };
+  function statusInfo(raw) {
+    const t = hr2a(raw);
+    if (t.includes('tijeku')) return STATUS.progress;
+    if (t.includes('Zavrseno')) return STATUS.done;
+    if (t.includes('cekanju')) return STATUS.hold;
+    return STATUS.open;
+  }
+  const PRI = { V:{label:'Visok',col:RED}, S:{label:'Srednji',col:AMBER}, N:{label:'Nizak',col:GREEN} };
+
+  const actionRows = Array.from(document.querySelectorAll('#action-body tr'));
+  if (actionRows.length > 0) {
+    sectionBar('6. PLAN AKCIJA');
+    const colW = [9, 74, 38, 23, 20, 18];
+    checkY(8);
+    doc.setFillColor(240, 245, 243);
+    doc.rect(M, y, CW, 6, 'F');
+    doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
+    doc.rect(M, y, CW, 6, 'S');
     let x = M;
-    hdrs.forEach((h,i) => { doc.text(h, x+1, y); x += cols[i]; }); y += 4;
-    doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
-    rows.forEach((row, idx) => {
-      checkPage(8);
+    doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...GRAY);
+    ['#','AKCIJA','OSOBA','ROK','STATUS','PRIORITET'].forEach((h,i) => { doc.text(h, x+1.5, y+4); x += colW[i]; });
+    y += 6;
+
+    actionRows.forEach((row, idx) => {
       const tds = row.querySelectorAll('td');
-      const vals = [String(idx+1), tds[1]?.querySelector('textarea')?.value||'', tds[2]?.querySelector('input')?.value||'', tds[3]?.querySelector('input')?.value||'', tds[4]?.querySelector('select')?.value||'', tds[5]?.querySelector('select')?.value||''];
-      if (idx%2===0) { doc.setFillColor(250,250,248); doc.rect(M, y-3, CW, 7, 'F'); }
+      const akcija = hr2a(tds[1]?.querySelector('textarea')?.value);
+      const osoba = hr2a(tds[2]?.querySelector('input')?.value);
+      const rok = fmtDate(tds[3]?.querySelector('input')?.value);
+      const st = statusInfo(tds[4]?.querySelector('select')?.value || '');
+      const priCode = tds[5]?.querySelector('select')?.value || 'S';
+      const pri = PRI[priCode] || PRI.S;
+
+      const akcijaLines = doc.splitTextToSize(akcija || '—', colW[1]-3);
+      const osobaLines = doc.splitTextToSize(osoba || '—', colW[2]-3);
+      const maxLines = Math.max(1, akcijaLines.length, osobaLines.length);
+      const rh = maxLines * 4 + 2.5;
+      checkY(rh + 1);
+      if (idx % 2 === 0) { doc.setFillColor(...ROW_ALT); doc.rect(M, y, CW, rh, 'F'); }
       x = M;
-      vals.forEach((v,i) => { doc.setFontSize(7); doc.text(String(v).substring(0, Math.floor(cols[i]*1.8)), x+1, y); x += cols[i]; });
-      y += 7;
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...DARK);
+      doc.text(String(idx+1), x+1.5, y+4.2); x += colW[0];
+      akcijaLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4)); x += colW[1];
+      osobaLines.forEach((ln,li) => doc.text(ln, x+1.5, y+4.2+li*4)); x += colW[2];
+      doc.text(rok, x+1.5, y+4.2); x += colW[3];
+      [[st, colW[4]], [pri, colW[5]]].forEach(([info, w]) => {
+        const badgeBg = info.col.map(n => Math.min(255, n+185));
+        doc.setFillColor(...badgeBg);
+        doc.roundedRect(x+1, y+1.2, w-2, 4.3, 1, 1, 'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(5.8); doc.setTextColor(...info.col);
+        doc.text(info.label, x+w/2, y+4, { align:'center' });
+        x += w;
+      });
+      doc.setDrawColor(...BORDER); doc.setLineWidth(0.1);
+      y += rh;
+      doc.line(M, y, W-M, y);
     });
-    y += 4;
+    y += 7;
   }
 
-  // 7. Provjera
-  sectionTitle('7. PROVJERA REZULTATA');
-  twoFields('Datum provjere:', document.getElementById('datum-provjere').value, 'Postignuti KPI:', document.getElementById('kpi-postignuto').value);
-  fieldRow('Rezultati:', document.getElementById('rezultati').value);
-  fieldRow('Cilj postignut:', document.getElementById('cilj-postignut').value||'—');
+  // ══ 7. PROVJERA REZULTATA ══
+  sectionBar('7. PROVJERA REZULTATA');
+  twoFields('Datum provjere', fmtDate(val('datum-provjere')), 'Postignuti KPI', val('kpi-postignuto'));
+  field('Rezultati', val('rezultati'));
+  const ciljSel = document.getElementById('cilj-postignut');
+  const ciljMap = { da:'Da — cilj je postignut', dijelomicno:'Djelomicno — potrebne dodatne akcije', ne:'Ne — vracamo se na analizu' };
+  field('Cilj postignut', ciljMap[ciljSel?.value] || '');
 
-  // 8. Standardizacija
-  sectionTitle('8. STANDARDIZACIJA');
-  twoFields('Što standardiziramo:', document.getElementById('standardizacija').value, 'Gdje širimo:', document.getElementById('sirenje').value);
-  fieldRow('Lekcije naučene:', document.getElementById('lekcije').value);
-  twoFields('Vlasnik A3 (potpis):', document.getElementById('potpis').value, 'Odobrio:', document.getElementById('odobrio').value);
+  // ══ 8. STANDARDIZACIJA ══
+  sectionBar('8. STANDARDIZACIJA');
+  twoFields('Sto standardiziramo', val('standardizacija'), 'Gdje sirimo', val('sirenje'));
+  field('Lekcije naucene', val('lekcije'));
+  twoFields('Vlasnik A3 (potpis)', val('potpis'), 'Odobrio', val('odobrio'));
 
-  // Footer
-  doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Izrađeno uz pomoć Leanopedija — leanopedija.hr', M, 290);
+  // ══ FOOTER SVAKE STRANICE ══
+  const total = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...GREEN_D);
+    doc.rect(0, H-7, W, 7, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(180,225,210);
+    doc.text('Izradeno uz pomoc Leanopedija  —  leanopedija.hr', M, H-2.5);
+    doc.setTextColor(...WHITE);
+    doc.text(`Stranica ${i} / ${total}`, W-M, H-2.5, { align:'right' });
+  }
 
-  doc.save('A3-Obrazac-' + (document.getElementById('naslov').value||'dokument').substring(0,30).replace(/\s/g,'-') + '-' + new Date().toISOString().slice(0,10) + '.pdf');
+  doc.save('A3-Obrazac-' + (val('naslov')||'dokument').substring(0,30).replace(/\s/g,'-') + '-' + new Date().toISOString().slice(0,10) + '.pdf');
 }
 
 // Accordion
