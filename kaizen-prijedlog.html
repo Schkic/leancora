@@ -204,6 +204,11 @@ a{color:inherit;text-decoration:none}
 .acc-body.open { display: block; }
 </style>
 <script>
+// Set today's date
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('p-datum').valueAsDate = new Date();
+});
+
 // Mobile menu
 function toggleMobileMenu() {
   var m = document.getElementById('mobile-menu');
@@ -295,6 +300,7 @@ function resetForm() {
   document.querySelectorAll('.impact-card, .priority-card').forEach(function(c) { c.classList.remove('selected'); });
   document.getElementById('selected-impact').value = '';
   document.getElementById('selected-priority').value = '';
+  document.getElementById('p-datum').valueAsDate = new Date();
 }
 
 // Izvoz u PDF
