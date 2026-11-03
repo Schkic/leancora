@@ -652,7 +652,8 @@ function exportPDF() {
     return String(s)
       .replace(/č/g,'c').replace(/Č/g,'C').replace(/ć/g,'c').replace(/Ć/g,'C')
       .replace(/š/g,'s').replace(/Š/g,'S').replace(/ž/g,'z').replace(/Ž/g,'Z')
-      .replace(/đ/g,'d').replace(/Đ/g,'D');
+      .replace(/đ/g,'d').replace(/Đ/g,'D')
+      .replace(/[^\u0000-ÿ]/g,'').trim();
   }
   function drawHeader() {
     doc.setFillColor(...GREEN_D);
@@ -699,19 +700,25 @@ function exportPDF() {
   const trajanje = val('kz-trajanje') || '—';
   const opis     = hr2a(val('kz-opis'));
 
-  doc.setFillColor(...GREEN_L);
-  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'F');
-  doc.setDrawColor(...GREEN); doc.setLineWidth(0.4);
-  doc.roundedRect(M, y, W - M * 2, 16, 2, 2, 'S');
   const metaCol = (W - M * 2) / 4;
-  [['NAZIV KAIZEN EVENTA', naziv], ['PROCES / PODRUČJE', proces], ['VODITELJ', voditelj], ['SPONZOR', sponzor]].forEach(([lbl, v], i) => {
+  const metaFields = [['NAZIV KAIZEN EVENTA', naziv], ['PROCES / PODRUČJE', proces], ['VODITELJ', voditelj], ['SPONZOR', sponzor]];
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
+  const metaWrapped = metaFields.map(([lbl, v]) => doc.splitTextToSize(v, metaCol - 6));
+  const metaMaxLines = Math.max(1, ...metaWrapped.map(l => l.length));
+  const metaBoxH = 12 + metaMaxLines * 4;
+
+  doc.setFillColor(...GREEN_L);
+  doc.roundedRect(M, y, W - M * 2, metaBoxH, 2, 2, 'F');
+  doc.setDrawColor(...GREEN); doc.setLineWidth(0.4);
+  doc.roundedRect(M, y, W - M * 2, metaBoxH, 2, 2, 'S');
+  metaFields.forEach(([lbl], i) => {
     const x = M + 4 + i * metaCol;
     doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...GRAY);
     doc.text(lbl, x, y + 5);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
-    doc.text(doc.splitTextToSize(v, metaCol - 6), x, y + 10);
+    doc.text(metaWrapped[i], x, y + 10);
   });
-  y += 13;
+  y += metaBoxH - 3;
   doc.setDrawColor(...BORDER); doc.setLineWidth(0.2);
   doc.line(M, y, W - M, y); y += 5;
   doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
