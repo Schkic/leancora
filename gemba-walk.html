@@ -774,6 +774,7 @@ function exportPDF() {
   const cats = ['sig','5s','tok','kval','std','rad'];
   const cNames = ['Sigurnost','5S i red','Tok i produktivnost','Kvaliteta','Standardizirani rad','Angazenost radnika'];
   const rCol = (W-M*2) / 2;
+  const rPad = 8;
   cats.forEach((c, i) => {
     const rating = getStarRating(c);
     const col = i % 2, row = Math.floor(i / 2);
@@ -781,9 +782,9 @@ function exportPDF() {
     doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
     doc.text(cNames[i], x, py);
     doc.setFont('helvetica','bold'); doc.setTextColor(...GREEN);
-    doc.text(rating + '/5', x+rCol-16, py, { align:'right' });
+    doc.text(rating + '/5', x+rCol-rPad-19, py, { align:'right' });
     for (let p = 0; p < 5; p++) {
-      const px = x + rCol - 11 + p*2.4;
+      const px = x + rCol - rPad - 14 + p*2.4;
       if (p < rating) { doc.setFillColor(...GREEN); doc.roundedRect(px, py-2.6, 2, 2, 0.4, 0.4, 'F'); }
       else { doc.setDrawColor(...BORDER); doc.setLineWidth(0.3); doc.roundedRect(px, py-2.6, 2, 2, 0.4, 0.4, 'S'); }
     }
