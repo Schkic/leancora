@@ -371,16 +371,19 @@ function exportPDF() {
     y += lines.length * 4.5 + 4;
   }
   function fieldRow(label1, value1, label2, value2) {
-    checkY(10);
     var halfW = (W - M * 2 - 8) / 2;
+    var lines1 = doc.splitTextToSize(hr2a(value1) || '—', halfW);
+    var lines2 = doc.splitTextToSize(hr2a(value2) || '—', halfW);
+    var maxLines = Math.max(lines1.length, lines2.length);
+    checkY(7 + maxLines * 4.5);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor.apply(doc, GRAY);
     doc.text(hr2a(label1).toUpperCase(), M, y);
     doc.text(hr2a(label2).toUpperCase(), M + halfW + 8, y);
     y += 4.5;
     doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor.apply(doc, DARK);
-    doc.text(hr2a(value1) || '—', M, y);
-    doc.text(hr2a(value2) || '—', M + halfW + 8, y);
-    y += 7;
+    doc.text(lines1, M, y);
+    doc.text(lines2, M + halfW + 8, y);
+    y += maxLines * 4.5 + 2.5;
   }
 
   // ══ HEADER ══
