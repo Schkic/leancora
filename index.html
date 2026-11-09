@@ -570,6 +570,74 @@
   .tool-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
+  /* ── ZAJEDNICA PREVIEW ── */
+  .zaj-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .zaj-preview-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    display: block;
+  }
+
+  .zaj-preview-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 2px 12px rgba(26,122,94,0.08);
+  }
+
+  .zaj-preview-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .zaj-preview-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .zaj-preview-author { font-size: 12px; font-weight: 600; color: var(--text); }
+  .zaj-preview-time { font-size: 11px; color: var(--text-faint); margin-left: auto; white-space: nowrap; }
+  .zaj-preview-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .zaj-preview-cta {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 9px 18px;
+  }
+
+  .zaj-preview-cta:hover { background: var(--green-light); }
+  .zaj-preview-empty { grid-column: 1/-1; text-align: center; color: var(--text-faint); font-size: 13px; padding: 20px; }
+
   /* ── RECENT GUIDES ── */
   .recent-list { }
 
@@ -1054,6 +1122,9 @@
     .tool-name { font-size: 12px; }
     .tool-desc { font-size: 11px; }
 
+    /* Zajednica preview */
+    .zaj-preview-grid { grid-template-columns: 1fr; gap: 10px; }
+
     /* Who section */
     .who-section { padding: 0; }
     .who-inner { grid-template-columns: 1fr; gap: 16px; padding: 24px 16px; }
@@ -1413,6 +1484,23 @@
 
 <hr class="divider">
 
+<!-- Zajednica preview -->
+<div class="section" id="zajednica-preview">
+  <div class="section-header" style="text-align:center;">
+    <div class="section-label">Zajednica</div>
+    <h2 class="section-title">Što se događa u Zajednici</h2>
+    <p class="section-desc">Pitanja, iskustva i ideje ljudi iz hrvatske proizvodnje — pridruži se razgovoru.</p>
+  </div>
+  <div class="zaj-preview-grid" id="zaj-preview-grid">
+    <div class="zaj-preview-empty">Učitavam objave…</div>
+  </div>
+  <div style="text-align:center;margin-top:20px;">
+    <a href="zajednica.html" class="zaj-preview-cta">Vidi sve objave u Zajednici →</a>
+  </div>
+</div>
+
+<hr class="divider">
+
 <!-- ═══════════════════════════════════════════════════
      OGLAS 2 — pred kraj stranice
      Zamjena s pravim oglasom: isti postupak kao Oglas 1
@@ -1685,6 +1773,71 @@ document.addEventListener('click', function(e) {
     closeMobileMenu();
   }
 });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  try{
+    var grid = document.getElementById('zaj-preview-grid');
+    if (!grid || typeof supabase === 'undefined') return;
+
+    var colors = ['#1a7a5e','#2563eb','#7c3aed','#dc2626','#ea580c','#0891b2','#ca8a04'];
+    function avatarColor(name){
+      var h = 0;
+      name = name || '';
+      for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+      return colors[Math.abs(h) % colors.length];
+    }
+    function avatarInitials(name){
+      if (!name) return '?';
+      var p = name.trim().split(' ');
+      return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name[0].toUpperCase();
+    }
+    function timeAgo(ts){
+      var diff = (Date.now() - new Date(ts)) / 1000;
+      if (diff < 60) return 'upravo sada';
+      if (diff < 3600) return 'prije ' + Math.floor(diff / 60) + ' min';
+      if (diff < 86400) return 'prije ' + Math.floor(diff / 3600) + ' h';
+      if (diff < 604800) return 'prije ' + Math.floor(diff / 86400) + ' dana';
+      return new Date(ts).toLocaleDateString('hr-HR');
+    }
+    function escHtml(str){
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    var sb = supabase.createClient(
+      'https://cufosorbcjqwmnbojvfz.supabase.co',
+      'sb_publishable_vT0CMKJVK3zcTl_THDq3sw_uovbCGcg'
+    );
+
+    sb.from('community_posts')
+      .select('id, author, text, category, created_at')
+      .order('created_at', { ascending: false })
+      .limit(3)
+      .then(function(res){
+        if (res.error) { grid.innerHTML = ''; return; }
+        var posts = res.data;
+        if (!posts || posts.length === 0) {
+          grid.innerHTML = '<div class="zaj-preview-empty">Budite prvi koji postavljaju pitanje ili dijele iskustvo u Zajednici.</div>';
+          return;
+        }
+        grid.innerHTML = posts.map(function(post){
+          var text = escHtml(post.text || '');
+          return '<a class="zaj-preview-card" href="zajednica.html">' +
+            '<div class="zaj-preview-head">' +
+              '<div class="zaj-preview-avatar" style="background:' + avatarColor(post.author) + '">' + avatarInitials(post.author) + '</div>' +
+              '<span class="zaj-preview-author">' + escHtml(post.author) + '</span>' +
+              '<span class="zaj-preview-time">' + timeAgo(post.created_at) + '</span>' +
+            '</div>' +
+            '<div class="zaj-preview-text">' + text + '</div>' +
+          '</a>';
+        }).join('');
+      })
+      .catch(function(){
+        grid.innerHTML = '';
+      });
+  }catch(err){}
+})();
 </script>
 <script src="/stats.js" defer></script>
 </body>
