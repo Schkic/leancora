@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "leanopedija-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-05-22",
+  "kv_namespaces": [
+    {
+      "binding": "clicks",
+      "id": "f2ece5543c9d490db529c067ec2b1a20"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "leanopedija-stats",
+      "database_id": "5b932053-6701-4d9a-b942-57c44755789b"
+    }
+  ]
+}
